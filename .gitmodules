@@ -1,0 +1,6 @@
+[submodule "external_projects/asio"]
+	path = external_projects/asio
+	url = https://github.com/chriskohlhoff/asio.git
+[submodule "external_projects/websocketpp"]
+	path = external_projects/websocketpp
+	url = https://github.com/zaphoyd/websocketpp.git
