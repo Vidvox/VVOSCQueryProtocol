@@ -38,7 +38,7 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 	MutLockArray			*inPortArray;	//	Array of OSCInPorts in a locking array for threadsafe access
 	MutLockArray			*outPortArray;	//	Array of OSCOutPorts in a locking array for threadsafe access
 	
-	__weak id<OSCDelegateProtocol>		delegate;		//!<If there's a delegate, it will be notified when OSC messages are received
+	id						delegate;		//!<If there's a delegate, it will be notified when OSC messages are received
 	
 	OSCZeroConfManager		*zeroConfManager;	//!<Creates OSCOutPorts for any OSC destinations detected via bonjour/zeroconf
 	
@@ -123,8 +123,9 @@ Incoming OSC data is initially received by an OSCInPort; fundamentally, in ports
 
 //	misc
 ///	Returns the delegate (by default, an OSCManager doesn't have a delegate)
-@property (weak) id<OSCDelegateProtocol> delegate;
-
+- (id) delegate;
+///	Sets the delegate; the delegate is NOT retained, make sure you tell the manager's nil before releasing it!
+- (void) setDelegate:(id)n;
 - (id) inPortArray;
 - (id) outPortArray;
 

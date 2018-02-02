@@ -56,13 +56,6 @@ When you send or receive values via OSC, you'll be working with OSCValue objects
 ///	Creates & returns an auto-released instance of OSCValue with an SMPTE timecode
 + (id) createWithSMPTEVals:(OSCSMPTEFPS)fps :(int)d :(int)h :(int)m :(int)s :(int)f;
 + (id) createWithSMPTEChunk:(int)n;
-///	Creates & returns an auto-released instance of OSCValue with an unknown type and a nil value
-+ (id) createWithUnknown;
-
-///	Returns the OSCValueType for the corresponding type tag string character
-+ (OSCValueType) typeForTypeTagCharacter:(unichar)n;
-+ (OSCValueType) typeForTypeTagString:(NSString *)n;
-+ (NSString *) typeTagStringForType:(OSCValueType)n;
 
 - (NSString *) lengthyDescription;
 
@@ -84,7 +77,6 @@ When you send or receive values via OSC, you'll be working with OSCValue objects
 - (id) initWithNSDataBlob:(NSData *)d;
 - (id) initWithSMPTEVals:(OSCSMPTEFPS)fps :(int)d :(int)h :(int)m :(int)s :(int)f;
 - (id) initWithSMPTEChunk:(int)n;
-- (id) initWithUnknown;
 
 ///	Returns an int value corresponding to the instance's value
 - (int) intValue;
@@ -129,10 +121,6 @@ When you send or receive values via OSC, you'll be working with OSCValue objects
 ///	Returns a double value, regardless as to the type of the OSCValue
 - (double) calculateDoubleValue;
 
-- (BOOL) equal:(OSCValue *)n;
-- (BOOL) isEqual:(OSCValue *)n;
-- (NSComparisonResult) compare:(OSCValue *)otherVal;
-- (NSString *) typeTagString;
 - (id) jsonValue;
 
 @property (nonatomic, readonly) OSCValueType type;

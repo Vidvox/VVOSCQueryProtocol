@@ -7,14 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A0C3F071FDAB61F00D2C88A /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F051FDAB61F00D2C88A /* VVBasics.framework */; };
-		1A0C3F081FDAB61F00D2C88A /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F051FDAB61F00D2C88A /* VVBasics.framework */; };
-		1A0C3F091FDAB61F00D2C88A /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F061FDAB61F00D2C88A /* VVOSC.framework */; };
-		1A0C3F0A1FDAB61F00D2C88A /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F061FDAB61F00D2C88A /* VVOSC.framework */; };
-		1A0C3F0B1FDAB62E00D2C88A /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F061FDAB61F00D2C88A /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A0C3F0C1FDAB63000D2C88A /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F051FDAB61F00D2C88A /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A0C3F0D1FDAB63700D2C88A /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F061FDAB61F00D2C88A /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A0C3F0E1FDAB63900D2C88A /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0C3F051FDAB61F00D2C88A /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A0E2F361FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */; };
 		1A0E2F381FD6D3CB00F0855D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0E2F371FD6D3CB00F0855D /* Assets.xcassets */; };
 		1A0E2F3B1FD6D3CB00F0855D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0E2F391FD6D3CB00F0855D /* MainMenu.xib */; };
@@ -60,6 +52,18 @@
 		1AB4FB2D1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB4FB2B1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.m */; };
 		1AB89C301FD1EE1B0094A66B /* WSPPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AB89C2E1FD1EE1B0094A66B /* WSPPServer.cpp */; };
 		1AB89C311FD1EE1B0094A66B /* WSPPServer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 1AB89C2F1FD1EE1B0094A66B /* WSPPServer.hpp */; };
+		1ABC045120233BC700539E55 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
+		1ABC045220233BC700539E55 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
+		1ABC045320233BC700539E55 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
+		1ABC045420233BC700539E55 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; };
+		1ABC045520233BC700539E55 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; };
+		1ABC045620233BC700539E55 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; };
+		1ABC045720233BD000539E55 /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1ABC045820233BD000539E55 /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1ABC045920233BD300539E55 /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1ABC045A20233BD300539E55 /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1ABC045B20233BD600539E55 /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1ABC045C20233BD600539E55 /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AEB5C881FD6E71700FFCE49 /* ServerListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5C871FD6E71700FFCE49 /* ServerListController.m */; };
 		1AEB5CB81FD6E74D00FFCE49 /* ServerUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5CB71FD6E74D00FFCE49 /* ServerUIController.m */; };
 		1AEB5CBB1FD7014000FFCE49 /* RemoteNodeTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5CBA1FD7014000FFCE49 /* RemoteNodeTableCellView.m */; };
@@ -73,6 +77,7 @@
 		1AF108771FCD9DC0004566A8 /* CURLDL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF108751FCD9DC0004566A8 /* CURLDL.m */; };
 		1AF1087A1FCDC509004566A8 /* NSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF108781FCDC509004566A8 /* NSStringAdditions.h */; };
 		1AF1087B1FCDC509004566A8 /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF108791FCDC509004566A8 /* NSStringAdditions.m */; };
+		1AF75BCB1FE91B8700D59211 /* QueryServerNodeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF75BCA1FE91B8700D59211 /* QueryServerNodeDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,8 +112,8 @@
 			dstSubfolderSpec = 10;
 			files = (
 				1A0E2F4D1FD6D3F000F0855D /* VVOSCQueryProtocol.framework in Embed Frameworks */,
-				1A0C3F0B1FDAB62E00D2C88A /* VVOSC.framework in Embed Frameworks */,
-				1A0C3F0C1FDAB63000D2C88A /* VVBasics.framework in Embed Frameworks */,
+				1ABC045B20233BD600539E55 /* VVBasics.framework in Embed Frameworks */,
+				1ABC045C20233BD600539E55 /* VVOSC.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,8 +135,8 @@
 			dstSubfolderSpec = 10;
 			files = (
 				1A336EC71FC88C770007877C /* VVOSCQueryProtocol.framework in Embed Frameworks */,
-				1A0C3F0D1FDAB63700D2C88A /* VVOSC.framework in Embed Frameworks */,
-				1A0C3F0E1FDAB63900D2C88A /* VVBasics.framework in Embed Frameworks */,
+				1ABC045720233BD000539E55 /* VVBasics.framework in Embed Frameworks */,
+				1ABC045820233BD000539E55 /* VVOSC.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,6 +148,8 @@
 			dstSubfolderSpec = 10;
 			files = (
 				1A336EC91FC88C890007877C /* VVOSCQueryProtocol.framework in Embed Frameworks */,
+				1ABC045920233BD300539E55 /* VVBasics.framework in Embed Frameworks */,
+				1ABC045A20233BD300539E55 /* VVOSC.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,8 +157,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1A0C3F051FDAB61F00D2C88A /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVBasics.framework; path = external_frameworks/VVBasics.framework; sourceTree = "<group>"; };
-		1A0C3F061FDAB61F00D2C88A /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVOSC.framework; path = external_frameworks/VVOSC.framework; sourceTree = "<group>"; };
 		1A0E2F321FD6D3CB00F0855D /* VVOSCQueryBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VVOSCQueryBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0E2F341FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VVOSCQueryBrowserAppDelegate.h; sourceTree = "<group>"; };
 		1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VVOSCQueryBrowserAppDelegate.m; sourceTree = "<group>"; };
@@ -208,6 +213,8 @@
 		1AB4FB2B1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VVOSCQueryServerDetectorDomain.m; sourceTree = "<group>"; };
 		1AB89C2E1FD1EE1B0094A66B /* WSPPServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WSPPServer.cpp; sourceTree = "<group>"; };
 		1AB89C2F1FD1EE1B0094A66B /* WSPPServer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WSPPServer.hpp; sourceTree = "<group>"; };
+		1ABC044F20233BC700539E55 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVBasics.framework; path = external_frameworks/VVBasics.framework; sourceTree = "<group>"; };
+		1ABC045020233BC700539E55 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVOSC.framework; path = external_frameworks/VVOSC.framework; sourceTree = "<group>"; };
 		1AEB5C861FD6E71700FFCE49 /* ServerListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServerListController.h; sourceTree = "<group>"; };
 		1AEB5C871FD6E71700FFCE49 /* ServerListController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServerListController.m; sourceTree = "<group>"; };
 		1AEB5CB61FD6E74D00FFCE49 /* ServerUIController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServerUIController.h; sourceTree = "<group>"; };
@@ -228,6 +235,8 @@
 		1AF108751FCD9DC0004566A8 /* CURLDL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CURLDL.m; sourceTree = "<group>"; };
 		1AF108781FCDC509004566A8 /* NSStringAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSStringAdditions.h; sourceTree = "<group>"; };
 		1AF108791FCDC509004566A8 /* NSStringAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSStringAdditions.m; sourceTree = "<group>"; };
+		1AF75BC91FE91B8700D59211 /* QueryServerNodeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryServerNodeDelegate.h; sourceTree = "<group>"; };
+		1AF75BCA1FE91B8700D59211 /* QueryServerNodeDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryServerNodeDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,8 +245,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A0E2F491FD6D3E000F0855D /* VVOSCQueryProtocol.framework in Frameworks */,
-				1A0C3F0A1FDAB61F00D2C88A /* VVOSC.framework in Frameworks */,
-				1A0C3F081FDAB61F00D2C88A /* VVBasics.framework in Frameworks */,
+				1ABC045620233BC700539E55 /* VVOSC.framework in Frameworks */,
+				1ABC045320233BC700539E55 /* VVBasics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,8 +264,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A336EC41FC88C620007877C /* VVOSCQueryProtocol.framework in Frameworks */,
-				1A0C3F091FDAB61F00D2C88A /* VVOSC.framework in Frameworks */,
-				1A0C3F071FDAB61F00D2C88A /* VVBasics.framework in Frameworks */,
+				1ABC045420233BC700539E55 /* VVOSC.framework in Frameworks */,
+				1ABC045120233BC700539E55 /* VVBasics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +274,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A336EC51FC88C690007877C /* VVOSCQueryProtocol.framework in Frameworks */,
+				1ABC045520233BC700539E55 /* VVOSC.framework in Frameworks */,
+				1ABC045220233BC700539E55 /* VVBasics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,8 +360,8 @@
 		1A336E881FC871260007877C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1A0C3F051FDAB61F00D2C88A /* VVBasics.framework */,
-				1A0C3F061FDAB61F00D2C88A /* VVOSC.framework */,
+				1ABC044F20233BC700539E55 /* VVBasics.framework */,
+				1ABC045020233BC700539E55 /* VVOSC.framework */,
 				1A71ADDE1FD2048700B01872 /* SystemConfiguration.framework */,
 				1A906E8E1FCC9AAA00F0E412 /* Foundation.framework */,
 			);
@@ -369,6 +380,8 @@
 				1A336EA41FC88C0C0007877C /* Info.plist */,
 				1A336EA51FC88C0C0007877C /* main.m */,
 				1A336EA71FC88C0D0007877C /* OSCQueryProtocolServer.entitlements */,
+				1AF75BC91FE91B8700D59211 /* QueryServerNodeDelegate.h */,
+				1AF75BCA1FE91B8700D59211 /* QueryServerNodeDelegate.m */,
 			);
 			path = VVOSCQueryServer;
 			sourceTree = "<group>";
@@ -526,7 +539,7 @@
 				TargetAttributes = {
 					1A0E2F311FD6D3CB00F0855D = {
 						CreatedOnToolsVersion = 9.1;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 0;
@@ -660,6 +673,7 @@
 			files = (
 				1A336EA61FC88C0C0007877C /* main.m in Sources */,
 				1A8A970D1FCF4E5500FEB54A /* OSCNodeAdditions.m in Sources */,
+				1AF75BCB1FE91B8700D59211 /* QueryServerNodeDelegate.m in Sources */,
 				1A336E9E1FC88C0C0007877C /* OSCQueryProtocolServerAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -725,10 +739,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
+				DEVELOPMENT_TEAM = KH97KZU7A7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(PROJECT_DIR)/external_frameworks\"",
+					"$(PROJECT_DIR)/external_frameworks",
+				);
 				INFOPLIST_FILE = VVOSCQueryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = vidvox.VVOSCQueryBrowser;
@@ -741,10 +759,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
+				DEVELOPMENT_TEAM = KH97KZU7A7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(PROJECT_DIR)/external_frameworks\"",
+					"$(PROJECT_DIR)/external_frameworks",
+				);
 				INFOPLIST_FILE = VVOSCQueryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = vidvox.VVOSCQueryBrowser;
@@ -802,7 +824,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -854,7 +876,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -877,6 +899,7 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(PROJECT_DIR)/external_projects/websocketpp\"",
 					"\"$(PROJECT_DIR)/external_projects/asio/asio/include\"",
+					"\"$(PROJECT_DIR)/external_projects/rapidjson/include\"",
 				);
 				INFOPLIST_FILE = VVOSCQueryProtocol/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -904,6 +927,7 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(PROJECT_DIR)/external_projects/websocketpp\"",
 					"\"$(PROJECT_DIR)/external_projects/asio/asio/include\"",
+					"\"$(PROJECT_DIR)/external_projects/rapidjson/include\"",
 				);
 				INFOPLIST_FILE = VVOSCQueryProtocol/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -927,6 +951,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/external_frameworks\"",
+					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryServer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -947,6 +972,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/external_frameworks\"",
+					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryServer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -967,6 +993,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/external_frameworks\"",
+					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -987,6 +1014,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/external_frameworks\"",
+					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

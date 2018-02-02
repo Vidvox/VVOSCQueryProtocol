@@ -19,6 +19,7 @@ Instead of adding (and therefore retaining) objects to an array like my supercla
 */
 
 @interface MutNRLockArray : MutLockArray {
+	BOOL		zwrFlag;	//	NO by default. if YES, uses mike ash's zeroing weak reference object instead of just storing a simple weak reference!
 }
 
 + (id) arrayWithCapacity:(NSInteger)c;
@@ -39,6 +40,9 @@ Instead of adding (and therefore retaining) objects to an array like my supercla
 - (BOOL) containsIdenticalPtr:(id)o;
 - (long) indexOfIdenticalPtr:(id)o;
 - (void) removeIdenticalPtr:(id)o;
+
+///	NO by default.  if YES, the ObjectHolder instances created by this class will use Mike Ash's zeroing weak reference object instead of just storing a simple weak reference.  this is generally safer, and isn't really much slower.
+@property (assign,readwrite) BOOL zwrFlag;
 
 //	these methods exist because the lookup cost for an ObjectHolder can be significant for high-performance applications- these methods get the object from the ObjectHolder and call the method directly on it!
 - (void) bruteForceMakeObjectsPerformSelector:(SEL)s;

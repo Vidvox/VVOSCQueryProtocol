@@ -44,44 +44,65 @@ HOW TO USE THIS CLASS:
 */
 
 @interface VVCrashReporter : NSObject <VVCURLDLDelegate> {
-	NSString			*domainToCheck;
-	NSString			*uploadURL;	//	does NOT includes http://
-	NSString			*developerEmail;
-	__weak id<VVCrashReporterDelegate>			delegate;	//	must respond to VVCrashReporterDelegate protocol
-	MutLockArray		*crashLogArray;
-	NSMutableDictionary	*systemProfilerDict;
-	NSString			*consoleLog;
-	int					jobSize;			//	used to update progress indicator/label
-	int					jobCurrentIndex;	//	used to update progress indicator/label
-	int					currentCrashLogTimeout;	//	countdown for timeout of sending/receiving data for a specific crash log
-	NSTimer				*currentCrashLogTimer;
+	NSString						*domainToCheck;
+	NSString						*uploadURL;	//	does NOT includes http://
+	NSString						*developerEmail;
+	id								delegate;	//	must respond to VVCrashReporterDelegate protocol
+	MutLockArray					*crashLogArray;
+	NSMutableDictionary				*systemProfilerDict;
+	NSString						*consoleLog;
+	int								jobSize;			//	used to update progress indicator/label
+	int								jobCurrentIndex;	//	used to update progress indicator/label
+	int								currentCrashLogTimeout;	//	countdown for timeout of sending/receiving data for a specific crash log
+	NSTimer							*currentCrashLogTimer;
 	
-	IBOutlet NSWindow			*window;
-	IBOutlet NSButton			*replyButton;
-	IBOutlet NSView				*emailFieldHolder;
-	IBOutlet NSTextField		*emailField;
-	IBOutlet NSTextView			*descriptionField;
-	IBOutlet NSTextField		*submittingLabel;	//	non-editable. 'submitting', 'getting machine profile', etc.
+	IBOutlet NSWindow				*window;
+	IBOutlet NSButton				*replyButton;
+	IBOutlet NSView					*emailFieldHolder;
+	IBOutlet NSTextField			*emailField;
+	IBOutlet NSTextView				*descriptionField;
+	IBOutlet NSTextField			*submittingLabel;	//	non-editable. 'submitting', 'getting machine profile', etc.
 	IBOutlet NSProgressIndicator	*progressIndicator;	//	indicates progress through all crash logs to be submitted
-	IBOutlet NSTextField		*countdownLabel;	//	non-editable; countdown so user knows app hasn't hung
+	IBOutlet NSTextField			*countdownLabel;	//	non-editable; countdown so user knows app hasn't hung
 	
-	NSNib				*theNib;
-	NSArray				*nibTopLevelObjects;
+	NSNib							*theNib;
+	NSArray							*nibTopLevelObjects;
 }
 
 + (NSString *) _stringForSystemProfilerDataType:(NSString *)t;
 
 ///	This is the main method- when you call 'check', the crash reporter looks for crash logs, gets a basic system profile, and collects anything your applications has dumped to the console log.
 - (void) check;
+- (void) checkLogs;
+- (void) checkServerAndLogs;
+- (void) openCrashReporter;
+- (IBAction) replyButtonClicked:(id)sender;
+- (IBAction) doneClicked:(id)sender;
+- (void) sendACrashLog;
+- (void) closeCrashReporter;
+
+- (NSString *) _nibName;
+- (BOOL) _assembleCrashLogs;	//	assembles the array of crash logs, returns a YES if logs were found and have to be sent in
+- (NSString *) _consoleLogString;
+- (NSMutableDictionary *) _systemProfilerDict;
+
+- (void) updateCrashLogTimeout:(NSTimer *)t;
+
+//	VVCURLDLDelegate method- this class will be the delegate of multiple VVCURLDL instances
+- (void) dlFinished:(id)h;
 
 ///	Optional.  Sets the domain to check, expects something like "vidvox.com"- if used, the domain is looked up first (pretty sure the SCNetwork stuff tries to send a UDP packet to this domain) to ensure that it exists: if it doesn't, the crash reporter window simply isn't displayed.
-@property (retain) NSString * domainToCheck;
+- (void) setDomainToCheck:(NSString *)n;
+- (NSString *) domainToCheck;
 ///	Sets the developer email address; this is displayed if the user has a problem connecting to the internet/the server the crash reporter is supposed to be connecting to
-@property (retain) NSString * developerEmail;
+- (void) setDeveloperEmail:(NSString *)n;
+- (NSString *) developerEmail;
 ///	This is the URL of the php/cgi/etc. page which the crash data will be POSTed to
-@property (retain) NSString * uploadURL;
+- (void) setUploadURL:(NSString *)n;
+- (NSString *) uploadURL;
 
 ///	The crash reporter's delegate is notified when the check has completed
-@property (weak) id<VVCrashReporterDelegate> delegate;
+@property (assign,readwrite) id delegate;
+@property (readonly) NSButton *replyButton;
 
 @end

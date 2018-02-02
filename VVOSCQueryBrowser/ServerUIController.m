@@ -55,8 +55,8 @@ static ServerUIController		*_global = nil;
 		[urlField setStringValue:pathString];
 	
 	//	get the string reply from the remote server
-	//urlReplyString = (server==nil) ? nil : [server stringForNodeAtAddress:pathString query:kVVOSCQ_ReqAttr_Contents];
-	urlReplyString = (server==nil) ? nil : [server stringForNodeAtAddress:pathString query:nil];
+	//urlReplyString = (server==nil) ? nil : [server stringForOSCMethodAtAddress:pathString query:kVVOSCQ_ReqAttr_Contents];
+	urlReplyString = (server==nil) ? nil : [server stringForOSCMethodAtAddress:pathString query:nil];
 	
 	//	convert the reply string to a JSON object (a dict)
 	NSData			*urlReplyData = [urlReplyString dataUsingEncoding:NSUTF8StringEncoding];
@@ -147,10 +147,56 @@ static ServerUIController		*_global = nil;
 	[uiItemOutlineView reloadData];
 	[rawJSONTextView setString:@""];
 }
-- (NSString *) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
 	NSLog(@"%s ... %@",__func__,jsonObj);
 	NSLog(@"\t\tshould be checking for and handling PATH_CHANGED here, %s",__func__);
-	return nil;
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer receivedOSCPacket:(const void *)packet sized:(size_t)packetSize	{
+	//NSLog(@"%s ... %p, %ld",__func__,packet,packetSize);
+	
+	
+	
+	
+	
+	/*
+	//	find the OSC input we'll be using to receive packets on
+	OSCInPort		*inPort = [[oscm inPortArray] objectAtIndex:0];
+	if (inPort == nil)	{
+		NSLog(@"\t\terr: inPort nil, bailing, %s",__func__);
+		return;
+	}
+	//	find the OSC output corresponding to the remote server- we need its raw network address & port
+	//NSLog(@"\t\tshould be looking for outputs with address %@:%ld",[remoteServer oscServerAddressString],[remoteServer oscServerPort]);
+	//NSLog(@"\t\toutputs are %@",[oscm outPortArray]);
+	OSCOutPort		*outPort = [oscm findOutputWithAddress:[remoteServer oscServerAddressString] andPort:[remoteServer oscServerPort]];
+	//NSLog(@"\t\toutPort is %@",outPort);
+	struct sockaddr_in		*addr = (outPort==nil) ? nil : [outPort addr];
+	//if (addr == nil)	{
+	//	NSLog(@"\t\terr: addr nil, bailing, %s",__func__);
+	//	return;
+	//}
+	//	parse the packet, dispatching it automatically to the appropriate input with the appropriate routing information
+	[OSCPacket
+		parseRawBuffer:packet
+		ofMaxLength:packetSize
+		toInPort:inPort
+		//fromAddr:0
+		//port:0];
+		fromAddr:addr->sin_addr.s_addr
+		port:addr->sin_port];
+	*/
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathChanged:(NSString *)n	{
+	NSLog(@"%s ... %@",__func__,n);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathRenamedFrom:(NSString *)oldName to:(NSString *)newName	{
+	NSLog(@"%s ... %@ -> %@",__func__,oldName,newName);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathRemoved:(NSString *)n	{
+	NSLog(@"%s ... %@",__func__,n);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathAdded:(NSString *)n	{
+	NSLog(@"%s ... %@",__func__,n);
 }
 
 

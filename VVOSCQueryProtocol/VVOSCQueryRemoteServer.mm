@@ -88,13 +88,13 @@
 - (instancetype) initWithWebServerAddressString:(NSString *)inWebServerAddressString
 port:(int)inWebServerPort
 bonjourName:(NSString *)inBonjourName	{
-	NSLog(@"%s ... %p",__func__,self);
+	NSLog(@"%s ... %@, %d, %@",__func__,inWebServerAddressString,inWebServerPort,inBonjourName);
 	self = [super init];
 	if (self != nil)	{
 		webServerAddressString = inWebServerAddressString;
 		webServerPort = inWebServerPort;
 		oscServerAddressString = nil;
-		oscServerPort = -1;
+		oscServerPort = inWebServerPort;
 		oscServerTransport = VVOSCQueryOSCTransportType_Unknown;
 		wsServerAddressString = nil;
 		wsServerPort = -1;
@@ -104,45 +104,97 @@ bonjourName:(NSString *)inBonjourName	{
 		
 		__weak id		bss = self;
 		wsClient->set_websocket_callback([&,bss](const std::string & inRawWSString)	{
-			//cout << __PRETTY_FUNCTION__ << endl;
+			//cout << __PRETTY_FUNCTION__ << " ws callback" << endl;
 			@autoreleasepool	{
 				NSString	*rawString = [NSString stringWithUTF8String:inRawWSString.c_str()];
 				//NSLog(@"\t\trawString is %@",rawString);
 				NSData		*rawStringData = (rawString==nil) ? nil : [rawString dataUsingEncoding:NSUTF8StringEncoding];
 				//	if i can't parse the string into data, skip a reply
-				if (rawStringData == nil)
-					return WSPPQueryReply(false);
+				if (rawStringData == nil)	{
+					//return WSPPQueryReply(false);
+					return;
+				}
 				id			parsedJSONObject = [NSJSONSerialization JSONObjectWithData:rawStringData options:0 error:nil];
 				//NSLog(@"\t\tparsedJSONObject is %@",parsedJSONObject);
 				//	if the parsed object is the wrong kind of class, just return an empty object
 				if (parsedJSONObject!=nil && ![parsedJSONObject isKindOfClass:[NSDictionary class]])
 					parsedJSONObject = nil;
 				//	if i couldn't parse the string into a JSON object (an actual object, not an array) by now, skip a reply
-				if (parsedJSONObject == nil)
-					return WSPPQueryReply(false);
+				if (parsedJSONObject == nil)	{
+					//return WSPPQueryReply(false);
+					return;
+				}
 				
 				//	pass the parsed json object to my delegate, which may have a reply of some sort
-				NSString	*returnMe = nil;
 				if (parsedJSONObject != nil)	{
 					//NSLog(@"\t\tbss is %p",bss);
 					__weak id<VVOSCQueryRemoteServerDelegate>			tmpDelegate = [(VVOSCQueryRemoteServer*)bss delegate];
 					if (tmpDelegate != nil)
-						returnMe = [tmpDelegate remoteServer:bss websocketDeliveredJSONObject:parsedJSONObject];
+						[tmpDelegate remoteServer:bss websocketDeliveredJSONObject:parsedJSONObject];
 				}
 				//	if i don't have a delegate, or my delegate doesn't have a reply, skip a reply
-				if (returnMe == nil)
-					return WSPPQueryReply(false);
+				//if (returnMe == nil)	{
+					//return WSPPQueryReply(false);
+				//	return;
+				//}
 				//	...if i'm here then my delegate gave me a reply string- wrap it up in a query reply, and return it
-				return WSPPQueryReply(std::string([returnMe UTF8String]));
+				//return WSPPQueryReply(std::string([returnMe UTF8String]));
+			}
+		});
+		wsClient->set_osc_callback([&,bss](const void * inBuffer, const size_t & inBufferSize)	{
+			//cout << __PRETTY_FUNCTION__ << " osc callback" << endl;
+			@autoreleasepool	{
+				__weak id<VVOSCQueryRemoteServerDelegate>			tmpDelegate = [(VVOSCQueryRemoteServer*)bss delegate];
+				if (tmpDelegate != nil)
+					[tmpDelegate remoteServer:bss receivedOSCPacket:inBuffer sized:inBufferSize];
 			}
 		});
 		wsClient->set_close_callback([&,bss](void)	{
 			@autoreleasepool	{
-					dispatch_async(dispatch_get_main_queue(), ^{
+				dispatch_async(dispatch_get_main_queue(), ^{
 					//	notify my delegate that this server went offline
 					id			tmpDelegate = [bss delegate];
 					if (tmpDelegate != nil)
 						[tmpDelegate remoteServerWentOffline:bss];
+				});
+			}
+		});
+		wsClient->set_path_changed_callback([&,bss](const std::string & inPathString)	{
+			@autoreleasepool	{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					id			tmpDelegate = [bss delegate];
+					if (tmpDelegate != nil)
+						[tmpDelegate remoteServer:bss pathChanged:[[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding]];
+				});
+			}
+		});
+		wsClient->set_path_renamed_callback([&,bss](const std::string & oldPathString, const std::string & newPathString)	{
+			@autoreleasepool	{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					id			tmpDelegate = [bss delegate];
+					if (tmpDelegate != nil)	{
+						[tmpDelegate remoteServer:bss
+							pathRenamedFrom:[[NSString alloc] initWithCString:oldPathString.c_str() encoding:NSUTF8StringEncoding]
+							to:[[NSString alloc] initWithCString:newPathString.c_str() encoding:NSUTF8StringEncoding]];
+					}
+				});
+			}
+		});
+		wsClient->set_path_removed_callback([&,bss](const std::string & inPathString)	{
+			@autoreleasepool	{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					id			tmpDelegate = [bss delegate];
+					if (tmpDelegate != nil)
+						[tmpDelegate remoteServer:bss pathRemoved:[[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding]];
+				});
+			}
+		});
+		wsClient->set_path_added_callback([&,bss](const std::string & inPathString)	{
+			@autoreleasepool	{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					id			tmpDelegate = [bss delegate];
+					if (tmpDelegate != nil)
+						[tmpDelegate remoteServer:bss pathAdded:[[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding]];
 				});
 			}
 		});
@@ -157,6 +209,7 @@ bonjourName:(NSString *)inBonjourName	{
 	return self;
 }
 - (void) _finishInit	{
+	
 	//	do a hostInfo query on the remote server- we're going to want to finish populating my instance variables with values from the remote server
 	NSDictionary	*hostInfoObject = [self hostInfo];
 	if (hostInfoObject!=nil && [hostInfoObject isKindOfClass:[NSDictionary class]])	{
@@ -167,10 +220,14 @@ bonjourName:(NSString *)inBonjourName	{
 		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_Name];
 		if (tmpString != nil)
 			[self setOSCName:tmpString];
+		
 		//	osc info
 		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCIP];
 		if (tmpString != nil)
 			[self setOSCServerAddressString:tmpString];
+		else
+			[self setOSCServerAddressString:webServerAddressString];
+		
 		tmpNum = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCPort];
 		if (tmpNum != nil)	{
 			if ([tmpNum isKindOfClass:[NSNumber class]])
@@ -178,6 +235,7 @@ bonjourName:(NSString *)inBonjourName	{
 			else if ([tmpNum isKindOfClass:[NSString class]])
 				[self setOSCServerPort:[(NSString *)tmpNum intValue]];
 		}
+		
 		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCTransport];
 		if (tmpString != nil)	{
 			if ([tmpString isEqualToString:kVVOSCQueryOSCTransportUDP])	{
@@ -187,6 +245,7 @@ bonjourName:(NSString *)inBonjourName	{
 				[self setOSCServerTransport:VVOSCQueryOSCTransportType_TCP];
 			}
 		}
+		
 		//	websockets info
 		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_WSIP];
 		if (tmpString != nil)
@@ -210,6 +269,7 @@ bonjourName:(NSString *)inBonjourName	{
 	if (wsClient != nullptr && wsURI != nil)	{
 		wsClient->connect(std::string([wsURI UTF8String]));
 	}
+	
 }
 - (void) dealloc	{
 	NSLog(@"%s ... %p",__func__,self);
@@ -260,6 +320,9 @@ bonjourName:(NSString *)inBonjourName	{
 	
 	NSString		*hostInfoQueryAddress = [NSString stringWithFormat:@"http://%@:%d?HOST_INFO",webServerAddressString,webServerPort];
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:hostInfoQueryAddress];
+	[downloader appendStringToHeader:@"Connection: close"];
+	[downloader setConnectTimeout:5.];
+	[downloader setDNSCacheTimeout:5.];
 	[downloader perform];
 	if ([downloader err] != 0)
 		NSLog(@"\t\terr: %ld, %s",[downloader err],__func__);
@@ -275,7 +338,7 @@ bonjourName:(NSString *)inBonjourName	{
 	return returnMe;
 }
 - (NSDictionary *) rootNode	{
-	return [self jsonObjectForNodeAtAddress:@"/" query:nil];
+	return [self jsonObjectForOSCMethodAtAddress:@"/" query:nil];
 	/*
 	if (webServerAddressString==nil)
 		return nil;
@@ -291,10 +354,10 @@ bonjourName:(NSString *)inBonjourName	{
 	return returnMe;
 	*/
 }
-- (NSDictionary *) jsonObjectForNodeAtAddress:(NSString *)inPath	{
-	return [self jsonObjectForNodeAtAddress:inPath query:nil];
+- (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath	{
+	return [self jsonObjectForOSCMethodAtAddress:inPath query:nil];
 }
-- (NSDictionary *) jsonObjectForNodeAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
+- (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
 	if (inPath == nil)
 		return nil;
 	NSString		*sanitizedOSCAddress = [inPath stringBySanitizingForOSCPath];
@@ -318,10 +381,10 @@ bonjourName:(NSString *)inBonjourName	{
 	NSDictionary	*returnMe = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&nsErr];
 	return returnMe;
 }
-- (NSString *) stringForNodeAtAddress:(NSString *)inPath	{
-	return [self stringForNodeAtAddress:inPath query:nil];
+- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath	{
+	return [self stringForOSCMethodAtAddress:inPath query:nil];
 }
-- (NSString *) stringForNodeAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
+- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
 	if (inPath == nil)
 		return nil;
 	NSString		*sanitizedOSCAddress = [inPath stringBySanitizingForOSCPath];
@@ -344,6 +407,29 @@ bonjourName:(NSString *)inBonjourName	{
 	NSString		*returnMe = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
 	return returnMe;
 }
+
+
+- (void) websocketSendJSONObject:(id)n	{
+	//NSLog(@"%s ... %@",__func__,n);
+	NSData		*tmpData = [NSJSONSerialization dataWithJSONObject:n options:0 error:nil];
+	NSString	*tmpString = [[NSString alloc] initWithData:tmpData encoding:NSUTF8StringEncoding];
+	//NSLog(@"\t\twill be sending %@",tmpString);
+	wsClient->send(std::string([tmpString UTF8String]));
+}
+- (void) startListeningTo:(NSString *)n	{
+	if (n==nil)
+		return;
+	NSString		*tmpString = [NSString stringWithFormat:@"{ \"COMMAND\": \"LISTEN\", \"DATA\": \"%@\" }",n];
+	wsClient->send(std::string([tmpString UTF8String]));
+}
+- (void) stopListeningTo:(NSString *)n	{
+	if (n==nil)
+		return;
+	NSString		*tmpString = [NSString stringWithFormat:@"{ \"COMMAND\": \"IGNORE\", \"DATA\": \"%@\" }",n];
+	wsClient->send(std::string([tmpString UTF8String]));
+}
+
+
 - (BOOL) matchesWebIPAddress:(NSString*)inIPAddressString port:(unsigned short)inPort	{
 	if (inIPAddressString == nil)
 		return NO;

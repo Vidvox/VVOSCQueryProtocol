@@ -94,16 +94,16 @@
 			}
 		});
 		webServer.set_websocket_callback([=](const std::string & inRawWSString)	{
-			cout << __PRETTY_FUNCTION__ << endl;
+			cout << __PRETTY_FUNCTION__ << " ws callback" << endl;
 			@autoreleasepool	{
 				//	we need to parse the raw string as a JSON object so we can figure out what to do with it
 				NSString		*rawString = [NSString stringWithUTF8String:inRawWSString.c_str()];
 				if (rawString==nil || [rawString length]<2)
-					return WSPPQueryReply(400);	//	bad request (client error)
+					return;
 				
 				NSData			*rawStringData = [rawString dataUsingEncoding:NSUTF8StringEncoding];
 				if (rawStringData==nil)
-					return WSPPQueryReply(400);	//	bad request (client error)
+					return;
 				
 				id				jsonObject = nil;
 				NSError			*nsErr = nil;
@@ -115,30 +115,51 @@
 				}
 				//	if we couldn't create a JSON object, return an err 400 (client error)
 				if (jsonObject==nil)
-					return WSPPQueryReply(400);	//	bad request (client error)
+					return;
 				
-				//	if i have a delegate, ask my delegate to assemble a reply for the json object
-				VVOSCQueryReply	*reply = nil;
+				//	if i have a delegate, ask my delegate to deal with the json object
+				//VVOSCQueryReply	*reply = nil;
 				id<VVOSCQueryServerDelegate>	localDelegate = [(VVOSCQueryServer*)bss delegate];
 				if (localDelegate != nil)
-					reply = [localDelegate server:bss websocketDeliveredJSONObject:jsonObject];
-				//	if my delegate doesn't have a reply (or i don't have a delegate), skip the reply
-				if (reply == nil)
-					return WSPPQueryReply(false);
+					[localDelegate server:bss websocketDeliveredJSONObject:jsonObject];
 				
-				//	assemble a WSPPQueryReply for the JSON object
-				id				replyJSONObject = [reply jsonObject];
-				if (replyJSONObject == nil)
-					return WSPPQueryReply([reply errCode]);
-				else	{
-					NSData			*replyData = [NSJSONSerialization dataWithJSONObject:replyJSONObject options:0 error:nil];
-					NSString		*tmpString = (replyData==nil) ? nil : [[NSString alloc] initWithData:replyData encoding:NSUTF8StringEncoding];
-					if (tmpString == nil)
-						return WSPPQueryReply(false);
-					return WSPPQueryReply(std::string([tmpString UTF8String]));
-				}
 			}
 		});
+		webServer.set_osc_callback([=](const void * inBuffer, const size_t & inBufferSize)	{
+			cout << __PRETTY_FUNCTION__ << " osc callback" << endl;
+			@autoreleasepool	{
+				//	get my delegate, pass on the ptr to the raw OSC packet binary
+				id<VVOSCQueryServerDelegate>		localDelegate = [(VVOSCQueryServer*)bss delegate];
+				if (localDelegate != nil)
+					[localDelegate server:bss receivedOSCPacket:inBuffer sized:inBufferSize];
+			}
+		});
+		
+		webServer.set_listen_callback([=](const std::string & startListeningToMe)	{
+			//cout << __PRETTY_FUNCTION__ << " listen callback" << endl;
+			@autoreleasepool	{
+				bool			returnMe = false;
+				//	get my delegate, ask it if it can listen
+				id<VVOSCQueryServerDelegate>		localDelegate = [(VVOSCQueryServer*)bss delegate];
+				if (localDelegate != nil)
+					returnMe = [localDelegate server:bss wantsToListenTo:[NSString stringWithUTF8String:startListeningToMe.c_str()]];
+				return returnMe;
+			}
+		});
+		webServer.set_ignore_callback([=](const std::string & stopListeningToMe)	{
+			//cout << __PRETTY_FUNCTION__ << " listen callback" << endl;
+			@autoreleasepool	{
+				//	get my delegate, inform it that it should be ignoring the passed path
+				id<VVOSCQueryServerDelegate>		localDelegate = [(VVOSCQueryServer*)bss delegate];
+				if (localDelegate != nil)
+					[localDelegate server:bss wantsToIgnore:[NSString stringWithUTF8String:stopListeningToMe.c_str()]];
+			}
+		});
+		
+		
+		
+		
+		
 		
 		bonjourService = nil;
 	}
@@ -198,7 +219,7 @@
 	NSLog(@"\t\tweb server running on port %d, try connecting to http://localhost:%d",webServer.getPort(),webServer.getPort());
 }
 - (void) startWithPort:(int)n	{
-	NSLog(@"%s",__func__);
+	NSLog(@"%s ... %d",__func__,n);
 	if (webServer.isRunning())
 		return;
 	webServer.start(n);
@@ -274,23 +295,60 @@
 	
 	NSData				*tmpJSONData = [NSJSONSerialization dataWithJSONObject:tmpJSONObj];
 	std::string			tmpString([tmpJSONData bytes]);
-	webServer.sendStringToClients(tmpString);
+	webServer._sendStringToClients(tmpString);
 }
 */
 - (void) sendJSONObjectToClients:(NSDictionary *)anObj	{
+	NSLog(@"%s - ERR",__func__);
+	/*
 	if (anObj == nil || ![anObj isKindOfClass:[NSDictionary class]])
 		return;
 	NSData			*tmpData = [NSJSONSerialization dataWithJSONObject:anObj options:0 error:nil];
 	NSString		*tmpNSString = [[NSString alloc] initWithData:tmpData encoding:NSUTF8StringEncoding];
 	//std::string			tmpString((char*)[tmpData bytes]);
 	std::string			tmpString([tmpNSString UTF8String]);
-	webServer.sendStringToClients(tmpString);
-	/*
-	NSString		*stringToSend = (tmpData==nil) ? nil : [[NSString alloc] initWithData:tmpData encoding:NSUTF8StringEncoding];
-	if (stringToSend == nil)
-		return;
-	webServer.sendStringToClients(std::string([stringToSend UTF8String]));
+	webServer._sendStringToClients(tmpString);
 	*/
+}
+/*
+- (void) sendNSDataToClients:(NSData *)d	{
+	if (d == nil || ![d isKindOfClass:[NSData class]])
+		return;
+	[self sendToClientsRawBuffer:const_cast<void*>([d bytes]) sized:[d length]];
+}
+*/
+/*
+- (void) sendToClientsRawBuffer:(void*)b sized:(size_t)s	{
+	//NSLog(@"%s ... %p, %ld",__func__,b,s);
+	if (b==nil)
+		return;
+	webServer.sendDataToClients(b, s);
+}
+*/
+- (void) listenerNeedsToSendOSCData:(void*)inData sized:(size_t)inDataSize fromOSCAddress:(NSString *)inAddress	{
+	if (inData==nil || inDataSize==0 || inAddress==nil)
+		return;
+	webServer.sendOSCPacketToListeners(inData, inDataSize, (const char *)[inAddress UTF8String]);
+}
+- (void) sendPathChangedToClients:(NSString *)n	{
+	if (n==nil)
+		return;
+	webServer.sendPathChangedToClients(std::string([n UTF8String]));
+}
+- (void) sendPathRenamedToClients:(NSString *)op to:(NSString *)np	{
+	if (op==nil || np==nil)
+		return;
+	webServer.sendPathRenamedToClients(std::string([op UTF8String]), std::string([np UTF8String]));
+}
+- (void) sendPathRemovedToClients:(NSString *)n	{
+	if (n==nil)
+		return;
+	webServer.sendPathRemovedToClients(std::string([n UTF8String]));
+}
+- (void) sendPathAddedToClients:(NSString *)n	{
+	if (n==nil)
+		return;
+	webServer.sendPathAddedToClients(std::string([n UTF8String]));
 }
 
 /*

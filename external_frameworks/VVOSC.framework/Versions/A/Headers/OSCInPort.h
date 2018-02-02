@@ -5,7 +5,7 @@
 #import <Cocoa/Cocoa.h>
 #endif
 
-//#import <VVBasics/VVBasics.h>
+#import <VVBasics/VVBasics.h>
 //#import <sys/types.h>
 //#import <sys/socket.h>
 #import <netinet/in.h>
@@ -39,16 +39,15 @@ the documentation here only covers the basics, the header file for this class is
 	double					interval;	//	how many times/sec you want the thread to run
 	
 	OSSpinLock				scratchLock;
-	__weak NSThread			*thread;
+	NSThread				*thread;
 	
 	NSString				*portLabel;		//!<the "name" of the port (added to distinguish multiple osc input ports for bonjour)
 	OSSpinLock				zeroConfLock;
-	//VVStopwatch				*zeroConfSwatch;	//	bonjour services need ~5 seconds between destroy/creation or the changes get ignored- this is how we track this time
-	NSDate					*zeroConfDate;
+	VVStopwatch				*zeroConfSwatch;	//	bonjour services need ~5 seconds between destroy/creation or the changes get ignored- this is how we track this time
 	NSNetService			*zeroConfDest;	//	bonjour service for publishing this input's address...only active if there's a portLabel!
 	
 	NSMutableArray			*scratchArray;	//	array of OSCMessage objects.  used for serial messaging.
-	__weak id<OSCDelegateProtocol>		delegate;	//!<my delegate gets notified of incoming messages
+	id						delegate;	//!<my delegate gets notified of incoming messages
 }
 
 //	Creates and returns an auto-released OSCInPort for the given port (or nil if the port's busy)
@@ -93,7 +92,9 @@ the documentation here only covers the basics, the header file for this class is
 - (NSString *) ipAddressString;
 
 ///	returns the delegate (default is the OSCManager which created me).
-@property (weak) id<OSCDelegateProtocol> delegate;
+- (id) delegate;
+///	sets the delegate- the delegate is NOT retained!  if the delegate gets released before the port, make sure you set this to nil!
+- (void) setDelegate:(id)n;
 ///	sets the frequency of the callback which checks for OSC input
 - (void) setInterval:(double)n;
 

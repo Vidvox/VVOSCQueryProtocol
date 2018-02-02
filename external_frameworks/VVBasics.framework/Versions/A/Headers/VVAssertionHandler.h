@@ -1,11 +1,9 @@
 #import <TargetConditionals.h>
-#import "VVBasicMacros.h"
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #else
 #import <Cocoa/Cocoa.h>
 #endif
-
 
 
 
@@ -17,9 +15,7 @@
 		VVAssertionHandler		*__newAH = [[VVAssertionHandler alloc] init];									\
 		if (__newAH != nil)	{																					\
 			[__threadDict setValue:__newAH forKey:@"NSAssertionHandler"];										\
-#if USING_MRC																									\
 			[__newAH release];																					\
-#endif																											\
 			__newAH = nil;																						\
 		}																										\
 	}																											\

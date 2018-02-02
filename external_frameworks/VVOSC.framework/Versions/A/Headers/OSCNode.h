@@ -37,14 +37,14 @@ If you want to work with an instance of OSCNode, you need to acquire or work wit
 Generally speaking, it's a good idea for each instance of OSCNode to have a discrete type, as this makes it easier to browse and filter the hierarchy of OSCNode instances that make up the OSC address space.  Most of the documented methods here are simply for querying basic properties of the OSCNode instance or doing simple message dispatch.
 */
 @interface OSCNode : NSObject {
-	__weak id			addressSpace;	//	the class OSCAddressSpace is a subclass of OSCNode, and is essentially the "root" node.  all OSCNodes have a pointer to the root node!
+	id					addressSpace;	//	the class OSCAddressSpace is a subclass of OSCNode, and is essentially the "root" node.  all OSCNodes have a pointer to the root node!
 	BOOL				deleted;
 	
 	OSSpinLock			nameLock;
 	NSString			*nodeName;	//	"local" name: name of the node at /a/b/c is "c"
 	NSString			*fullName;	//	"full" name: name of the node at /a/b/c is "/a/b/c"
 	MutLockArray		*nodeContents;	//	Contains OSCNode instances- this OSCNode's sub-nodes.  type 'MutLockArray'- this should all be threadsafe...
-	__weak OSCNode		*parentNode;	//	my "parent" node (or nil).  NOT retained!
+	OSCNode				*parentNode;	//	my "parent" node (or nil).  NOT retained!
 	OSCNodeType			nodeType;	//	What 'type' of node i am
 	BOOL				hiddenInMenu;	//	NO by default. if YES, this node (and all its sub-nodes) will be omitted from menus!
 	
@@ -134,12 +134,12 @@ Generally speaking, it's a good idea for each instance of OSCNode to have a disc
 @property (readonly) OSCValue *lastReceivedValue;
 @property (readonly) id delegateArray;
 
-@property (strong,setter=setOSCDescription:) NSString * oscDescription;
-@property (strong) NSString * typeTagString;
+@property (retain,setter=setOSCDescription:) NSString * oscDescription;
+@property (retain) NSString * typeTagString;
 @property (assign) OSCNodeAccess access;
-@property (strong) NSArray * range;
-@property (strong) NSArray * tags;
-@property (strong) NSArray * clipmode;
-@property (strong) NSArray * units;
+@property (retain) NSArray * range;
+@property (retain) NSArray * tags;
+@property (retain) NSArray * clipmode;
+@property (retain) NSArray * units;
 
 @end

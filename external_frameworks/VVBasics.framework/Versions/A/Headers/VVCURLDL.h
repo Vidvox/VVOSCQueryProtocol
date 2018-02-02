@@ -23,28 +23,28 @@
 
 
 @interface VVCURLDL : NSObject {
-	NSString		*urlString;
+	NSString				*urlString;
 	
-	long			dnsCacheTimeout;
-	long			connectTimeout;
-	NSString		*log;
-	NSString		*pass;
-	NSString		*userAgent;	//	passed to libcurl as CURLOPT_USERAGENT
-	NSString		*referer;	//	passed to libcurl as CURLOPT_REFERER
-	NSString		*acceptedEncoding;	//	passed to libcurl as CURLOPT_ACCEPT_ENCODING
+	long					dnsCacheTimeout;
+	long					connectTimeout;
+	NSString				*log;
+	NSString				*pass;
+	NSString				*userAgent;	//	passed to libcurl as CURLOPT_USERAGENT
+	NSString				*referer;	//	passed to libcurl as CURLOPT_REFERER
+	NSString				*acceptedEncoding;	//	passed to libcurl as CURLOPT_ACCEPT_ENCODING
 	
-	long				httpResponseCode;
-	NSMutableData		*responseData;
-	
-	BOOL			returnOnMain;
-	BOOL			performing;
-	long			err;
+	long					httpResponseCode;
+	NSMutableData			*responseData;
 	
 	void					*curlHandle;	//	really a CURL*, but declared here as a void* so when you import this header you don't wind up importing curl.h and adding it as a dependency
 	struct curl_slist		*headerList;	//	nil by default- if non-nil, supplied to the handle as CURLOPT_HTTPHEADER
 	NSMutableData			*postData;		//	if non-nil, simply posted as CURLOPT_POSTFIELDS
 	struct curl_httppost	*firstFormPtr;	//	if postData was nil but this isn't, posted as CURLOPT_HTTPPOST
 	struct curl_httppost	*lastFormPtr;
+	
+	BOOL					returnOnMain;
+	BOOL					performing;
+	long					err;
 }
 
 + (id) createWithAddress:(NSString *)a;

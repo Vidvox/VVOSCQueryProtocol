@@ -79,7 +79,8 @@ According to the OSC spec, a message consists of an address path (where the mess
 - (NSString *) address;
 - (int) valueCount;
 - (NSMutableArray *) valueArray;
-@property (retain) NSDate * timeTag;
+- (NSDate *) timeTag;
+- (void) setTimeTag:(NSDate *)n;
 
 - (long) bufferLength;
 - (void) writeToBuffer:(unsigned char *)b;
@@ -92,6 +93,7 @@ According to the OSC spec, a message consists of an address path (where the mess
 - (void) _setWildcardsInAddress:(BOOL)n;
 - (NSString *) _description;
 
-@property (retain) id msgInfo;
+- (void) setMsgInfo:(id)n;
+- (id) msgInfo;
 
 @end

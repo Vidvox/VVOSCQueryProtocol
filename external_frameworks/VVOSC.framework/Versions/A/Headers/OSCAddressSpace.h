@@ -37,7 +37,7 @@ The basic workflow for address spaces is relatively straightforward: first locat
 
 
 @interface OSCAddressSpace : OSCNode {
-	__weak id<OSCAddressSpaceDelegateProtocol>		delegate;
+	id			delegate;
 }
 
 ///	Returns the main instance of the OSC address space (and creates it if necessary)
@@ -72,7 +72,7 @@ The basic workflow for address spaces is relatively straightforward: first locat
 - (void) addDelegate:(id)d forPath:(NSString *)p;
 - (void) removeDelegate:(id)d forPath:(NSString *)p;
 
-@property (weak) id<OSCAddressSpaceDelegateProtocol> delegate;
+@property (assign, readwrite) id delegate;
 
 
 @end

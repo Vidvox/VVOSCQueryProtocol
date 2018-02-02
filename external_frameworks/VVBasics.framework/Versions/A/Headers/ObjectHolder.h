@@ -4,7 +4,7 @@
 #else
 #import <Cocoa/Cocoa.h>
 #endif
-
+#import "MAZeroingWeakRef.h"
 
 
 
@@ -22,7 +22,9 @@ if you call a method on an instance of ObjectHolder and the ObjectHolder class d
 
 
 @interface ObjectHolder : NSObject {
-	__weak id			object;	//	a non-retained reference to the object (dumb weak reference)
+	BOOL				deleted;
+	id					object;	//	a non-retained reference to the object (dumb weak reference)
+	VV_MAZeroingWeakRef	*zwr;	//	retained instance of VV_MAZeroingWeakRef (smart weak reference)
 }
 
 + (id) createWithObject:(id)o;
@@ -31,8 +33,8 @@ if you call a method on an instance of ObjectHolder and the ObjectHolder class d
 - (id) initWithObject:(id)o;
 - (id) initWithZWRObject:(id)o;
 
+- (void) setObject:(id)n;
 - (void) setZWRObject:(id)n;
-
-@property (weak) id object;
+- (id) object;
 
 @end

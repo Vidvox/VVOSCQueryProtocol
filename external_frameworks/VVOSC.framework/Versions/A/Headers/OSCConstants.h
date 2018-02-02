@@ -30,7 +30,6 @@ typedef NS_ENUM(NSInteger, OSCValueType)	{
 #else
 typedef enum OSCValueType	{
 #endif
-	OSCValUnknown = 0,
 	OSCValInt = 1,	//!<Integer -2147483648 to 2147483647
 	OSCValFloat = 2,	//!<Float
 	OSCValString = 3,	//!<String

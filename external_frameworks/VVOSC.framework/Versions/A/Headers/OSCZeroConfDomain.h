@@ -6,8 +6,8 @@
 #import <Cocoa/Cocoa.h>
 #endif
 //#import <VVBasics/VVBasics.h>
-//#import <VVBasics/MutLockArray.h>
-//#import <VVBasics/VVBasicMacros.h>
+#import <VVBasics/MutLockArray.h>
+#import <VVBasics/VVBasicMacros.h>
 #import <pthread.h>
 #import <sys/socket.h>
 #include <arpa/inet.h>
@@ -22,9 +22,9 @@
 	NSString				*domainString;
 	NSNetServiceBrowser		*serviceBrowser;
 	
-	NSMutableArray			*servicesArray;
+	MutLockArray			*servicesArray;
 	
-	__weak id				domainManager;
+	id						domainManager;
 }
 
 + (id) createWithDomain:(NSString *)d andDomainManager:(id)m serviceType:(NSString *)t;

@@ -12,7 +12,12 @@
 @protocol VVOSCQueryRemoteServerDelegate
 @required
 - (void) remoteServerWentOffline:(VVOSCQueryRemoteServer *)remoteServer;
-- (NSString *) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj;
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj;
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer receivedOSCPacket:(const void *)packet sized:(size_t)packetSize;
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathChanged:(NSString *)n;
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathRenamedFrom:(NSString *)oldName to:(NSString *)newName;
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathRemoved:(NSString *)n;
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathAdded:(NSString *)n;
 @end
 
 
@@ -82,10 +87,15 @@
 //	synchronous- queries the remote server for its root node, which will fullly describe every node in its address space
 - (NSDictionary *) rootNode;
 //	synchronous- queries the remote server for a JSON object describing the node at the passed path
-- (NSDictionary *) jsonObjectForNodeAtAddress:(NSString *)inPath;
-- (NSDictionary *) jsonObjectForNodeAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
-- (NSString *) stringForNodeAtAddress:(NSString *)inPath;
-- (NSString *) stringForNodeAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
+- (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath;
+- (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
+- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath;
+- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
+
+//	these methods send data over the websocket connection to the server
+- (void) websocketSendJSONObject:(id)n;
+- (void) startListeningTo:(NSString *)n;
+- (void) stopListeningTo:(NSString *)n;
 
 //	returns a YES if the receiving instance matches the passed IP address and port.  used for comparing remote server instances to one another, or to determine if a remote server instance found via bonjour was created by this farmework or not
 - (BOOL) matchesWebIPAddress:(NSString*)inIPAddressString port:(unsigned short)inPort;

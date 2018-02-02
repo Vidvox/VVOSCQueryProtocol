@@ -1,4 +1,5 @@
 #import "OSCQueryProtocolClientAppDelegate.h"
+#import <VVOSC/VVOSC.h>
 
 
 
@@ -16,6 +17,15 @@
 - (id) init	{
 	self = [super init];
 	if (self != nil)	{
+		//	make an OSC manager, set myself up as its delegate so i receive any OSC traffic that i can display here
+		oscm = [[OSCManager alloc] init];
+		[oscm setDelegate:self];
+		//	make a new OSC input- this is what will receive OSC data
+		//oscIn = [oscm createNewInput];
+		oscIn = [oscm createNewInput];
+		[oscIn setPortLabel:@"OSC query client test app OSC input"];
+		
+		
 		coalescingTimer = nil;
 		//	register to receive notifications that the list of OSC query servers has updated
 		[[NSNotificationCenter defaultCenter]
@@ -64,6 +74,7 @@
 	[displayString appendFormat:@"%d servers detected:\n",(servers==nil) ? 0 : [servers count]];
 	[displayString appendFormat:@"**************\n"];
 	for (VVOSCQueryRemoteServer *server in servers)	{
+		[server setDelegate:self];
 		[displayString appendFormat:@"name: \"%@\"\n",[server oscName]];
 		[displayString appendFormat:@"\tbonjour: \"%@\"\n",[server bonjourName]];
 		[displayString appendFormat:@"\taddress: %@:%d\n",[server webServerAddressString],[server webServerPort]];
@@ -82,6 +93,69 @@
 	NSLog(@"\t\tfirst remote server's HOST_INFO is %@",[server hostInfo]);
 	//NSLog(@"\t\tfirst remote server's root node is %@",[server rootNode]);
 	*/
+}
+
+
+- (IBAction) listenClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	NSArray						*servers = [VVOSCQueryRemoteServer remoteServers];
+	VVOSCQueryRemoteServer		*server = (servers==nil || [servers count]<1) ? nil : [servers objectAtIndex:0];
+	if (server == nil)
+		return;
+	NSLog(@"\t\tserver is %@",server);
+	[server websocketSendJSONObject:@{ @"COMMAND": @"LISTEN", @"DATA": @"/test/my_float" }];
+	//[server websocketSendJSONObject:@{ @"COMMAND": @"LISTEN", @"DATA": @"/foo/bar/baz/qux" }];
+}
+- (IBAction) ignoreClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	NSArray						*servers = [VVOSCQueryRemoteServer remoteServers];
+	VVOSCQueryRemoteServer		*server = (servers==nil || [servers count]<1) ? nil : [servers objectAtIndex:0];
+	if (server == nil)
+		return;
+	NSLog(@"\t\tserver is %@",server);
+	[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/test/my_float" }];
+	//[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/test/dingus" }];
+	//[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/foo/bar/baz/qux" }];
+}
+
+
+#pragma mark ---------------------------- OSCDelegateProtocol
+
+
+- (void) receivedOSCMessage:(OSCMessage *)m	{
+	NSLog(@"%s ... %@",__func__,m);
+}
+
+
+#pragma mark ---------------------------- VVOSCQueryRemoteServerDelegate
+
+
+- (void) remoteServerWentOffline:(VVOSCQueryRemoteServer *)remoteServer	{
+	NSLog(@"%s",__func__);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
+	NSLog(@"%s",__func__);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer receivedOSCPacket:(const void *)packet sized:(size_t)packetSize	{
+	NSLog(@"%s",__func__);
+	[OSCPacket
+		parseRawBuffer:packet
+		ofMaxLength:packetSize
+		toInPort:oscIn
+		fromAddr:0
+		port:0];
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathChanged:(NSString *)n	{
+	NSLog(@"%s",__func__);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathRenamedFrom:(NSString *)oldName to:(NSString *)newName	{
+	NSLog(@"%s",__func__);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathRemoved:(NSString *)n	{
+	NSLog(@"%s",__func__);
+}
+- (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathAdded:(NSString *)n	{
+	NSLog(@"%s",__func__);
 }
 
 

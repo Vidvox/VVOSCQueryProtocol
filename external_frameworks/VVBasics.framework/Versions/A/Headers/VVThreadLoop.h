@@ -29,13 +29,13 @@ You can change the execution interval, and VVThreadLoop also examines how long i
 	BOOL				bail;
 	BOOL				paused;
 	BOOL				executingCallback;
-	__weak NSThread		*thread;	//	weak ref, nil on init, only valid while the thread is active and running
+	NSThread			*thread;	//	weak ref, nil on init, only valid while the thread is active and running
 	NSTimer				*rlTimer;
-	__weak NSRunLoop	*runLoop;	//	weak ref, nil on init, only valid while the thread is active and running
+	NSRunLoop			*runLoop;	//	weak ref, nil on init, only valid while the thread is active and running
 	
 	OSSpinLock			valLock;	//	ONLY used for quickly accessing 'running', 'bail', 'paused', and 'executingCallback' in a threadsafe fashion
 	
-	__weak id			targetObj;	//!<NOT retained!  If there's no valid target obj/sel pair, the instance sill simply call "threadProc" on itself, so you can just override that method
+	id					targetObj;	//!<NOT retained!  If there's no valid target obj/sel pair, the instance sill simply call "threadProc" on itself, so you can just override that method
 	SEL					targetSel;
 }
 

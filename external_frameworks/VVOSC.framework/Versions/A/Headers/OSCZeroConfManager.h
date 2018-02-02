@@ -5,7 +5,7 @@
 #import <Cocoa/Cocoa.h>
 #endif
 
-//#import <VVBasics/VVBasics.h>
+#import <VVBasics/VVBasics.h>
 #import "OSCZeroConfDomain.h"
 #import <pthread.h>
 
@@ -22,7 +22,7 @@
 	NSMutableDictionary		*domainDict;
 	pthread_rwlock_t		domainLock;
 	
-	__weak id				oscManager;
+	id						oscManager;
     
     NSString                *serviceTypeString;
 }

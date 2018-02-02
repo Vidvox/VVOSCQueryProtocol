@@ -11,7 +11,10 @@
 @required
 - (VVOSCQueryReply *) hostInfoQueryFromServer:(VVOSCQueryServer *)s;
 - (VVOSCQueryReply *) server:(VVOSCQueryServer *)s wantsReplyForQuery:(VVOSCQuery *)q;
-- (VVOSCQueryReply *) server:(VVOSCQueryServer *)s websocketDeliveredJSONObject:(NSDictionary *)jsonObj;
+- (void) server:(VVOSCQueryServer *)s websocketDeliveredJSONObject:(NSDictionary *)jsonObj;
+- (void) server:(VVOSCQueryServer *)s receivedOSCPacket:(const void*)packet sized:(size_t)packetSize;
+- (BOOL) server:(VVOSCQueryServer *)s wantsToListenTo:(NSString *)address;
+- (void) server:(VVOSCQueryServer *)s wantsToIgnore:(NSString *)address;
 @end
 
 
@@ -37,6 +40,12 @@
 @property (retain) NSString * bonjourName;
 @property (weak) id<VVOSCQueryServerDelegate> delegate;
 
+//	these methods send data to the clients using the websocket connection
 - (void) sendJSONObjectToClients:(NSDictionary *)anObj;
+- (void) listenerNeedsToSendOSCData:(void*)inData sized:(size_t)inDataSize fromOSCAddress:(NSString *)inAddress;
+- (void) sendPathChangedToClients:(NSString *)n;
+- (void) sendPathRenamedToClients:(NSString *)op to:(NSString *)np;
+- (void) sendPathRemovedToClients:(NSString *)n;
+- (void) sendPathAddedToClients:(NSString *)n;
 
 @end

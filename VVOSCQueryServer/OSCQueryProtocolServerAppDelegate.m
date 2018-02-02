@@ -1,5 +1,6 @@
 #import "OSCQueryProtocolServerAppDelegate.h"
 #import "OSCNodeAdditions.h"
+#import "QueryServerNodeDelegate.h"
 
 
 
@@ -34,6 +35,7 @@
 - (id) init	{
 	self = [super init];
 	if (self != nil)	{
+		serverNodeDelegates = [[NSMutableArray alloc] init];
 		rxOSCMsgs = [[NSMutableArray alloc] init];
 		
 		//	make an VVOSCQueryServer- we'll start it later, when the app finishes launching
@@ -50,12 +52,15 @@
 		oscm = [[OSCManager alloc] init];
 		[oscm setDelegate:self];
 		//	make a new OSC input- this is what will receive OSC data
-		oscIn = [oscm createNewInput];
+		//oscIn = [oscm createNewInput];
+		oscIn = [oscm createNewInputForPort:2345];
 		[oscIn setPortLabel:@"query server test app OSC input"];
 		
 		//	populate the OSC address space with a series of OSC nodes!
 		[self populateOSCAddressSpace];
 		
+		//	set myself up as the address space's delegate, so i can get rename delegate callbacks and pass them on to the query server
+		[[OSCAddressSpace mainAddressSpace] setDelegate:self];
 	}
 	return self;
 }
@@ -117,6 +122,31 @@
 }
 
 
+- (IBAction) sliderUsed:(id)sender	{
+	NSLog(@"%s",__func__);
+	double			tmpVal = [sender doubleValue];
+	OSCAddressSpace	*as = [OSCAddressSpace mainAddressSpace];
+	OSCMessage		*msg = nil;
+	if ([as findNodeForAddress:@"/test/my_float" createIfMissing:NO] != nil)
+		msg = [OSCMessage createWithAddress:@"/test/my_float"];
+	else
+		msg = [OSCMessage createWithAddress:@"/test/dingus"];
+	[msg addFloat:(float)tmpVal];
+	[[OSCAddressSpace mainAddressSpace] dispatchMessage:msg];
+}
+- (IBAction) renameButtonUsed:(id)sender	{
+	NSLog(@"%s",__func__);
+	//	tell the address space to rename the OSC method
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	[as
+		renameAddress:@"/test/my_float"
+		to:@"/test/dingus"];
+	//	address space tells the query server
+	//	query server updates its address/server array map
+	//	query server informs all clients of the rename
+}
+
+
 - (void) _updateUIItems	{
 	if (![NSThread isMainThread])	{
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -146,29 +176,19 @@
 }
 
 
+#pragma mark -------------------------- OSCAddressSpaceDelegateProtocol
+
+
+- (void) nodeRenamed:(OSCNode *)n from:(NSString *)oldName	{
+	NSLog(@"%s ... %@, %@",__func__,n,oldName);
+	if (oldName != nil)
+		[server sendPathRenamedToClients:oldName to:[n fullName]];
+}
+
+
 #pragma mark -------------------------- VVOSCQueryServerDelegate
 
 
-//	this is the VVOSCQueryServerDelegate protocol method- requests received by the OSC query server are passed to this method
-- (VVOSCQueryReply *) server:(VVOSCQueryServer *)s wantsReplyForQuery:(VVOSCQuery *)q	{
-	NSLog(@"%s ... %@",__func__,q);
-	if (q==nil)
-		return nil;
-	
-	NSString		*path = [q path];
-	//	retrieve the OSCNode corresponding to the query's path.  this part is specific to my OSC library.
-	OSCNode			*queriedNode = (path==nil) ? nil : [[OSCAddressSpace mainAddressSpace] findNodeForAddress:path createIfMissing:NO];
-	//	generate a reply to the OSCQuery.  this is a class addition that is part of this test server project, and is specific to my OSC library.
-	VVOSCQueryReply	*returnMe = (queriedNode==nil) ? nil : [queriedNode getReplyForOSCQuery:q];
-	//	if something went wrong and i couldn't generate a valid reply, return a 404 error
-	if (returnMe == nil)
-		returnMe = [[VVOSCQueryReply alloc] initWithErrorCode:404];
-	return returnMe;
-}
-- (VVOSCQueryReply *) server:(VVOSCQueryServer *)s websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
-	NSLog(@"%s ... %@",__func__,jsonObj);
-	return nil;
-}
 - (VVOSCQueryReply *) hostInfoQueryFromServer:(VVOSCQueryServer *)s	{
 	NSMutableDictionary		*hostInfo = [[NSMutableDictionary alloc] init];
 	if ([s name] != nil)
@@ -194,6 +214,98 @@
 	[hostInfo setObject:extDict forKey:kVVOSCQ_ReqAttr_HostInfo_Exts];
 	
 	return [[VVOSCQueryReply alloc] initWithJSONObject:hostInfo];;
+}
+//	this is the VVOSCQueryServerDelegate protocol method- requests received by the OSC query server are passed to this method
+- (VVOSCQueryReply *) server:(VVOSCQueryServer *)s wantsReplyForQuery:(VVOSCQuery *)q	{
+	NSLog(@"%s ... %@",__func__,q);
+	if (q==nil)
+		return nil;
+	
+	NSString		*path = [q path];
+	//	retrieve the OSCNode corresponding to the query's path.  this part is specific to my OSC library.
+	OSCNode			*queriedNode = (path==nil) ? nil : [[OSCAddressSpace mainAddressSpace] findNodeForAddress:path createIfMissing:NO];
+	//	generate a reply to the OSCQuery.  this is a class addition that is part of this test server project, and is specific to my OSC library.
+	VVOSCQueryReply	*returnMe = (queriedNode==nil) ? nil : [queriedNode getReplyForOSCQuery:q];
+	//	if something went wrong and i couldn't generate a valid reply, return a 404 error
+	if (returnMe == nil)
+		returnMe = [[VVOSCQueryReply alloc] initWithErrorCode:404];
+	return returnMe;
+}
+- (void) server:(VVOSCQueryServer *)s websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
+	NSLog(@"%s ... %@",__func__,jsonObj);
+}
+- (void) server:(VVOSCQueryServer *)s receivedOSCPacket:(const void*)packet sized:(size_t)packetSize	{
+	NSLog(@"%s",__func__);
+	[OSCPacket
+		parseRawBuffer:(unsigned char *)packet
+		ofMaxLength:(int)packetSize
+		toInPort:oscIn
+		fromAddr:0
+		port:0];
+}
+- (BOOL) server:(VVOSCQueryServer *)s wantsToListenTo:(NSString *)address	{
+	NSLog(@"%s ... %@, %@",__func__,s,address);
+	//	find the node we want to listen to- don't create it, return NO if it doesn't exist yet
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	OSCNode				*listenNode = [as findNodeForAddress:address createIfMissing:NO];
+	if (listenNode == nil)	{
+		NSLog(@"\t\terr: bailing, couldn't find node server wants to listen to, %s",__func__);
+		return NO;
+	}
+	//	make a delegate object that will take the OSCMessage from the node and send it to the query server
+	QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:s forAddress:address];
+	[serverNodeDelegates addObject:tmpDelegate];
+	//	add the server node delegate as a delegate to the OSC node- now it will rx OSC messages sent to the node
+	[listenNode addDelegate:tmpDelegate];
+	
+	return YES;
+}
+- (void) server:(VVOSCQueryServer *)s wantsToIgnore:(NSString *)address	{
+	NSLog(@"%s ... %@, %@",__func__,s,address);
+	//	find the node we want to ignore- don't create it
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	OSCNode				*listenNode = [as findNodeForAddress:address createIfMissing:NO];
+	if (listenNode == nil)
+		return;
+	//	remove any delegates that are "QueryServerNodeDelegate" instances that match this query server
+	NSMutableIndexSet	*indexesToRemove = nil;
+	int					tmpIndex = 0;
+	MutNRLockArray		*delegateArray = [listenNode delegateArray];
+	[delegateArray wrlock];
+	for (ObjectHolder *anObj in [delegateArray array])	{
+		id				delegate = [anObj object];
+		NSLog(@"\t\tchecking delegate %@",delegate);
+		if (delegate != nil && [delegate isKindOfClass:[QueryServerNodeDelegate class]])	{
+			id				delegateQueryServer = [delegate queryServer];
+			if (delegateQueryServer==s || delegateQueryServer==nil)	{
+				NSLog(@"\t\tthis delegate (%d) is a match, should be deleting...",tmpIndex);
+				if (indexesToRemove==nil)
+					indexesToRemove = [[NSMutableIndexSet alloc] init];
+				[indexesToRemove addIndex:tmpIndex];
+			}
+		}
+		++tmpIndex;
+	}
+	if (indexesToRemove != nil)
+		[[delegateArray array] removeObjectsAtIndexes:indexesToRemove];
+	[delegateArray unlock];
+	
+	//	remove the QueryServerNodeDelegate instance from 'serverNodeDelegates'
+	indexesToRemove = nil;
+	tmpIndex = 0;
+	for (QueryServerNodeDelegate *tmpDelegate in serverNodeDelegates)	{
+		NSLog(@"\t\tchecking delegate %@",tmpDelegate);
+		id			delegateQueryServer = [tmpDelegate queryServer];
+		if ((delegateQueryServer==s && [[tmpDelegate address] isEqualToString:address]) || delegateQueryServer==nil)	{
+			NSLog(@"\t\tthis delegate (%d) is a match, should be deleting...",tmpIndex);
+			if (indexesToRemove==nil)
+				indexesToRemove = [[NSMutableIndexSet alloc] init];
+			[indexesToRemove addIndex:tmpIndex];
+		}
+		++tmpIndex;
+	}
+	if (indexesToRemove != nil)
+		[serverNodeDelegates removeObjectsAtIndexes:indexesToRemove];
 }
 
 
