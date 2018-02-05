@@ -43,6 +43,7 @@ Generally speaking, it's a good idea for each instance of OSCNode to have a disc
 	OSSpinLock			nameLock;
 	NSString			*nodeName;	//	"local" name: name of the node at /a/b/c is "c"
 	NSString			*fullName;	//	"full" name: name of the node at /a/b/c is "/a/b/c"
+	NSString			*lastFullName;	//	when changes are performed (to, for example, names) the "previous" full name is stored here so delegates can retrieve it
 	MutLockArray		*nodeContents;	//	Contains OSCNode instances- this OSCNode's sub-nodes.  type 'MutLockArray'- this should all be threadsafe...
 	OSCNode				*parentNode;	//	my "parent" node (or nil).  NOT retained!
 	OSCNodeType			nodeType;	//	What 'type' of node i am
@@ -53,13 +54,15 @@ Generally speaking, it's a good idea for each instance of OSCNode to have a disc
 	MutNRLockArray		*delegateArray;	//	type 'MutNRLockArray'. contents are NOT retained! could be anything!
 	
 	/*		these vals are only used by the OSC query protocol		*/
-	NSString			*oscDescription;	//	nil by default
-	NSString			*typeTagString;	//	nil by default, if non-nil, the OSC type tag string of data this node expects.  used by OSC query protocol.
-	OSCNodeAccess		access;
-	NSArray				*range;	//	nil by default.  # of items in the array is the # of arguments in the type tag string.  each item in the array is a dictionary, each dictionary has MIN, MAX, and possibly a VALS keys.
-	NSArray				*tags;	//	nil by default.  array contains strings.  tags used for human-readable tags with the goal of aiding search/filtering.
-	NSArray				*clipmode;	//	nil by default.  # of items in the array is the # of arguments in the type tag string.  each item in this array is expected to be a recognzied clipmode string ("none", "low", "high", or "both")
-	NSArray				*units;	//	nil by default.  # of items in the array is the # of arguments in the type tag string.  strings describe the units of the values managd by this node.
+	NSString			*oscDescription;	//	nil by default, corresponds to DESCRIPTION in OSC query protocol
+	NSString			*typeTagString;	//	nil by default, if non-nil, the OSC type tag string of data this node expects.  used by OSC query protocol, corresponds to TYPE.
+	NSArray				*extendedType;	//	nil by default, corresponds to EXTENDED_TYPE in OSC query protocol.  # of items in the array is the # of arguments in the type tag string.  each item in the array is a string describing what the value means/what the value is/what the value does.
+	BOOL				critical;	//	corresponds to CRITICAL in OSC query protocol
+	OSCNodeAccess		access;	//	corresponds to ACCESS in OSC query protocol
+	NSArray				*range;	//	nil by default, corresponds to RANGE in OSC query protocol.  # of items in the array is the # of arguments in the type tag string.  each item in the array is a dictionary, each dictionary has MIN, MAX, and possibly a VALS keys.
+	NSArray				*tags;	//	nil by default, corresponds to TAGS in OSC query protocol.  array contains strings.  tags used for human-readable tags with the goal of aiding search/filtering.
+	NSArray				*clipmode;	//	nil by default, corresponds to CLIPMODE in OSC query protocol.  # of items in the array is the # of arguments in the type tag string.  each item in this array is expected to be a recognzied clipmode string ("none", "low", "high", or "both")
+	NSArray				*units;	//	nil by default, corresponds to UNITS in OSC query protocol.  # of items in the array is the # of arguments in the type tag string.  strings describe the units of the values managd by this node.
 }
 
 //	Creates and returns an auto-released instance of OSCNode with the passed name.  Returns nil if passed a nil name.
@@ -122,6 +125,7 @@ Generally speaking, it's a good idea for each instance of OSCNode to have a disc
 - (void) _setNodeName:(NSString *)n;
 ///	Sets or gets the node's full address.  The node "/A/B/C" would return "/A/B/C"
 @property (readonly) NSString *fullName;
+@property (readonly) NSString *lastFullName;
 ///	Read-only, returns nil or a threadsafe array of OSCNode instances "inside" me.
 @property (readonly) MutLockArray *nodeContents;
 @property (assign, readwrite) OSCNode *parentNode;
@@ -136,6 +140,8 @@ Generally speaking, it's a good idea for each instance of OSCNode to have a disc
 
 @property (retain,setter=setOSCDescription:) NSString * oscDescription;
 @property (retain) NSString * typeTagString;
+@property (retain) NSArray * extendedType;
+@property (assign) BOOL critical;
 @property (assign) OSCNodeAccess access;
 @property (retain) NSArray * range;
 @property (retain) NSArray * tags;

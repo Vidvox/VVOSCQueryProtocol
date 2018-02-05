@@ -1,4 +1,5 @@
 #import "RemoteNode.h"
+#import <VVOSC/VVOSC.h>
 #import <VVOSCQueryProtocol/VVOSCQueryProtocol.h>
 #import "RemoteNodeControl.h"
 #import "NSArrayAdditions.h"
@@ -411,7 +412,7 @@
 			}
 		};
 		//	execute the block, which will run recursively, populating 'controls'
-		parseBlock(dict[kVVOSCQ_OptAttr_Type], dict[kVVOSCQ_OptAttr_Value], dict[kVVOSCQ_OptAttr_Range]);
+		parseBlock(dict[kVVOSCQ_ReqAttr_Type], dict[kVVOSCQ_OptAttr_Value], dict[kVVOSCQ_OptAttr_Range]);
 		
 		
 		
@@ -459,7 +460,7 @@
 
 
 - (NSString *) typeString	{
-	return [dict objectForKey:kVVOSCQ_OptAttr_Type];
+	return [dict objectForKey:kVVOSCQ_ReqAttr_Type];
 }
 - (int) controlCount	{
 	return (controls==nil) ? 0 : (int)[controls count];

@@ -24,6 +24,7 @@
 	contents:(NSArray<NSDictionary*>*)inContents	//	subnodes (may be a hierarchy)
 	description:(NSString *)inDescription	//	human-readable string describing this node
 	tags:(NSArray<NSString*> *)inTags	//	array of human-readable strings describing this node, intended to facilitate search or filtering
+	extendedType:(NSArray<NSString*> *)inExtType
 	type:(NSString *)inTypeTagString	//	the OSC type tag string for this node
 	access:(VVOSCQueryNodeAccess)inAccess	//	mask that defines whether the values for this node may be read or written
 	value:(NSArray *)inValueArray

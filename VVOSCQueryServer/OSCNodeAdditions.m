@@ -79,7 +79,10 @@
 		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Tags];
 	tmpString = [self typeTagString];
 	if (tmpString != nil)
-		[returnMe setObject:tmpString forKey:kVVOSCQ_OptAttr_Type];
+		[returnMe setObject:tmpString forKey:kVVOSCQ_ReqAttr_Type];
+	tmpArray = [self extendedType];
+	if (tmpArray != nil)
+		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Ext_Type];
 	tmpNum = [NSNumber numberWithInteger:[self access]];
 	if (tmpNum != nil)
 		[returnMe setObject:tmpNum forKey:kVVOSCQ_OptAttr_Access];

@@ -74,7 +74,13 @@ static ServerUIController		*_global = nil;
 	
 	
 	//	make a pretty (indented) string for display in the JSON section
-	NSData			*prettyData = (urlReplyDict==nil) ? nil : [NSJSONSerialization dataWithJSONObject:urlReplyDict options:NSJSONWritingPrettyPrinted|NSJSONWritingSortedKeys error:nil];
+	NSData			*prettyData = nil;
+	if (@available(macOS 10.13, *)) {
+		prettyData = (urlReplyDict==nil) ? nil : [NSJSONSerialization dataWithJSONObject:urlReplyDict options:NSJSONWritingPrettyPrinted|NSJSONWritingSortedKeys error:nil];
+		
+	} else {
+		prettyData = (urlReplyDict==nil) ? nil : [NSJSONSerialization dataWithJSONObject:urlReplyDict options:NSJSONWritingPrettyPrinted error:nil];
+	}
 	NSString		*prettyString = [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
 	if (prettyString == nil) prettyString = @"";
 	[rawJSONTextView setString:prettyString];

@@ -10,6 +10,7 @@
 contents:(NSArray<NSDictionary*>*)inContents
 description:(NSString *)inDescription
 tags:(NSArray<NSString*> *)inTags
+extendedType:(NSArray<NSString*> *)inExtType
 type:(NSString *)inTypeTagString
 access:(VVOSCQueryNodeAccess)inAccess
 value:(NSArray *)inValueArray
@@ -29,8 +30,10 @@ critical:(BOOL)inCritical	{
 		[returnMe setObject:inDescription forKey:kVVOSCQ_ReqAttr_Desc];
 	if (inTags != nil)
 		[returnMe setObject:inTags forKey:kVVOSCQ_OptAttr_Tags];
+	if (inExtType != nil)
+		[returnMe setObject:inExtType forKey:kVVOSCQ_OptAttr_Ext_Type];
 	if (inTypeTagString != nil)
-		[returnMe setObject:inTypeTagString forKey:kVVOSCQ_OptAttr_Type];
+		[returnMe setObject:inTypeTagString forKey:kVVOSCQ_ReqAttr_Type];
 	[returnMe setObject:[NSNumber numberWithInteger:inAccess] forKey:kVVOSCQ_OptAttr_Access];
 	if (inValueArray != nil)
 		[returnMe setObject:inValueArray forKey:kVVOSCQ_OptAttr_Value];

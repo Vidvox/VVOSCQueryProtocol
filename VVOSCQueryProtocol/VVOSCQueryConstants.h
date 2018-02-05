@@ -14,6 +14,7 @@ typedef NS_ENUM(NSInteger, VVOSCQueryNodeAccess)	{
 extern NSString * kVVOSCQ_ReqAttr_Path;		//	FULL_PATH
 extern NSString * kVVOSCQ_ReqAttr_Contents;	//	CONTENTS
 extern NSString * kVVOSCQ_ReqAttr_Desc;		//	DESCRIPTION
+extern NSString * kVVOSCQ_ReqAttr_Type;		//	TYPE
 extern NSString * kVVOSCQ_ReqAttr_HostInfo;	//	HOST_INFO
 extern NSString * kVVOSCQ_ReqAttr_HostInfo_Name;		//	NAME
 extern NSString * kVVOSCQ_ReqAttr_HostInfo_Exts;		//	EXTENSIONS
@@ -28,7 +29,8 @@ extern NSString * kVVOSCQ_ReqAttr_HostInfo_WSPort;	//	WS_PORT
 applicable to every node, or supported by every implementation.  these strings are the keys for 
 these optional attributes.			*/
 extern NSString * kVVOSCQ_OptAttr_Tags;		//	TAGS
-extern NSString * kVVOSCQ_OptAttr_Type;		//	TYPE
+extern NSString * kVVOSCQ_OptAttr_Ext_Type;	//	EXTENDED_TYPE
+//extern NSString * kVVOSCQ_OptAttr_Type;		//	TYPE
 extern NSString * kVVOSCQ_OptAttr_Access;		//	ACCESS
 extern NSString * kVVOSCQ_OptAttr_Value;		//	VALUE
 extern NSString * kVVOSCQ_OptAttr_Range;		//	RANGE

@@ -98,6 +98,8 @@ void WSPPServer::_performWSCallbackSetup()	{
 								//	get the address that we're being told to listen to
 								string		tmpAddress = string(tmpJSON["DATA"].GetString());
 								
+								lock_guard<mutex>		lock(connsLock);
+								
 								//	find the entry that corresponds to the address the client wants to LISTEN to!
 								auto		addressIter = servers_by_listenAddr.find(tmpAddress);
 								//	if there aren't any servers listening to the address, make an array to store servers listening to the address
@@ -141,22 +143,28 @@ void WSPPServer::_performWSCallbackSetup()	{
 								
 								//	find the entry that corresponds to the address the client wants to IGNORE!
 								string		tmpAddress = string(tmpJSON["DATA"].GetString());
-								auto		addressIter = servers_by_listenAddr.find(tmpAddress);
-								//	only proceed if there's a valid iterator...
-								if (addressIter != servers_by_listenAddr.end())	{
-									//	...at this point i have an iterator pointing at an entry in the map that corresponds to the address the client wants to IGNORE
+								{
+									lock_guard<mutex>		lock(connsLock);
+									auto		addressIter = servers_by_listenAddr.find(tmpAddress);
+									//	only proceed if there's a valid iterator...
+									if (addressIter != servers_by_listenAddr.end())	{
+										//	...at this point i have an iterator pointing at an entry in the map that corresponds to the address the client wants to IGNORE
 									
-									//	get the vector from the iterator- run through its contents, looking for a match to the current connection, delete it when you find it
-									vector<connection_hdl>		&listeningConns = addressIter->second;
-									void			*currentConn = hdl.lock().get();
-									int				tmpIndex = 0;
-									for (const auto & tmpConn : listeningConns)	{
-										if (tmpConn.lock().get() == currentConn)	{
-											//cout << "\t\tremoving listener!\n";
-											listeningConns.erase(listeningConns.begin() + tmpIndex);
-											break;
+										//	get the vector from the iterator- run through its contents, looking for a match to the current connection, delete it when you find it
+										vector<connection_hdl>		&listeningConns = addressIter->second;
+										void			*currentConn = hdl.lock().get();
+										int				tmpIndex = 0;
+										for (const auto & tmpConn : listeningConns)	{
+											if (tmpConn.lock().get() == currentConn)	{
+												//cout << "\t\tremoving listener!\n";
+												listeningConns.erase(listeningConns.begin() + tmpIndex);
+												break;
+											}
+											++tmpIndex;
 										}
-										++tmpIndex;
+										//	if the vector is now empty- if nothing is listening to this address- then we should remove it entirely
+										if (listeningConns.size() == 0)
+											servers_by_listenAddr.erase(addressIter);
 									}
 								}
 								
@@ -254,12 +262,15 @@ void WSPPServer::_initServer()	{
 	//	the open handler should store the connection handle in the vector of connections
 	server->set_open_handler([&](websocketpp::connection_hdl hdl)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
+		lock_guard<mutex>		lock(connsLock);
 		server_conns.push_back(hdl);
 		
 	});
 	//	the close handler should remove the connection handle from the vector of connections
 	server->set_close_handler([&](connection_hdl hdl)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
+		
+		lock_guard<mutex>		lock(connsLock);
 		
 		//cout << "\tchecking websocket conns...\n";
 		//std::shared_ptr<void>		hdlToFind = hdl.lock();
@@ -388,8 +399,10 @@ void WSPPServer::stop()	{
 	}
 	
 	//	get a local copy of the server connections, then clear the server connections array
+	connsLock.lock();
 	std::vector<connection_hdl>		connsHdlsToClose(server_conns.begin(), server_conns.end());
 	server_conns.clear();
+	connsLock.unlock();
 	//	run through my open connections, closing each of them
 	for (const auto & connHdlToClose : connsHdlsToClose)	{
 		try	{
@@ -463,7 +476,9 @@ void WSPPServer::_sendStringToClients(const std::string & inStrToSend)	{
 		return;
 	
 	//	get a local copy of my connected servers, run through it, sending the buffer to each of them in turn
+	connsLock.lock();
 	std::vector<connection_hdl>		connsToSendTo(server_conns.begin(), server_conns.end());
+	connsLock.unlock();
 	for (const auto & connToSendTo : connsToSendTo)	{
 		lib::error_code			ec;
 		server->send(connToSendTo, inStrToSend, frame::opcode::text, ec);
@@ -474,28 +489,31 @@ void WSPPServer::sendPathChangedToClients(const std::string & inChangedPath)	{
 }
 void WSPPServer::sendPathRenamedToClients(const std::string & inOldPath, const std::string & inNewPath)	{
 	//cout << __PRETTY_FUNCTION__ << endl;
-	vector<std::string>		keysToUpdate = vector<std::string>();
-	//	run through the map for servers by OSC listen address
-	for (const auto & addressMapIt : servers_by_listenAddr)	{
-		const std::string		&tmpKey = addressMapIt.first;
-		//	if this address contains the old path then it's going to be affected- stick the string in an array
-		size_t				foundIndex = tmpKey.find(inOldPath);
-		if (foundIndex == 0)	{
-			//cout << "\t\tkey " << tmpKey << " is a match for the old path " << inOldPath << endl;
-			keysToUpdate.push_back(tmpKey);
+	{
+		lock_guard<mutex>		lock(connsLock);
+		vector<std::string>		keysToUpdate = vector<std::string>();
+		//	run through the map for servers by OSC listen address
+		for (const auto & addressMapIt : servers_by_listenAddr)	{
+			const std::string		&tmpKey = addressMapIt.first;
+			//	if this address contains the old path then it's going to be affected- stick the string in an array
+			size_t				foundIndex = tmpKey.find(inOldPath);
+			if (foundIndex == 0)	{
+				//cout << "\t\tkey " << tmpKey << " is a match for the old path " << inOldPath << endl;
+				keysToUpdate.push_back(tmpKey);
+			}
 		}
-	}
-	//	run through the array of OSC addresses that are affected by the rename op
-	for (const auto & keyToUpdate : keysToUpdate)	{
-		//	get the vector of c onnections stored in the map at the old string
-		vector<connection_hdl>		tmpConns = servers_by_listenAddr[keyToUpdate];
-		//	figure out the new string
-		std::string			newKey = std::string(keyToUpdate);
-		newKey.replace(0, inOldPath.length(), inNewPath);
-		//cout << "\t\told key is " << keyToUpdate << ", new key is " << newKey << endl;
-		//	store the vector at the new key, then clear out the val at the old key!
-		servers_by_listenAddr[newKey] = tmpConns;
-		servers_by_listenAddr.erase(keyToUpdate);
+		//	run through the array of OSC addresses that are affected by the rename op
+		for (const auto & keyToUpdate : keysToUpdate)	{
+			//	get the vector of c onnections stored in the map at the old string
+			vector<connection_hdl>		tmpConns = servers_by_listenAddr[keyToUpdate];
+			//	figure out the new string
+			std::string			newKey = std::string(keyToUpdate);
+			newKey.replace(0, inOldPath.length(), inNewPath);
+			//cout << "\t\told key is " << keyToUpdate << ", new key is " << newKey << endl;
+			//	store the vector at the new key, then clear out the val at the old key!
+			servers_by_listenAddr[newKey] = tmpConns;
+			servers_by_listenAddr.erase(keyToUpdate);
+		}
 	}
 	/*
 	int			tmpIndex = 0;
@@ -531,6 +549,7 @@ void WSPPServer::sendDataToClients(const void * bufferToSend, const int & sizeOf
 void WSPPServer::sendOSCPacketToListeners(const void * oscPacketToSend, const int & oscPacketSize, const char * listenPath)	{
 	if (oscPacketToSend==nullptr || oscPacketSize<=0 || listenPath==nullptr)
 		return;
+	lock_guard<mutex>		lock(connsLock);
 	std::string		tmpListenPath(listenPath);
 	const auto		tmpIter = servers_by_listenAddr.find(tmpListenPath);
 	//	if none of my clients are listening to this path, bail

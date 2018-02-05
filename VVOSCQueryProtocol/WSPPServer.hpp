@@ -19,6 +19,7 @@
 #include <websocketpp/http/request.hpp>
 #include <websocketpp/server.hpp>
 #include <websocketpp/connection.hpp>
+#include <mutex>
 
 using config_t = websocketpp::config::asio;
 using server_t = websocketpp::server<config_t>;
@@ -59,6 +60,7 @@ public:
 private:
 	lib::shared_ptr<lib::thread>	thread = nullptr;	//	the thread that the server runs on
 	shared_ptr<server_t>			server = nullptr;	//	the actual websocket++ server
+	mutex						connsLock;
 	vector<connection_hdl>		server_conns = std::vector<connection_hdl>();	//	list of all currently-open websocket connections (so we can broadcast path changes)
 	map<string,vector<connection_hdl>>	servers_by_listenAddr = map<string,vector<connection_hdl>>();	//	"key" is the OSC address being listened to, "value" is vector<connection_hdl>
 	

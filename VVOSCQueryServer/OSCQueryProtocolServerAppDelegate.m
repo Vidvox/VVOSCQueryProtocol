@@ -203,7 +203,7 @@
 	//	assemble the extensions dict, add it to the host info dict
 	NSDictionary		*extDict = @{
 		kVVOSCQ_OptAttr_Tags : @YES,
-		kVVOSCQ_OptAttr_Type : @YES,
+		//kVVOSCQ_ReqAttr_Type : @YES,
 		kVVOSCQ_OptAttr_Access : @YES,
 		kVVOSCQ_OptAttr_Value : @YES,
 		kVVOSCQ_OptAttr_Range : @YES,

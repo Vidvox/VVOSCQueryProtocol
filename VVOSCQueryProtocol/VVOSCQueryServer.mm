@@ -68,12 +68,31 @@
 				VVOSCQueryReply		*reply = nil;
 				if (query != nil)	{
 					id<VVOSCQueryServerDelegate>	localDelegate = [(VVOSCQueryServer*)bss delegate];
+					if (hasHostInfoQuery)	{
+						if (localDelegate != nil)
+							reply = [localDelegate hostInfoQueryFromServer:bss];
+						if (reply == nil && [self name] != nil)	{
+							reply = [[VVOSCQueryReply alloc] initWithJSONObject:@{ kVVOSCQ_ReqAttr_HostInfo_Name: [self name] }];
+						}
+					}
+					else	{
+						if (localDelegate != nil)
+							reply = [localDelegate server:bss wantsReplyForQuery:query];
+						else	{
+							return WSPPQueryReply(404);	//	not found (client error)
+						}
+					}
+					
+					
+					/*
+					id<VVOSCQueryServerDelegate>	localDelegate = [(VVOSCQueryServer*)bss delegate];
 					if (localDelegate != nil)	{
 						if (hasHostInfoQuery)
 							reply = [localDelegate hostInfoQueryFromServer:bss];
 						else
 							reply = [localDelegate server:bss wantsReplyForQuery:query];
 					}
+					*/
 				}
 			
 				//	we need to return a WSPPQueryReply instance, so create that now from the VVOSCQueryReply
@@ -198,23 +217,8 @@
 		[NSThread sleepForTimeInterval:0.01];
 		++tmpCount;
 	}
-	int			webServerPort = [self webServerPort];
 	
-	//	get my bonjour name- create a unique name if i haven't been given a bonjour name
-	NSString		*tmpName = [self bonjourName];
-	if (tmpName == nil)	{
-		CFStringRef		computerName = SCDynamicStoreCopyComputerName(NULL, NULL);
-		tmpName = [NSString stringWithFormat:@"%@ %d",computerName,webServerPort];
-		if (computerName != nil)
-			CFRelease(computerName);
-	}
-	//	start the bonjour server
-	bonjourService = [[NSNetService alloc]
-		initWithDomain:@"local."
-		type:@"_oscjson._tcp."
-		name:tmpName
-		port:webServerPort];
-	[bonjourService publish];
+	[self _resetBonjourService];
 	
 	NSLog(@"\t\tweb server running on port %d, try connecting to http://localhost:%d",webServer.getPort(),webServer.getPort());
 }
@@ -235,23 +239,8 @@
 		[NSThread sleepForTimeInterval:0.01];
 		++tmpCount;
 	}
-	int			webServerPort = [self webServerPort];
 	
-	//	get my bonjour name- create a unique name if i haven't been given a bonjour name
-	NSString		*tmpName = [self bonjourName];
-	if (tmpName == nil)	{
-		CFStringRef		computerName = SCDynamicStoreCopyComputerName(NULL, NULL);
-		tmpName = [NSString stringWithFormat:@"%@ %d",computerName,webServerPort];
-		if (computerName != nil)
-			CFRelease(computerName);
-	}
-	//	start the bonjour server
-	bonjourService = [[NSNetService alloc]
-		initWithDomain:@"local."
-		type:@"_oscjson._tcp."
-		name:tmpName
-		port:webServerPort];
-	[bonjourService publish];
+	[self _resetBonjourService];
 	
 	NSLog(@"\t\tweb server running on port %d, try connecting to http://localhost:%d",webServer.getPort(),webServer.getPort());
 }
@@ -281,9 +270,57 @@
 - (int) webServerPort	{
 	return webServer.getPort();
 }
-@synthesize name;
-@synthesize bonjourName;
+//@synthesize name;
+//@synthesize bonjourName;
 @synthesize delegate;
+
+- (void) setName:(NSString *)n	{
+	NSLog(@"%s ... %@",__func__,n);
+	BOOL		changed = (name==nil || n==nil || ![name isEqualToString:n]) ? YES : NO;
+	BOOL		wasRunning = [self isRunning];
+	name = n;
+	if (changed && wasRunning)
+		[self _resetBonjourService];
+}
+- (NSString *) name	{
+	return name;
+}
+- (void) setBonjourName:(NSString *)n	{
+	NSLog(@"%s ... %@",__func__,n);
+	BOOL		changed = (bonjourName==nil || n==nil || ![bonjourName isEqualToString:n]) ? YES : NO;
+	BOOL		wasRunning = [self isRunning];
+	bonjourName = n;
+	if (changed && wasRunning)
+		[self _resetBonjourService];
+}
+- (NSString *) bonjourName	{
+	return bonjourName;
+}
+
+- (void) _resetBonjourService	{
+	NSLog(@"%s",__func__);
+	if (bonjourService != nil)	{
+		[bonjourService stop];
+		bonjourService = nil;
+	}
+	
+	//	get my bonjour name- create a unique name if i haven't been given a bonjour name
+	int				webServerPort = [self webServerPort];
+	NSString		*tmpName = [self bonjourName];
+	if (tmpName == nil)	{
+		CFStringRef		computerName = SCDynamicStoreCopyComputerName(NULL, NULL);
+		tmpName = [NSString stringWithFormat:@"%@ %d",computerName,webServerPort];
+		if (computerName != nil)
+			CFRelease(computerName);
+	}
+	//	start the bonjour server
+	bonjourService = [[NSNetService alloc]
+		initWithDomain:@"local."
+		type:@"_oscjson._tcp."
+		name:tmpName
+		port:webServerPort];
+	[bonjourService publish];
+}
 
 /*
 - (void) sendPathChangedNotificationToClients:(NSString *)changedPath	{

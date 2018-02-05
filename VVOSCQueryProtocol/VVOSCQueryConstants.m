@@ -6,6 +6,7 @@
 NSString * kVVOSCQ_ReqAttr_Path = @"FULL_PATH";
 NSString * kVVOSCQ_ReqAttr_Contents = @"CONTENTS";
 NSString * kVVOSCQ_ReqAttr_Desc = @"DESCRIPTION";
+NSString * kVVOSCQ_ReqAttr_Type = @"TYPE";
 NSString * kVVOSCQ_ReqAttr_HostInfo = @"HOST_INFO";
 NSString * kVVOSCQ_ReqAttr_HostInfo_Name = @"NAME";
 NSString * kVVOSCQ_ReqAttr_HostInfo_Exts = @"EXTENSIONS";
@@ -17,7 +18,8 @@ NSString * kVVOSCQ_ReqAttr_HostInfo_WSPort = @"WS_PORT";	//	WS_PORT
 
 
 NSString * kVVOSCQ_OptAttr_Tags = @"TAGS";
-NSString * kVVOSCQ_OptAttr_Type = @"TYPE";
+NSString * kVVOSCQ_OptAttr_Ext_Type = @"EXTENDED_TYPE";
+//NSString * kVVOSCQ_OptAttr_Type = @"TYPE";
 NSString * kVVOSCQ_OptAttr_Access = @"ACCESS";
 NSString * kVVOSCQ_OptAttr_Value = @"VALUE";
 NSString * kVVOSCQ_OptAttr_Range = @"RANGE";
@@ -62,7 +64,7 @@ NSString * kVVOSCQueryRemoteServersUpdatedNotification = @"kVVOSCQueryRemoteServ
 + (void) initialize	{
 	kVVOSCQ_NonRecursiveAttrs = @[
 		kVVOSCQ_OptAttr_Tags,
-		kVVOSCQ_OptAttr_Type,
+		kVVOSCQ_ReqAttr_Type,
 		kVVOSCQ_OptAttr_Access,
 		kVVOSCQ_OptAttr_Value,
 		kVVOSCQ_OptAttr_Range,
