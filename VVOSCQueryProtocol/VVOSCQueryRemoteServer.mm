@@ -161,41 +161,51 @@ bonjourName:(NSString *)inBonjourName	{
 		});
 		wsClient->set_path_changed_callback([&,bss](const std::string & inPathString)	{
 			@autoreleasepool	{
+				NSString	*tmpString = [[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding];
 				dispatch_async(dispatch_get_main_queue(), ^{
 					id			tmpDelegate = [bss delegate];
 					if (tmpDelegate != nil)
-						[tmpDelegate remoteServer:bss pathChanged:[[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding]];
+						[tmpDelegate remoteServer:bss pathChanged:tmpString];
 				});
+				tmpString = nil;
 			}
 		});
 		wsClient->set_path_renamed_callback([&,bss](const std::string & oldPathString, const std::string & newPathString)	{
 			@autoreleasepool	{
+				NSString		*oldPath = [[NSString alloc] initWithCString:oldPathString.c_str() encoding:NSUTF8StringEncoding];
+				NSString		*newPath = [[NSString alloc] initWithCString:newPathString.c_str() encoding:NSUTF8StringEncoding];
 				dispatch_async(dispatch_get_main_queue(), ^{
 					id			tmpDelegate = [bss delegate];
 					if (tmpDelegate != nil)	{
 						[tmpDelegate remoteServer:bss
-							pathRenamedFrom:[[NSString alloc] initWithCString:oldPathString.c_str() encoding:NSUTF8StringEncoding]
-							to:[[NSString alloc] initWithCString:newPathString.c_str() encoding:NSUTF8StringEncoding]];
+							pathRenamedFrom:oldPath
+							to:newPath];
 					}
 				});
+				oldPath = nil;
+				newPath = nil;
 			}
 		});
 		wsClient->set_path_removed_callback([&,bss](const std::string & inPathString)	{
 			@autoreleasepool	{
+				NSString	*tmpString = [NSString stringWithUTF8String:inPathString.c_str()];
 				dispatch_async(dispatch_get_main_queue(), ^{
 					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil)
-						[tmpDelegate remoteServer:bss pathRemoved:[[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding]];
+					if (tmpDelegate != nil && tmpString != nil)
+						[tmpDelegate remoteServer:bss pathRemoved:tmpString];
 				});
+				tmpString = nil;
 			}
 		});
 		wsClient->set_path_added_callback([&,bss](const std::string & inPathString)	{
 			@autoreleasepool	{
+				NSString	*tmpString = [NSString stringWithUTF8String:inPathString.c_str()];
 				dispatch_async(dispatch_get_main_queue(), ^{
 					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil)
-						[tmpDelegate remoteServer:bss pathAdded:[[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding]];
+					if (tmpDelegate != nil && tmpString != nil)
+						[tmpDelegate remoteServer:bss pathAdded:tmpString];
 				});
+				tmpString = nil;
 			}
 		});
 	}
@@ -316,9 +326,11 @@ bonjourName:(NSString *)inBonjourName	{
 @synthesize delegate;
 
 - (NSDictionary *) hostInfo;	{
+	NSLog(@"%s",__func__);
 	NSDictionary	*returnMe = nil;
 	
 	NSString		*hostInfoQueryAddress = [NSString stringWithFormat:@"http://%@:%d?HOST_INFO",webServerAddressString,webServerPort];
+	NSLog(@"\t\thostInfoQueryAddress is %@",hostInfoQueryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:hostInfoQueryAddress];
 	[downloader appendStringToHeader:@"Connection: close"];
 	[downloader setConnectTimeout:5.];

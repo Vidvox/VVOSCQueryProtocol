@@ -45,7 +45,11 @@ extern NSString * kVVOSCQ_OptAttr_Critical;	//	CRITICAL
 OSC nodes, gathered recursively.  really, the only queries that aren't recursive are queries 
 requesting a single specific attribute.  because of this, we maintain an array of all the optional 
 query attributes that would mean that a query isn't recursive.			*/
+#if __has_feature(objc_arc)
 extern NSArray<NSString*> * kVVOSCQ_NonRecursiveAttrs;
+#else
+extern NSArray * kVVOSCQ_NonRecursiveAttrs;
+#endif
 
 //	the spec defines specific strings as possible values for the CLIPMODE attribute- these strings are those values
 extern NSString * kVVOSCQueryNodeClipModeNone;	//	none
@@ -65,7 +69,12 @@ and a DATA key whose object contains further data about the action to be taken.	
 extern NSString * kVVOSCQ_WSAttr_Command;	//	COMMAND
 extern NSString * kVVOSCQ_WSAttr_Data;		//	DATA
 
+extern NSString * kVVOSCQ_WSAttr_Cmd_Listen;	//	LISTEN
+extern NSString * kVVOSCQ_WSAttr_Cmd_Ignore;	//	IGNORE
 extern NSString * kVVOSCQ_WSAttr_Cmd_PathChanged;	//	PATH_CHANGED
+extern NSString * kVVOSCQ_WSAttr_Cmd_PathRenamed;	//	PATH_RENAMED
+extern NSString * kVVOSCQ_WSAttr_Cmd_PathRemoved;	//	PATH_REMOVED
+extern NSString * kVVOSCQ_WSAttr_Cmd_PathAdded;	//	PATH_ADDED
 
 
 

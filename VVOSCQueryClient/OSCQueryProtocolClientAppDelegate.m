@@ -71,7 +71,7 @@
 	
 	NSMutableString		*displayString = [[NSMutableString alloc] init];
 	NSArray				*servers = [VVOSCQueryRemoteServer remoteServers];
-	[displayString appendFormat:@"%d servers detected:\n",(servers==nil) ? 0 : [servers count]];
+	[displayString appendFormat:@"%d servers detected:\n",(servers==nil) ? 0 : (int)[servers count]];
 	[displayString appendFormat:@"**************\n"];
 	for (VVOSCQueryRemoteServer *server in servers)	{
 		[server setDelegate:self];
@@ -103,7 +103,10 @@
 	if (server == nil)
 		return;
 	NSLog(@"\t\tserver is %@",server);
-	[server websocketSendJSONObject:@{ @"COMMAND": @"LISTEN", @"DATA": @"/test/my_float" }];
+	[server websocketSendJSONObject:@{
+		kVVOSCQ_WSAttr_Command: kVVOSCQ_WSAttr_Cmd_Listen,
+		kVVOSCQ_WSAttr_Data: @"/test/my_float"
+		}];
 	//[server websocketSendJSONObject:@{ @"COMMAND": @"LISTEN", @"DATA": @"/foo/bar/baz/qux" }];
 }
 - (IBAction) ignoreClicked:(id)sender	{
@@ -113,7 +116,9 @@
 	if (server == nil)
 		return;
 	NSLog(@"\t\tserver is %@",server);
-	[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/test/my_float" }];
+	[server websocketSendJSONObject:@{
+		kVVOSCQ_WSAttr_Command: kVVOSCQ_WSAttr_Cmd_Ignore,
+		kVVOSCQ_WSAttr_Data: @"/test/my_float" }];
 	//[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/test/dingus" }];
 	//[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/foo/bar/baz/qux" }];
 }
@@ -139,23 +144,26 @@
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer receivedOSCPacket:(const void *)packet sized:(size_t)packetSize	{
 	NSLog(@"%s",__func__);
 	[OSCPacket
-		parseRawBuffer:packet
-		ofMaxLength:packetSize
+		parseRawBuffer:(unsigned char *)packet
+		ofMaxLength:(int)packetSize
 		toInPort:oscIn
 		fromAddr:0
 		port:0];
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathChanged:(NSString *)n	{
 	NSLog(@"%s",__func__);
+	NSLog(@"\t\t%@",n);
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathRenamedFrom:(NSString *)oldName to:(NSString *)newName	{
 	NSLog(@"%s",__func__);
+	NSLog(@"\t\t%@ -> %@",oldName,newName);
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathRemoved:(NSString *)n	{
 	NSLog(@"%s",__func__);
+	NSLog(@"\t\t%@",n);
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer pathAdded:(NSString *)n	{
-	NSLog(@"%s",__func__);
+	NSLog(@"%s ... %@",__func__,n);
 }
 
 

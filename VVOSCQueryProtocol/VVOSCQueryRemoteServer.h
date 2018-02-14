@@ -55,11 +55,19 @@
 	NSString		*wsServerAddressString;
 	int				wsServerPort;
 	
+#if __has_feature(objc_arc)
 	__weak id<VVOSCQueryRemoteServerDelegate>		delegate;
+#else
+	id<VVOSCQueryRemoteServerDelegate>		delegate;
+#endif
 }
 
 //	you should try to avoid retaining any of these remote servers- use a weak ref if you want to store a ptr to one of them.
+#if __has_feature(objc_arc)
 + (NSArray<VVOSCQueryRemoteServer*> *) remoteServers;
+#else
++ (NSArray *) remoteServers;
+#endif
 
 //	returns an array of all the IP addresses this machine has
 + (NSArray *) hostIPv4Addresses;
@@ -80,7 +88,11 @@
 @property (readonly) int wsServerPort;
 
 //	the delegate is notified if the remote server goes offline.  the delegate is also notified if the server delivers a JSON blob over the websocket connection.
+#if __has_feature(objc_arc)
 @property (weak) id<VVOSCQueryRemoteServerDelegate> delegate;
+#else
+@property (assign) id<VVOSCQueryRemoteServerDelegate> delegate;
+#endif
 
 //	synchronous- queries the remote server for its host info
 - (NSDictionary *) hostInfo;

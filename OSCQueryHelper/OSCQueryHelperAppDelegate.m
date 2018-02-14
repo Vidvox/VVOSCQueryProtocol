@@ -5,7 +5,9 @@
 
 
 
-@interface OSCQueryHelperAppDelegate ()
+@interface OSCQueryHelperAppDelegate ()	{
+	NSTimer		*fileChangeCoalesceTimer;
+}
 @property (weak) IBOutlet NSWindow *window;
 - (void) _loadLastFile;
 - (void) _loadFile:(NSString *)fullPath;
@@ -31,6 +33,10 @@
 
 @implementation OSCQueryHelperAppDelegate
 
++ (void) initialize	{
+	//	make sure the kqueue stuff is up and running
+	[VVKQueueCenter class];
+}
 - (id) init	{
 	self = [super init];
 	if (self != nil)	{
@@ -44,43 +50,32 @@
 		delegates = [[NSMutableArray alloc] init];
 		loadedFilePath = nil;
 		fileHostInfoDict = nil;
+		fileChangeCoalesceTimer = nil;
 		
 		//	make an VVOSCQueryServer- we'll start it later, when the app finishes launching
 		server = [[VVOSCQueryServer alloc] init];
-		[server setName:@"OSC Query Helper"];
-		[server setBonjourName:@"OSC Query Helper"];
+		[server setName:@"OSCQuery Helper"];
+		[server setBonjourName:@"OSCQuery Helper"];
 		[server setDelegate:self];
 		
-		
+		//	this notification is posted by our OSC manager subclass when the host info changes as a result of user interaction
 		[[NSNotificationCenter defaultCenter]
 			addObserver:self
 			selector:@selector(targetAppHostInfoChangedNotification:)
 			name:TargetAppHostInfoChangedNotification
 			object:nil];
-		
-		
-		/*		everything below here is specific to the OSC framework i've chosen to use		*/
-		
-		
-		//	make an OSC manager, set myself up as its delegate so i receive any OSC traffic that i can display here
-		//oscm = [[OSCManager alloc] init];
-		//[oscm setDelegate:self];
-		//	make a new OSC input- this is what will receive OSC data
-		//oscIn = [oscm createNewInput];
-		//oscIn = [oscm createNewInputForPort:2345];
-		//[oscIn setPortLabel:@"OSC Query Helper OSC input"];
-		
-		//	set myself up as the address space's delegate, so i can get rename delegate callbacks and pass them on to the query server
-		//[[OSCAddressSpace mainAddressSpace] setDelegate:self];
-		
-		//	populate the OSC address space with a series of OSC nodes!
-		[self _loadLastFile];
 	}
 	return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+	
+	//	populate the OSC address space with a series of OSC nodes!
+	[self _loadLastFile];
+	
 	//	start the VVOSCQueryServer!
 	[server start];
+	
+	//	update my UI
 	[self _updateUIItems];
 }
 
@@ -112,7 +107,7 @@
 	[op setAllowsMultipleSelection:NO];
 	[op setCanChooseDirectories:NO];
 	[op setResolvesAliases:YES];
-	[op setMessage:@"Select compatible file to open (see Help for more)"];
+	[op setMessage:@"Select JSON file to open (see Help for more)"];
 	[op setTitle:@"Open file"];
 	[op setAllowedFileTypes:@[ @"json", @"txt" ]];
 	//[op setDirectoryURL:[NSURL fileURLWithPath:importDir]];
@@ -168,14 +163,6 @@
 }
 
 
-#pragma mark -------------------------- key-val
-
-/*
-- (OSCManager *) oscManager	{
-	return oscm;
-}
-*/
-
 #pragma mark -------------------------- backend
 
 
@@ -187,14 +174,14 @@
 	[self _loadFile:tmpString];
 }
 - (void) _loadFile:(NSString *)fullPath	{
-	NSLog(@"%s ... %@",__func__,fullPath);
+	//NSLog(@"%s ... %@",__func__,fullPath);
 	NSString		*ext = (fullPath==nil) ? nil : [fullPath pathExtension];
 	if ([ext caseInsensitiveCompare:@"json"]==NSOrderedSame || [ext caseInsensitiveCompare:@"txt"]==NSOrderedSame)	{
 		[self _loadJSONFile:fullPath];
 	}
 }
 - (void) _loadJSONFile:(NSString *)fullPath	{
-	NSLog(@"%s ... %@",__func__,fullPath);
+	//NSLog(@"%s ... %@",__func__,fullPath);
 	if (fullPath == nil)
 		return;
 	//	unserialize the file at the path into a series of JSON objects
@@ -210,10 +197,10 @@
 	
 	//	if this is a different file, stop the server
 	NSUserDefaults		*def = [NSUserDefaults standardUserDefaults];
-	NSString			*lastFilePath = [def objectForKey:@"lastOpenDocumentFile"];
+	//NSString			*lastFilePath = [def objectForKey:@"lastOpenDocumentFile"];
 	BOOL				reloadingTheFile = YES;
 	BOOL				wasRunning = [server isRunning];
-	if (lastFilePath==nil || (lastFilePath!=nil && ![lastFilePath isEqualToString:fullPath]))
+	if (loadedFilePath==nil || (loadedFilePath!=nil && ![loadedFilePath isEqualToString:fullPath]))
 		reloadingTheFile = NO;
 	if (!reloadingTheFile && wasRunning)
 		[server stop];
@@ -221,15 +208,24 @@
 	//	rename the server!
 	NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
 	[server setName:fileName];
-	[server setBonjourName:[NSString stringWithFormat:@"%@ OSC Query Helper",fileName]];
+	[server setBonjourName:[NSString stringWithFormat:@"%@ OSCQuery Helper",fileName]];
 	
-	//	first of all, i need to know if i'm reloading the last-loaded file (if i'm reloading then my actions will be different)
-	//BOOL			reloading = (loadedFilePath!=nil && [loadedFilePath isEqualToString:fullPath]) ? YES : NO;
+	//	if i'm not reloading a file then i may want to stop observing the file
+	if (!reloadingTheFile)	{
+		//	if i've already got a file loaded i need to stop observing it
+		if (loadedFilePath!=nil)	{
+			[VVKQueueCenter removeObserver:self forPath:loadedFilePath];
+		}
+	}
 	//	update my local var storing the file path
 	loadedFilePath = fullPath;
+	//	if i'm not reloading the file, add myself as an observer
+	if (!reloadingTheFile)	{
+		[VVKQueueCenter addObserver:self forPath:loadedFilePath];
+	}
 	//	update my local copy of the host info dict parsed from the file
-	fileHostInfoDict = [fileObject objectForKey:@"HOST_INFO"];
-	[fileObject removeObjectForKey:@"HOST_INFO"];
+	fileHostInfoDict = [fileObject objectForKey:kVVOSCQ_ReqAttr_HostInfo];
+	[fileObject removeObjectForKey:kVVOSCQ_ReqAttr_HostInfo];
 	//	update my user defaults so i know what file i last loaded
 	[def setObject:fullPath forKey:@"lastOpenDocumentFile"];
 	[def synchronize];
@@ -247,104 +243,94 @@
 		}
 	}
 	
-	/*
-	//	if i'm reloading the file...
-	if (reloading)	{
-		//	run through 'fileObject' recursively, creating OSC nodes for all the objects
-			//	store the OSC nodes i'm creating in a temporary array (i need to make delegates for them and figure out the best way to communicate this change to the query server's clients later)
-			//	store the OSC nodes i'm updating in another temporary array (i need to figure out the best way to communicate this change to the query server's clients later)
-		
-		//	***warning- make sure i run through the OSC side of things to delete existing OSC nodes that don't exist in the file!
+	
+	//	...now i need to run through the objects from the file, and create OSCNodes from them in an address space
+	
+	
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	//	destroy all the delegates immediately- we don't want them sending any messages back to the server while we're clearing the address space
+	for (QueryServerNodeDelegate *tmpDelegate in delegates)	{
+		[as removeDelegate:tmpDelegate forPath:[tmpDelegate address]];
 	}
-	//	else i'm not reloading the file- i'm loading the file for the first time
-	else	{
-	*/
-		OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
-		
-		//	destroy all the delegates immediately- we don't want them sending any messages back to the server while we're clearing the address space
-		for (QueryServerNodeDelegate *tmpDelegate in delegates)	{
-			[as removeDelegate:tmpDelegate forPath:[tmpDelegate address]];
-		}
-		[delegates removeAllObjects];
-		
-		//	clear out the OSC address space
-		NSArray		*baseNodes = [[as nodeContents] lockCreateArrayCopy];
-		for (OSCNode *baseNode in baseNodes)	{
-			[baseNode removeFromAddressSpace];
-		}
-		
-		//	now run through 'fileObject' recursively, creating OSC nodes for all the objects
-		__block __weak void		(^ParseJSONObj)(NSDictionary *);
-		ParseJSONObj = ^(NSDictionary * baseObj)	{
-			NSString		*objFullPath = [baseObj objectForKey:kVVOSCQ_ReqAttr_Path];
-			//NSLog(@"ParseJSONObj() called on %@",objFullPath);
-			if (objFullPath == nil)
-				return;
-			NSString		*objTypeTagString = [baseObj objectForKey:kVVOSCQ_ReqAttr_Type];
-			NSDictionary	*objContents = [baseObj objectForKey:kVVOSCQ_ReqAttr_Contents];
-			NSString		*objDesc = [baseObj objectForKey:kVVOSCQ_ReqAttr_Desc];
-			NSArray			*objTags = [baseObj objectForKey:kVVOSCQ_OptAttr_Tags];
-			NSArray			*objExtType = [baseObj objectForKey:kVVOSCQ_OptAttr_Ext_Type];	//	one for each type from the type tag string
-			NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
-			NSArray			*objRange = [baseObj objectForKey:kVVOSCQ_OptAttr_Range];	//	one for each type from the type tag string
-			NSArray			*objUnits = [baseObj objectForKey:kVVOSCQ_OptAttr_Unit];	//	one for each type from the type tag string
-			NSNumber		*objCritical = [baseObj objectForKey:kVVOSCQ_OptAttr_Critical];
-			
-			OSCNode			*newNode = [[OSCAddressSpace mainAddressSpace] findNodeForAddress:objFullPath createIfMissing:YES];
-			if (objTypeTagString != nil)
-				[newNode setTypeTagString:objTypeTagString];
-			if (objDesc != nil && [objDesc isKindOfClass:[NSString class]])
-				[newNode setOSCDescription:objDesc];
-			if (objTags != nil && [objTags isKindOfClass:[NSArray class]])
-				[newNode setTags:objTags];
-			if (objExtType != nil && [objExtType isKindOfClass:[NSArray class]])
-				[newNode setExtendedType:objExtType];
-			if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
-				//[newNode setAccess:[objAccess intValue]];	//	don't do this, access is always write-only in this application (we can't read the remote app's OSC address space)
-				[newNode setAccess:2];
-			}
-			if (objRange != nil && [objRange isKindOfClass:[NSArray class]])
-				[newNode setRange:objRange];
-			if (objUnits != nil && [objUnits isKindOfClass:[NSArray class]])
-				[newNode setUnits:objUnits];
-			if (objCritical != nil && [objCritical isKindOfClass:[NSNumber class]])
-				[newNode setCritical:[objCritical boolValue]];
-			
-			//	run through the contents, calling this block recursively on each object
-			[objContents enumerateKeysAndObjectsUsingBlock:^(NSString * tmpName, NSDictionary * tmpContentsObj, BOOL *stop)	{
-				if ([tmpContentsObj isKindOfClass:[NSDictionary class]])	{
-					ParseJSONObj(tmpContentsObj);
-				}
-			}];
-		};
-		ParseJSONObj(fileObject);
-		
-		//	run through the OSC address space, creating delegates for all the nodes
-		__block __weak void		(^CreateNodeDelegate)(OSCNode *);
-		CreateNodeDelegate = ^(OSCNode * baseNode)	{
-			QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:server forAddress:[baseNode fullName]];
-			[baseNode addDelegate:tmpDelegate];
-			[delegates addObject:tmpDelegate];
-			NSArray				*baseContents = [[baseNode nodeContents] lockCreateArrayCopy];
-			for (OSCNode *contentNode in baseContents)	{
-				CreateNodeDelegate(contentNode);
-			}
-		};
-		CreateNodeDelegate([as findNodeForAddress:@"/" createIfMissing:NO]);
-		
-		if (!reloadingTheFile && wasRunning)
-			[server start];
-		
-		//	tell the OSC query server to send a PATH_CHANGED message for the root node
-		if (reloadingTheFile)
-			[server sendPathChangedToClients:@"/"];
-	/*
+	[delegates removeAllObjects];
+	
+	//	clear out the OSC address space
+	NSArray		*baseNodes = [[as nodeContents] lockCreateArrayCopy];
+	for (OSCNode *baseNode in baseNodes)	{
+		[baseNode removeFromAddressSpace];
 	}
-	*/
+	
+	//	now run through 'fileObject' recursively, creating OSC nodes for all the objects
+	__block __weak void		(^ParseJSONObj)(NSDictionary *);
+	ParseJSONObj = ^(NSDictionary * baseObj)	{
+		NSString		*objFullPath = [baseObj objectForKey:kVVOSCQ_ReqAttr_Path];
+		//NSLog(@"ParseJSONObj() called on %@",objFullPath);
+		if (objFullPath == nil)	{
+			NSLog(@"\t\terr: bailing, node missing full path, %s",__func__);
+			return;
+		}
+		
+		//	parse the base object, looking for entries that describe the kind of OSC node to publish
+		NSString		*objTypeTagString = [baseObj objectForKey:kVVOSCQ_ReqAttr_Type];
+		NSDictionary	*objContents = [baseObj objectForKey:kVVOSCQ_ReqAttr_Contents];
+		NSString		*objDesc = [baseObj objectForKey:kVVOSCQ_ReqAttr_Desc];
+		NSArray			*objTags = [baseObj objectForKey:kVVOSCQ_OptAttr_Tags];
+		NSArray			*objExtType = [baseObj objectForKey:kVVOSCQ_OptAttr_Ext_Type];	//	one for each type from the type tag string
+		NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
+		NSArray			*objRange = [baseObj objectForKey:kVVOSCQ_OptAttr_Range];	//	one for each type from the type tag string
+		NSArray			*objUnits = [baseObj objectForKey:kVVOSCQ_OptAttr_Unit];	//	one for each type from the type tag string
+		NSNumber		*objCritical = [baseObj objectForKey:kVVOSCQ_OptAttr_Critical];
+		
+		OSCNode			*newNode = [[OSCAddressSpace mainAddressSpace] findNodeForAddress:objFullPath createIfMissing:YES];
+		if (objTypeTagString != nil)	{
+			[newNode setTypeTagString:objTypeTagString];
+			[newNode setNodeType:OSCNodeTypeNumber];
+		}
+		else
+			[newNode setNodeType:OSCNodeDirectory];
+		if (objDesc != nil && [objDesc isKindOfClass:[NSString class]])
+			[newNode setOSCDescription:objDesc];
+		if (objTags != nil && [objTags isKindOfClass:[NSArray class]])
+			[newNode setTags:objTags];
+		if (objExtType != nil && [objExtType isKindOfClass:[NSArray class]])
+			[newNode setExtendedType:objExtType];
+		if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
+			//[newNode setAccess:[objAccess intValue]];	//	don't do this, access is always write-only in this application (we can't read the remote app's OSC address space)
+			[newNode setAccess:2];
+		}
+		if (objRange != nil && [objRange isKindOfClass:[NSArray class]])
+			[newNode setRange:objRange];
+		if (objUnits != nil && [objUnits isKindOfClass:[NSArray class]])
+			[newNode setUnits:objUnits];
+		if (objCritical != nil && [objCritical isKindOfClass:[NSNumber class]])
+			[newNode setCritical:[objCritical boolValue]];
+		
+		//	make a delegate for the node, add it to the array
+		QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:server forAddress:[newNode fullName]];
+		[newNode addDelegate:tmpDelegate];
+		[delegates addObject:tmpDelegate];
+		
+		//	run through the contents, calling this block recursively on each object
+		[objContents enumerateKeysAndObjectsUsingBlock:^(NSString * tmpName, NSDictionary * tmpContentsObj, BOOL *stop)	{
+			if ([tmpContentsObj isKindOfClass:[NSDictionary class]])	{
+				ParseJSONObj(tmpContentsObj);
+			}
+		}];
+	};
+	ParseJSONObj(fileObject);
+	
+	//	restart the server if appropriate
+	if (!reloadingTheFile && wasRunning)
+		[server start];
+	
+	//	tell the OSC query server to send a PATH_CHANGED message for the root node
+	if (reloadingTheFile)
+		[server sendPathChangedToClients:@"/"];
 	
 	[self _updateUIItems];
 }
 - (void) _updateUIItems	{
+	//	make sure this method is called on the main thread
 	if (![NSThread isMainThread])	{
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self _updateUIItems];
@@ -352,6 +338,7 @@
 		return;
 	}
 	
+	//	update the file status field
 	if (loadedFilePath != nil)	{
 		[fileStatusField setStringValue:[loadedFilePath lastPathComponent]];
 	}
@@ -359,15 +346,14 @@
 		[fileStatusField setStringValue:@"No file selected!"];
 	}
 	
+	//	update the server status field
 	if ([server isRunning])	{
 		NSString		*fullAddressString = [NSString stringWithFormat:@"http://localhost:%d",[server webServerPort]];
 		NSString		*htmlString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",fullAddressString,fullAddressString];
 		NSAttributedString	*htmlAttrStr = [htmlString renderedHTMLWithFont:nil];
-		//NSLog(@"\t\tsetting val to %@",htmlAttrStr);
 		[serverStatusField setAttributedStringValue:htmlAttrStr];
 	}
 	else	{
-		//NSLog(@"\t\tsetting val to %@",@"Not running!");
 		[serverStatusField setStringValue:@"Not running!"];
 	}
 }
@@ -379,7 +365,42 @@
 		return;
 	}
 	
-	[self _updateUIItems];
+	//	if the target app's host info changed then we need to stop and then start the server again
+	[server stop];
+	//	wait a bit before restarting it...
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.25*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		[server start];
+		//	wait a bit more before updating the UI...
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.25*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			[self _updateUIItems];
+		});
+	});
+}
+
+
+#pragma mark -------------------------- VVKQueueCenterDelegate
+
+
+- (void) file:(NSString *)p changed:(u_int)fflag	{
+	//NSLog(@"%s ... %@",__func__,p);
+	@synchronized (self)	{
+		if (loadedFilePath!=nil && p!=nil && [loadedFilePath isEqualToString:p])	{
+			if (fileChangeCoalesceTimer != nil)	{
+				[fileChangeCoalesceTimer invalidate];
+				fileChangeCoalesceTimer = nil;
+			}
+			fileChangeCoalesceTimer = [NSTimer
+				scheduledTimerWithTimeInterval:1./2.
+				target:self
+				selector:@selector(fileChangeCoalesceTimerCallback:)
+				userInfo:nil
+				repeats:NO];
+		}
+	}
+}
+- (void) fileChangeCoalesceTimerCallback:(NSTimer *)t	{
+	//NSLog(@"%s",__func__);
+	[self _loadFile:loadedFilePath];
 }
 
 
@@ -391,15 +412,12 @@
 	if (oldName != nil)
 		[server sendPathRenamedToClients:oldName to:[n fullName]];
 }
-
-
-#pragma mark -------------------------- OSCAddressSpaceDelegateProtocol
-
 /*
 - (void) receivedOSCMessage:(OSCMessage *)m	{
 	NSLog(@"%s ... %@",__func__,m);
 }
 */
+
 
 #pragma mark -------------------------- VVOSCQueryServerDelegate
 
@@ -437,7 +455,7 @@
 }
 //	this is the VVOSCQueryServerDelegate protocol method- requests received by the OSC query server are passed to this method
 - (VVOSCQueryReply *) server:(VVOSCQueryServer *)s wantsReplyForQuery:(VVOSCQuery *)q	{
-	NSLog(@"%s ... %@",__func__,q);
+	//NSLog(@"%s ... %@",__func__,q);
 	if (q==nil)
 		return nil;
 	
@@ -452,10 +470,10 @@
 	return returnMe;
 }
 - (void) server:(VVOSCQueryServer *)s websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
-	NSLog(@"%s ... %@",__func__,jsonObj);
+	//NSLog(@"%s ... %@",__func__,jsonObj);
 }
 - (void) server:(VVOSCQueryServer *)s receivedOSCPacket:(const void*)packet sized:(size_t)packetSize	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	//	make a fake port (it exists solely to provide a value to parsing methods)
 	FakeOSCInPort		*fakePort = [[FakeOSCInPort alloc] init];
 	//	parse the raw packet
@@ -476,12 +494,12 @@
 	}
 }
 - (BOOL) server:(VVOSCQueryServer *)s wantsToListenTo:(NSString *)address	{
-	NSLog(@"%s ... %@, %@",__func__,s,address);
+	//NSLog(@"%s ... %@, %@",__func__,s,address);
 	//	intentionally blank- we can't stream values because we don't have direct access to the remote app's address space (or data model corresponding to an address space)
 	return NO;
 }
 - (void) server:(VVOSCQueryServer *)s wantsToIgnore:(NSString *)address	{
-	NSLog(@"%s ... %@, %@",__func__,s,address);
+	//NSLog(@"%s ... %@, %@",__func__,s,address);
 	//	intentionally blank, listening is disabled
 }
 

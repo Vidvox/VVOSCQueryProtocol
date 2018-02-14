@@ -27,7 +27,11 @@
 	NSString	*name;
 	NSString	*bonjourName;
 	
+#if __has_feature(objc_arc)
 	__weak id<VVOSCQueryServerDelegate>		delegate;
+#else
+	id<VVOSCQueryServerDelegate>		delegate;
+#endif
 }
 
 - (void) start;
@@ -38,7 +42,11 @@
 @property (readonly) int webServerPort;
 @property (retain) NSString * name;
 @property (retain) NSString * bonjourName;
+#if __has_feature(objc_arc)
 @property (weak) id<VVOSCQueryServerDelegate> delegate;
+#else
+@property (assign) id<VVOSCQueryServerDelegate> delegate;
+#endif
 
 //	these methods send data to the clients using the websocket connection
 - (void) sendJSONObjectToClients:(NSDictionary *)anObj;

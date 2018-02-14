@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
@@ -693,16 +693,16 @@
             </items>
             <point key="canvasLocation" x="49" y="-318"/>
         </menu>
-        <window title="OSC Query Helper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+        <window title="OSCQuery Helper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="308" height="390"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
+            <rect key="contentRect" x="731" y="787" width="308" height="390"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="308" height="390"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q4E-wj-fxf">
+                    <button verticalHuggingPriority="750" id="Q4E-wj-fxf">
                         <rect key="frame" x="121" y="13" width="68" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Help" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lqg-lE-Khc">
@@ -713,23 +713,23 @@
                             <action selector="showHelp:" target="Voe-Tx-rLC" id="vS5-uD-UnX"/>
                         </connections>
                     </button>
-                    <box fixedFrame="YES" title="FILE STATUS" translatesAutoresizingMaskIntoConstraints="NO" id="I2I-Mj-JBA">
+                    <box title="FILE STATUS" id="I2I-Mj-JBA">
                         <rect key="frame" x="17" y="272" width="274" height="98"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="eG9-he-dap">
                             <rect key="frame" x="2" y="2" width="270" height="81"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zAX-QX-hen">
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zAX-QX-hen">
                                     <rect key="frame" x="18" y="44" width="234" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="sX3-Gu-TU5">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="No File Selected!" allowsEditingTextAttributes="YES" id="sX3-Gu-TU5">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Kye-MU-3wy">
+                                <button verticalHuggingPriority="750" id="Kye-MU-3wy">
                                     <rect key="frame" x="161" y="8" width="95" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="push" title="Load File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="McP-RL-jHR">
@@ -743,14 +743,14 @@
                             </subviews>
                         </view>
                     </box>
-                    <box fixedFrame="YES" title="OSC QUERY SERVER STATUS" translatesAutoresizingMaskIntoConstraints="NO" id="rGU-6d-ExB">
+                    <box title="OSC QUERY SERVER STATUS" id="rGU-6d-ExB">
                         <rect key="frame" x="17" y="189" width="274" height="79"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="KCJ-bs-wZ7">
                             <rect key="frame" x="2" y="2" width="270" height="62"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HPd-Zw-nel">
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="HPd-Zw-nel">
                                     <rect key="frame" x="18" y="25" width="234" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="CtD-Mu-Yfv">
@@ -762,18 +762,18 @@
                             </subviews>
                         </view>
                     </box>
-                    <box fixedFrame="YES" title="TARGET APP OSC RECEIVER" translatesAutoresizingMaskIntoConstraints="NO" id="aDp-by-CNh">
+                    <box title="TARGET APP OSC RECEIVER" id="aDp-by-CNh">
                         <rect key="frame" x="17" y="84" width="274" height="101"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="ceZ-KN-3KA">
                             <rect key="frame" x="2" y="2" width="270" height="84"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xcc-ni-aKT">
+                                <customView id="Xcc-ni-aKT">
                                     <rect key="frame" x="10" y="24" width="251" height="40"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <subviews>
-                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hgo-Ng-lyH">
+                                        <textField verticalHuggingPriority="750" id="hgo-Ng-lyH">
                                             <rect key="frame" x="20" y="23" width="31" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="IP:" id="XWa-2p-Lju">
@@ -782,7 +782,7 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jTg-wg-vkE">
+                                        <textField verticalHuggingPriority="750" id="jTg-wg-vkE">
                                             <rect key="frame" x="147" y="23" width="34" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Port:" id="3wW-UQ-TEr">
@@ -791,7 +791,7 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xE6-Rx-i1M">
+                                        <textField verticalHuggingPriority="750" id="xE6-Rx-i1M">
                                             <rect key="frame" x="184" y="21" width="46" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="5678" drawsBackground="YES" id="l2d-zS-OS0">
@@ -809,7 +809,7 @@
                                                 <action selector="textFieldUsed:" target="95g-a3-GM5" id="5fP-7u-W9J"/>
                                             </connections>
                                         </textField>
-                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dU0-Bg-xuV">
+                                        <textField verticalHuggingPriority="750" id="dU0-Bg-xuV">
                                             <rect key="frame" x="52" y="21" width="92" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="asdf" drawsBackground="YES" id="Q9X-cb-O6p">
@@ -821,7 +821,7 @@
                                                 <action selector="textFieldUsed:" target="95g-a3-GM5" id="Inj-sU-ay2"/>
                                             </connections>
                                         </textField>
-                                        <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lgl-no-wPk">
+                                        <popUpButton verticalHuggingPriority="750" id="Lgl-no-wPk">
                                             <rect key="frame" x="149" y="0.0" width="104" height="15"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="IoA-gg-SIP" id="u3Y-cK-ZRc">
@@ -839,7 +839,7 @@
                                                 <action selector="outputDestinationButtonUsed:" target="95g-a3-GM5" id="fis-tT-jHY"/>
                                             </connections>
                                         </popUpButton>
-                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fOm-TO-q4t">
+                                        <textField verticalHuggingPriority="750" id="fOm-TO-q4t">
                                             <rect key="frame" x="-2" y="1" width="146" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="(or select a destination:)" id="Mxd-sK-KxZ">
@@ -866,7 +866,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="699" height="618"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fyL-18-Qjw">
+                    <button verticalHuggingPriority="750" id="fyL-18-Qjw">
                         <rect key="frame" x="312" y="13" width="75" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xtC-gH-dfA">
@@ -877,12 +877,12 @@
                             <action selector="closeHelp:" target="Voe-Tx-rLC" id="gQA-4g-DJ5"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pQV-4Z-NFR">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="pQV-4Z-NFR">
                         <rect key="frame" x="18" y="112" width="663" height="425"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="m6n-mg-3TP">
                             <font key="font" metaFont="system"/>
-                            <mutableString key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC, but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
+                            <string key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC, but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
 
 HOW TO USE IT:
 1)- Tell OQH what file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  OQH will "watch" the file and if it is updated, the query server will automatically update itself, and then notify all connected clients that it has been updated.  For more information about the supported file type(s), see "FILE TYPE".
@@ -892,7 +892,7 @@ If OQH is running, the OSC query server is running- you can check it with any OS
 
 FILE TYPE:
 
-- JSON files can be imported.  The JSON files that you import should be nearly identical to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object to specify the connection details of the target app (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</mutableString>
+- JSON files can be imported.  The JSON files that you import should be nearly identical to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object to specify the connection details of the target app (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</string>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>

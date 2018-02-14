@@ -20,6 +20,7 @@
 }
 
 //	this class method can be used to create the json object you require to create an instance of this class.
+#if __has_feature(objc_arc)
 + (NSDictionary *) jsonObjectWithPath:(NSString *)inFullPath	//	full path to this node in the OSC address space
 	contents:(NSArray<NSDictionary*>*)inContents	//	subnodes (may be a hierarchy)
 	description:(NSString *)inDescription	//	human-readable string describing this node
@@ -32,7 +33,20 @@
 	clipmode:(NSArray *)inClipmodeArray	//	nil by default.  if non-nil, must be an array consisting only of instances of the kVVOSCQueryNodeClipMode* constants above.
 	units:(NSArray *)inUnitsArray
 	critical:(BOOL)inCritical;	//	NO by default.  if YES, try to use a TCP connection to send data to this node.
-
+#else
++ (NSDictionary *) jsonObjectWithPath:(NSString *)inFullPath	//	full path to this node in the OSC address space
+	contents:(NSArray*)inContents	//	subnodes (may be a hierarchy)
+	description:(NSString *)inDescription	//	human-readable string describing this node
+	tags:(NSArray *)inTags	//	array of human-readable strings describing this node, intended to facilitate search or filtering
+	extendedType:(NSArray *)inExtType
+	type:(NSString *)inTypeTagString	//	the OSC type tag string for this node
+	access:(VVOSCQueryNodeAccess)inAccess	//	mask that defines whether the values for this node may be read or written
+	value:(NSArray *)inValueArray
+	range:(NSArray *)inRangeArray
+	clipmode:(NSArray *)inClipmodeArray	//	nil by default.  if non-nil, must be an array consisting only of instances of the kVVOSCQueryNodeClipMode* constants above.
+	units:(NSArray *)inUnitsArray
+	critical:(BOOL)inCritical;	//	NO by default.  if YES, try to use a TCP connection to send data to this node.
+#endif
 - (instancetype) initWithJSONObject:(NSDictionary *)jo;
 - (instancetype) initWithErrorCode:(int)ec;
 

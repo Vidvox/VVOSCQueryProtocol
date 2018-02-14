@@ -1,0 +1,6 @@
+framework module ALSKit {
+  umbrella header "ALSKit.h"
+
+  export *
+  module * { export * }
+}

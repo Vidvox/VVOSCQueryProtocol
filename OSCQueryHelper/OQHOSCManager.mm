@@ -50,7 +50,7 @@ NSString * const TargetAppHostInfoChangedNotification = @"TargetAppHostInfoChang
 
 - (void) _generalInit	{
 	[super _generalInit];
-	[self setInPortLabelBase:@"OSC Query Helper"];
+	[self setInPortLabelBase:@"OSCQuery Helper"];
 	
 	
 }
@@ -69,7 +69,7 @@ NSString * const TargetAppHostInfoChangedNotification = @"TargetAppHostInfoChang
 		tmpString = @"127.0.0.1";
 	tmpNum = [def objectForKey:@"lastPort"];
 	if (tmpNum == nil)
-		tmpNum = [NSNumber numberWithInteger:1237];
+		tmpNum = [NSNumber numberWithInteger:1240];
 	[self setIPString:tmpString portInt:[tmpNum intValue]];
 	
 	//	fake an outputs-changed notification to make sure my list of destinations updates (in case it refreshes before i'm awake)
@@ -84,7 +84,7 @@ NSString * const TargetAppHostInfoChangedNotification = @"TargetAppHostInfoChang
 		[self removeOutput:outPort];
 		outPort = nil;
 	}
-	outPort = [self createNewOutputToAddress:inIPString atPort:(int)inPortInt withLabel:@"OSC Query Helper"];
+	outPort = [self createNewOutputToAddress:inIPString atPort:(int)inPortInt withLabel:@"OSCQuery Helper"];
 	//	update the UI
 	[ipField setStringValue:[outPort addressString]];
 	[portField setIntValue:[outPort port]];
@@ -125,7 +125,7 @@ NSString * const TargetAppHostInfoChangedNotification = @"TargetAppHostInfoChang
 	//	get an array of the out port labels
 	portLabelArray = [[self outPortLabelArray] mutableCopy];
 	//	remove the output corresponding to my out port
-	[portLabelArray removeObject:@"OSC Query Helper"];
+	[portLabelArray removeObject:@"OSCQuery Helper"];
 	//	push the labels to the pop-up button of destinations
 	[outputDestinationButton addItemsWithTitles:portLabelArray];
 	//	make sure no destinations appear selected
@@ -162,7 +162,7 @@ NSString * const TargetAppHostInfoChangedNotification = @"TargetAppHostInfoChang
 	[[NSNotificationCenter defaultCenter] postNotificationName:TargetAppHostInfoChangedNotification object:nil];
 }
 - (void) receivedOSCMessage:(OSCMessage *)n	{
-	NSLog(@"%s ... %@",__func__,n);
+	//NSLog(@"%s ... %@",__func__,n);
 	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
 	[as dispatchMessage:n];
 }

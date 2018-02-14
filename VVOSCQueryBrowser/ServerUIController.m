@@ -6,6 +6,13 @@
 
 
 
+@interface ServerUIController ()
+- (void) reloadRemoteNodes;
+@end
+
+
+
+
 @implementation ServerUIController
 
 
@@ -29,15 +36,17 @@ static ServerUIController		*_global = nil;
 		//urlReplyDict = nil;
 		//sortedURLReplyDictKeys = nil;
 		urlReplyRemoteNodes = [[NSMutableArray alloc] init];
+		
+		expandedNodeAddresses = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
 - (void) awakeFromNib	{
-	[uiItemOutlineView reloadData];
+	[self fullReloadData];
 }
 
 
-@synthesize server;
+//@synthesize server;
 
 
 - (IBAction) urlFieldUsed:(id)sender	{
@@ -47,6 +56,7 @@ static ServerUIController		*_global = nil;
 		return;
 	}
 	
+	/*
 	//	we're going to strip any queries out of the URL field and then sanitize the path
 	NSURL			*url = [NSURL URLWithString:[urlField stringValue]];
 	NSString		*pathString = [[url absoluteString] stringBySanitizingForOSCPath];
@@ -68,11 +78,12 @@ static ServerUIController		*_global = nil;
 	RemoteNode		*tmpNode = [[RemoteNode alloc] initWithParent:nil dict:urlReplyDict];
 	if (tmpNode != nil)
 		[urlReplyRemoteNodes addObject:tmpNode];
+	*/
 	
 	//	reload the table view, update the text view
-	[uiItemOutlineView reloadData];
+	[self partialReloadData];
 	
-	
+	/*
 	//	make a pretty (indented) string for display in the JSON section
 	NSData			*prettyData = nil;
 	if (@available(macOS 10.13, *)) {
@@ -84,6 +95,7 @@ static ServerUIController		*_global = nil;
 	NSString		*prettyString = [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
 	if (prettyString == nil) prettyString = @"";
 	[rawJSONTextView setString:prettyString];
+	*/
 }
 
 
@@ -100,11 +112,14 @@ static ServerUIController		*_global = nil;
 		return;
 	
 	//	resign as delegate from my existing server
-	[[self server] setDelegate:nil];
+	[server setDelegate:nil];
 	
 	//	update my server, sign up as its delegate
 	server = n;
 	[server setDelegate:self];
+	
+	//	do a full reload (reload the expand states too)
+	[self fullReloadData];
 	
 	//	reset the URL field to the root node, pretend that it just fired off an action to populate the UI
 	[urlField setStringValue:@"/"];
@@ -150,7 +165,7 @@ static ServerUIController		*_global = nil;
 		return;
 	server = nil;
 	[urlField setStringValue:@"/"];
-	[uiItemOutlineView reloadData];
+	[self fullReloadData];
 	[rawJSONTextView setString:@""];
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
@@ -194,15 +209,19 @@ static ServerUIController		*_global = nil;
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathChanged:(NSString *)n	{
 	NSLog(@"%s ... %@",__func__,n);
+	[self partialReloadData];
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathRenamedFrom:(NSString *)oldName to:(NSString *)newName	{
 	NSLog(@"%s ... %@ -> %@",__func__,oldName,newName);
+	[self partialReloadData];
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathRemoved:(NSString *)n	{
 	NSLog(@"%s ... %@",__func__,n);
+	[self partialReloadData];
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)rs pathAdded:(NSString *)n	{
 	NSLog(@"%s ... %@",__func__,n);
+	[self partialReloadData];
 }
 
 
@@ -319,6 +338,107 @@ static ServerUIController		*_global = nil;
 		return 32.;
 	}
 	return 10.;
+}
+- (void)outlineViewItemDidExpand:(NSNotification *)notification	{
+	RemoteNode		*tmpNode = [[notification userInfo] objectForKey:@"NSObject"];
+	if (tmpNode == nil)
+		return;
+	NSString		*tmpPath = [tmpNode fullPath];
+	if (tmpPath == nil)
+		return;
+	@synchronized (self)	{
+		[expandedNodeAddresses addObject:tmpPath];
+	}
+}
+- (void)outlineViewItemDidCollapse:(NSNotification *)notification	{
+	RemoteNode		*tmpNode = [[notification userInfo] objectForKey:@"NSObject"];
+	if (tmpNode == nil)
+		return;
+	NSString		*tmpPath = [tmpNode fullPath];
+	if (tmpPath == nil)
+		return;
+	@synchronized (self)	{
+		[expandedNodeAddresses removeObject:tmpPath];
+	}
+}
+
+
+- (void) reloadRemoteNodes	{
+	NSLog(@"%s",__func__);
+	//	we're going to strip any queries out of the URL field and then sanitize the path
+	NSURL			*url = [NSURL URLWithString:[urlField stringValue]];
+	NSString		*pathString = [[url absoluteString] stringBySanitizingForOSCPath];
+	if (pathString == nil) pathString = @"/";
+	if (![[urlField stringValue] isEqualToString:pathString])
+		[urlField setStringValue:pathString];
+	
+	//	get the string reply from the remote server
+	//urlReplyString = (server==nil) ? nil : [server stringForOSCMethodAtAddress:pathString query:kVVOSCQ_ReqAttr_Contents];
+	urlReplyString = (server==nil) ? nil : [server stringForOSCMethodAtAddress:pathString query:nil];
+	
+	//	convert the reply string to a JSON object (a dict)
+	NSData			*urlReplyData = [urlReplyString dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary	*urlReplyDict = (urlReplyString==nil) ? nil : [NSJSONSerialization JSONObjectWithData:urlReplyData options:0 error:nil];
+	//NSLog(@"\t\turlReplyDict is %@",urlReplyDict);
+	
+	[urlReplyRemoteNodes removeAllObjects];
+	RemoteNode		*tmpNode = [[RemoteNode alloc] initWithParent:nil dict:urlReplyDict];
+	if (tmpNode != nil)
+		[urlReplyRemoteNodes addObject:tmpNode];
+	
+	//	make a pretty (indented) string for display in the JSON section
+	NSData			*prettyData = nil;
+	if (@available(macOS 10.13, *)) {
+		prettyData = (urlReplyDict==nil) ? nil : [NSJSONSerialization dataWithJSONObject:urlReplyDict options:NSJSONWritingPrettyPrinted|NSJSONWritingSortedKeys error:nil];
+		
+	} else {
+		prettyData = (urlReplyDict==nil) ? nil : [NSJSONSerialization dataWithJSONObject:urlReplyDict options:NSJSONWritingPrettyPrinted error:nil];
+	}
+	NSString		*prettyString = [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
+	if (prettyString == nil) prettyString = @"";
+	[rawJSONTextView setString:prettyString];
+}
+- (void) partialReloadData	{
+	NSLog(@"%s",__func__);
+	[self reloadRemoteNodes];
+	
+	//	tell the outline view to reload its data
+	[uiItemOutlineView reloadData];
+	
+	//	run through every row in the outline view, restoring the expand state
+	NSArray		*lastExpNodes = nil;
+	@synchronized (self)	{
+		lastExpNodes = [expandedNodeAddresses copy];
+	}
+	
+	int			theRow = 0;
+	do	{
+		id		anObj = [uiItemOutlineView itemAtRow:theRow];
+		if (anObj != nil)	{
+			//	if the item at this row can potentially be expanded
+			if ([anObj isKindOfClass:[RemoteNode class]] && ([anObj contentsCount]>0 || [anObj controlCount]>0))	{
+				//	was it expanded when we last checked?
+				if ([lastExpNodes containsObject:[anObj fullPath]])
+					[uiItemOutlineView expandItem:anObj];
+			}
+			//	else the item can't potentially be expanded
+			else	{
+				//return NO;
+			}
+		}
+		++theRow;
+	} while (theRow < [uiItemOutlineView numberOfRows]);
+	
+	
+	
+}
+- (void) fullReloadData	{
+	NSLog(@"%s",__func__);
+	@synchronized (self)	{
+		[expandedNodeAddresses removeAllObjects];
+	}
+	[self reloadRemoteNodes];
+	[uiItemOutlineView reloadData];
 }
 
 

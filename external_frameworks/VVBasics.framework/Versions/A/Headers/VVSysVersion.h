@@ -62,9 +62,6 @@ extern int				_minorSysVersion;
 
 + (NSString *) _strControlEntry:(NSString *)ctlKey;
 ///	returns the major version of os x currently being run
-/**
-@param return the "major" version of os x only!
-*/
 + (VVOSVersion) majorSysVersion;
 ///	returns the minor version of os x currently being run (the point-version)
 + (int) minorSysVersion;

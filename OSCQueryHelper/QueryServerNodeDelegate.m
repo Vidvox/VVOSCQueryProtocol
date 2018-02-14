@@ -23,17 +23,8 @@
 
 
 - (void) node:(id)n receivedOSCMessage:(OSCMessage *)msg	{
-	NSLog(@"%s ... %@, %@",__func__,n,msg);
-	/*
-	id			localQueryServer = [self queryServer];
-	if (localQueryServer == nil)
-		return;
-	OSCPacket		*oscPacket = [OSCPacket createWithContent:msg];
-	[localQueryServer
-		listenerNeedsToSendOSCData:[oscPacket payload]
-		sized:[oscPacket bufferLength]
-		fromOSCAddress:[self address]];
-	*/
+	//NSLog(@"%s ... %@, %@",__func__,n,msg);
+	//	intentionally blank- the messages we receive from OSCNodes are coming exclusively from clients, so there's no point in telling the osc query server to stream the values.  the fact that we don't have access to the OSC address space of the app we're "helping" means that this application should not be capable of streaming values at all.
 }
 - (void) nodeNameChanged:(id)node	{
 	NSString		*newName = [node fullName];

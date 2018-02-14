@@ -47,7 +47,12 @@ NSString * kVVOSCQueryOSCTransportTCP = @"TCP";
 NSString * kVVOSCQ_WSAttr_Command = @"COMMAND";
 NSString * kVVOSCQ_WSAttr_Data = @"DATA";
 
+NSString * kVVOSCQ_WSAttr_Cmd_Listen = @"LISTEN";
+NSString * kVVOSCQ_WSAttr_Cmd_Ignore = @"IGNORE";
 NSString * kVVOSCQ_WSAttr_Cmd_PathChanged = @"PATH_CHANGED";
+NSString * kVVOSCQ_WSAttr_Cmd_PathRenamed = @"PATH_RENAMED";
+NSString * kVVOSCQ_WSAttr_Cmd_PathRemoved = @"PATH_REMOVED";
+NSString * kVVOSCQ_WSAttr_Cmd_PathAdded = @"PATH_ADDED";
 
 
 

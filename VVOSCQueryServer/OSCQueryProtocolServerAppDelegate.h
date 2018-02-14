@@ -30,5 +30,7 @@
 - (IBAction) sliderUsed:(id)sender;
 - (IBAction) renameButtonUsed:(id)sender;
 
+- (IBAction) doSomethingClicked:(id)sender;
+
 @end
 

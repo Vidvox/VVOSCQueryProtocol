@@ -145,6 +145,11 @@
 	//	query server updates its address/server array map
 	//	query server informs all clients of the rename
 }
+- (IBAction) doSomethingClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	NSString		*tmpString = [NSString stringWithFormat:@"/asdf/qwer/%d",42];
+	[server sendPathAddedToClients:tmpString];
+}
 
 
 - (void) _updateUIItems	{
@@ -179,10 +184,9 @@
 #pragma mark -------------------------- OSCAddressSpaceDelegateProtocol
 
 
-- (void) nodeRenamed:(OSCNode *)n from:(NSString *)oldName	{
-	NSLog(@"%s ... %@, %@",__func__,n,oldName);
-	if (oldName != nil)
-		[server sendPathRenamedToClients:oldName to:[n fullName]];
+- (void) nodeRenamed:(OSCNode *)n	{
+	NSLog(@"%s ... %@",__func__,n);
+	[server sendPathRenamedToClients:[n lastFullName] to:[n fullName]];
 }
 
 

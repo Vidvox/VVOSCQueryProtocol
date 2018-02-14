@@ -17,16 +17,21 @@
 	IBOutlet NSTabView		*tabView;
 	IBOutlet NSOutlineView	*uiItemOutlineView;
 	IBOutlet NSTextView		*rawJSONTextView;
+	
+	NSMutableArray			*expandedNodeAddresses;	//	contains strings of OSC address paths.  presence of an address path means it's expanded.
 }
 
 //	the global singleton
 @property (class,readonly) ServerUIController * global;
 
-@property (weak) VVOSCQueryRemoteServer * server;
+//@property (weak) VVOSCQueryRemoteServer * server;
 
 - (IBAction) urlFieldUsed:(id)sender;
 
 - (void) newServerChosen:(VVOSCQueryRemoteServer*)n;
 - (void) sendMessageToRemoteServer:(OSCMessage *)n;
+
+- (void) partialReloadData;
+- (void) fullReloadData;
 
 @end
