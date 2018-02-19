@@ -68,6 +68,26 @@
 	return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+	//	check to see if there's a "SampleDocument.json" in ~/Documents/OSCQuery Helper
+	NSFileManager		*fm = [NSFileManager defaultManager];
+	NSString			*tmpDirPath = [@"~/Documents/OSCQuery Helper" stringByExpandingTildeInPath];
+	NSString			*tmpFilePath = [NSString stringWithFormat:@"%@/SampleDocument.json",tmpDirPath];
+	//	if the dir doesn't exist, make it
+	if (![fm fileExistsAtPath:tmpDirPath])	{
+		NSError			*nsErr = nil;
+		if (![fm createDirectoryAtPath:tmpDirPath withIntermediateDirectories:YES attributes:nil error:&nsErr])	{
+			NSLog(@"\t\tERR: couldnt create dir in %s.  %@",__func__,nsErr);
+		}
+	}
+	if (![fm fileExistsAtPath:tmpFilePath])	{
+		NSString		*tmpSrcPath = [[NSBundle mainBundle] pathForResource:@"SampleDocument" ofType:@"json"];
+		if (tmpSrcPath != nil)	{
+			NSError			*nsErr = nil;
+			if (![fm copyItemAtPath:tmpSrcPath toPath:tmpFilePath error:&nsErr])	{
+				NSLog(@"\t\tERR: couldnt copy item in %s.  %@",__func__,nsErr);
+			}
+		}
+	}
 	
 	//	populate the OSC address space with a series of OSC nodes!
 	[self _loadLastFile];
@@ -95,6 +115,10 @@
 #pragma mark -------------------------- UI
 
 
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename	{
+	[self _loadFile:filename];
+	return YES;
+}
 - (IBAction) openDocument:(id)sender	{
 	NSLog(@"%s",__func__);
 	NSUserDefaults	*def = [NSUserDefaults standardUserDefaults];
@@ -161,6 +185,11 @@
 	
 	[[self window] endSheet:helpWindow returnCode:NSModalResponseStop];
 }
+- (IBAction) showSampleDocInFinderClicked:(id)sender	{
+	NSString		*tmpPath = [@"~/Documents/OSCQuery Helper/SampleDocument.json" stringByExpandingTildeInPath];
+	NSURL			*tmpURL = [NSURL fileURLWithPath:tmpPath];
+	[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[tmpURL]];
+}
 
 
 #pragma mark -------------------------- backend
@@ -169,8 +198,15 @@
 - (void) _loadLastFile	{
 	NSUserDefaults		*def = [NSUserDefaults standardUserDefaults];
 	NSString			*tmpString = [def objectForKey:@"lastOpenDocumentFile"];
-	if (tmpString == nil)
-		return;
+	//	if there's no default, try to find the sample document we include and use that
+	if (tmpString == nil)	{
+		NSFileManager		*fm = [NSFileManager defaultManager];
+		NSString			*samplePath = [@"~/Documents/OSCQuery Helper/SampleDocument.json" stringByExpandingTildeInPath];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:samplePath])
+			tmpString = samplePath;
+		else
+			return;
+	}
 	[self _loadFile:tmpString];
 }
 - (void) _loadFile:(NSString *)fullPath	{
@@ -187,9 +223,25 @@
 	//	unserialize the file at the path into a series of JSON objects
 	NSError			*nsErr = nil;
 	NSData			*fileData = [NSData dataWithContentsOfFile:fullPath];
-	NSDictionary	*rawFileObj = [NSJSONSerialization JSONObjectWithData:fileData options:0 error:&nsErr];
+	NSDictionary	*rawFileObj = (fileData==nil) ? nil : [NSJSONSerialization JSONObjectWithData:fileData options:0 error:&nsErr];
 	if (rawFileObj==nil || ![rawFileObj isKindOfClass:[NSDictionary class]])	{
 		NSLog(@"\t\terr: file object is nil or of wrong type for path %@",fullPath);
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			if (![[NSFileManager defaultManager] fileExistsAtPath:fullPath])	{
+				VVRunAlertPanel(@"File cannot be loaded",
+					@"The file you had loaded is missing!",
+					@"OK!",
+					nil,
+					nil);
+			}
+			else	{
+				VVRunAlertPanel(@"File cannot be loaded",
+					@"This file can't be loaded, its contents may be malformed.  Please run it through a JSON linter.",
+					@"OK!",
+					nil,
+					nil);
+			}
+			});
 		return;
 	}
 	NSMutableDictionary		*fileObject = (rawFileObj==nil) ? nil : [rawFileObj mutableCopy];
@@ -208,7 +260,12 @@
 	//	rename the server!
 	NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
 	[server setName:fileName];
-	[server setBonjourName:[NSString stringWithFormat:@"%@ OSCQuery Helper",fileName]];
+	NSString			*bjName = [NSString stringWithFormat:@"%@ OSCQuery Helper",fileName];
+	int					nameLength = [bjName length];
+	if (nameLength > 63)	{
+		bjName = [NSString stringWithFormat:@"%@...%@",[bjName substringWithRange:NSMakeRange(0,30)],[bjName substringWithRange:NSMakeRange(nameLength-30,30)]];
+	}
+	[server setBonjourName:bjName];
 	
 	//	if i'm not reloading a file then i may want to stop observing the file
 	if (!reloadingTheFile)	{
@@ -261,14 +318,8 @@
 	}
 	
 	//	now run through 'fileObject' recursively, creating OSC nodes for all the objects
-	__block __weak void		(^ParseJSONObj)(NSDictionary *);
-	ParseJSONObj = ^(NSDictionary * baseObj)	{
-		NSString		*objFullPath = [baseObj objectForKey:kVVOSCQ_ReqAttr_Path];
-		//NSLog(@"ParseJSONObj() called on %@",objFullPath);
-		if (objFullPath == nil)	{
-			NSLog(@"\t\terr: bailing, node missing full path, %s",__func__);
-			return;
-		}
+	__block __weak void		(^ParseJSONObj)(NSDictionary *, NSString *);
+	ParseJSONObj = ^(NSDictionary * baseObj, NSString * baseObjPath)	{
 		
 		//	parse the base object, looking for entries that describe the kind of OSC node to publish
 		NSString		*objTypeTagString = [baseObj objectForKey:kVVOSCQ_ReqAttr_Type];
@@ -276,12 +327,12 @@
 		NSString		*objDesc = [baseObj objectForKey:kVVOSCQ_ReqAttr_Desc];
 		NSArray			*objTags = [baseObj objectForKey:kVVOSCQ_OptAttr_Tags];
 		NSArray			*objExtType = [baseObj objectForKey:kVVOSCQ_OptAttr_Ext_Type];	//	one for each type from the type tag string
-		NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
+		//NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
 		NSArray			*objRange = [baseObj objectForKey:kVVOSCQ_OptAttr_Range];	//	one for each type from the type tag string
 		NSArray			*objUnits = [baseObj objectForKey:kVVOSCQ_OptAttr_Unit];	//	one for each type from the type tag string
 		NSNumber		*objCritical = [baseObj objectForKey:kVVOSCQ_OptAttr_Critical];
 		
-		OSCNode			*newNode = [[OSCAddressSpace mainAddressSpace] findNodeForAddress:objFullPath createIfMissing:YES];
+		OSCNode			*newNode = [[OSCAddressSpace mainAddressSpace] findNodeForAddress:baseObjPath createIfMissing:YES];
 		if (objTypeTagString != nil)	{
 			[newNode setTypeTagString:objTypeTagString];
 			[newNode setNodeType:OSCNodeTypeNumber];
@@ -294,10 +345,10 @@
 			[newNode setTags:objTags];
 		if (objExtType != nil && [objExtType isKindOfClass:[NSArray class]])
 			[newNode setExtendedType:objExtType];
-		if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
+		//if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
 			//[newNode setAccess:[objAccess intValue]];	//	don't do this, access is always write-only in this application (we can't read the remote app's OSC address space)
 			[newNode setAccess:2];
-		}
+		//}
 		if (objRange != nil && [objRange isKindOfClass:[NSArray class]])
 			[newNode setRange:objRange];
 		if (objUnits != nil && [objUnits isKindOfClass:[NSArray class]])
@@ -313,11 +364,12 @@
 		//	run through the contents, calling this block recursively on each object
 		[objContents enumerateKeysAndObjectsUsingBlock:^(NSString * tmpName, NSDictionary * tmpContentsObj, BOOL *stop)	{
 			if ([tmpContentsObj isKindOfClass:[NSDictionary class]])	{
-				ParseJSONObj(tmpContentsObj);
+				NSString		*tmpPath = [NSString stringWithFormat:@"%@/%@",baseObjPath,tmpName];
+				ParseJSONObj(tmpContentsObj, tmpPath);
 			}
 		}];
 	};
-	ParseJSONObj(fileObject);
+	ParseJSONObj(fileObject, @"");
 	
 	//	restart the server if appropriate
 	if (!reloadingTheFile && wasRunning)

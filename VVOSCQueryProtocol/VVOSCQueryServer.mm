@@ -336,16 +336,17 @@
 }
 */
 - (void) sendJSONObjectToClients:(NSDictionary *)anObj	{
-	NSLog(@"%s - ERR",__func__);
-	/*
+	//NSLog(@"%s - ERR",__func__);
+	if (!webServer.isRunning())
+		return;
 	if (anObj == nil || ![anObj isKindOfClass:[NSDictionary class]])
 		return;
 	NSData			*tmpData = [NSJSONSerialization dataWithJSONObject:anObj options:0 error:nil];
 	NSString		*tmpNSString = [[NSString alloc] initWithData:tmpData encoding:NSUTF8StringEncoding];
 	//std::string			tmpString((char*)[tmpData bytes]);
 	std::string			tmpString([tmpNSString UTF8String]);
-	webServer._sendStringToClients(tmpString);
-	*/
+	webServer.sendJSONStringToClients(tmpString);
+	tmpNSString = nil;
 }
 /*
 - (void) sendNSDataToClients:(NSData *)d	{
@@ -365,25 +366,35 @@
 - (void) listenerNeedsToSendOSCData:(void*)inData sized:(size_t)inDataSize fromOSCAddress:(NSString *)inAddress	{
 	if (inData==nil || inDataSize==0 || inAddress==nil)
 		return;
+	if (!webServer.isRunning())
+		return;
 	webServer.sendOSCPacketToListeners(inData, inDataSize, (const char *)[inAddress UTF8String]);
 }
 - (void) sendPathChangedToClients:(NSString *)n	{
 	if (n==nil)
+		return;
+	if (!webServer.isRunning())
 		return;
 	webServer.sendPathChangedToClients(std::string([n UTF8String]));
 }
 - (void) sendPathRenamedToClients:(NSString *)op to:(NSString *)np	{
 	if (op==nil || np==nil)
 		return;
+	if (!webServer.isRunning())
+		return;
 	webServer.sendPathRenamedToClients(std::string([op UTF8String]), std::string([np UTF8String]));
 }
 - (void) sendPathRemovedToClients:(NSString *)n	{
 	if (n==nil)
 		return;
+	if (!webServer.isRunning())
+		return;
 	webServer.sendPathRemovedToClients(std::string([n UTF8String]));
 }
 - (void) sendPathAddedToClients:(NSString *)n	{
 	if (n==nil)
+		return;
+	if (!webServer.isRunning())
 		return;
 	webServer.sendPathAddedToClients(std::string([n UTF8String]));
 }

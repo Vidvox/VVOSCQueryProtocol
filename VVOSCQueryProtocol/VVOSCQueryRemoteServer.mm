@@ -88,7 +88,7 @@
 - (instancetype) initWithWebServerAddressString:(NSString *)inWebServerAddressString
 port:(int)inWebServerPort
 bonjourName:(NSString *)inBonjourName	{
-	NSLog(@"%s ... %@, %d, %@",__func__,inWebServerAddressString,inWebServerPort,inBonjourName);
+	//NSLog(@"%s ... %@, %d, %@",__func__,inWebServerAddressString,inWebServerPort,inBonjourName);
 	self = [super init];
 	if (self != nil)	{
 		webServerAddressString = inWebServerAddressString;
@@ -275,14 +275,14 @@ bonjourName:(NSString *)inBonjourName	{
 	wsIP = (wsServerAddressString!=nil) ? [self wsServerAddressString] : [self webServerAddressString];
 	wsPort = (wsServerPort!=-1) ? [self wsServerPort] : [self webServerPort];
 	NSString		*wsURI = (wsIP==nil || wsPort<0) ? nil : [NSString stringWithFormat:@"ws://%@:%d",wsIP,wsPort];
-	NSLog(@"\t\tneed to establish ws connection to %@...",wsURI);
+	//NSLog(@"\t\tneed to establish ws connection to %@...",wsURI);
 	if (wsClient != nullptr && wsURI != nil)	{
 		wsClient->connect(std::string([wsURI UTF8String]));
 	}
 	
 }
 - (void) dealloc	{
-	NSLog(@"%s ... %p",__func__,self);
+	//NSLog(@"%s ... %p",__func__,self);
 	webServerAddressString = nil;
 	oscServerAddressString = nil;
 	bonjourName = nil;
@@ -326,11 +326,11 @@ bonjourName:(NSString *)inBonjourName	{
 @synthesize delegate;
 
 - (NSDictionary *) hostInfo;	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	NSDictionary	*returnMe = nil;
 	
 	NSString		*hostInfoQueryAddress = [NSString stringWithFormat:@"http://%@:%d?HOST_INFO",webServerAddressString,webServerPort];
-	NSLog(@"\t\thostInfoQueryAddress is %@",hostInfoQueryAddress);
+	//NSLog(@"\t\thostInfoQueryAddress is %@",hostInfoQueryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:hostInfoQueryAddress];
 	[downloader appendStringToHeader:@"Connection: close"];
 	[downloader setConnectTimeout:5.];

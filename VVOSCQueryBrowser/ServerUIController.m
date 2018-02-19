@@ -126,7 +126,7 @@ static ServerUIController		*_global = nil;
 	[self urlFieldUsed:urlField];
 }
 - (void) sendMessageToRemoteServer:(OSCMessage *)n	{
-	NSLog(@"%s ... %@",__func__,n);
+	//NSLog(@"%s ... %@",__func__,n);
 	if (n == nil)
 		return;
 	if (server == nil)
@@ -364,7 +364,7 @@ static ServerUIController		*_global = nil;
 
 
 - (void) reloadRemoteNodes	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	//	we're going to strip any queries out of the URL field and then sanitize the path
 	NSURL			*url = [NSURL URLWithString:[urlField stringValue]];
 	NSString		*pathString = [[url absoluteString] stringBySanitizingForOSCPath];
@@ -399,7 +399,7 @@ static ServerUIController		*_global = nil;
 	[rawJSONTextView setString:prettyString];
 }
 - (void) partialReloadData	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	[self reloadRemoteNodes];
 	
 	//	tell the outline view to reload its data
@@ -433,7 +433,7 @@ static ServerUIController		*_global = nil;
 	
 }
 - (void) fullReloadData	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	@synchronized (self)	{
 		[expandedNodeAddresses removeAllObjects];
 	}

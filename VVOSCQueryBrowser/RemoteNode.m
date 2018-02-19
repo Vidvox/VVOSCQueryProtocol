@@ -13,6 +13,7 @@
 
 - (id) initWithParent:(RemoteNode *)p dict:(NSDictionary *)d	{
 	//NSLog(@"%s ... %@",__func__,[d objectForKey:kVVOSCQ_ReqAttr_Path]);
+	//NSLog(@"\t\tdict is %@",d);
 	self = [super init];
 	if (self != nil)	{
 		parentNode = p;
@@ -36,6 +37,8 @@
 		corresponding to the OSC type tag string structure.			*/
 		__block __weak void			(^parseBlock)(NSString *typeString, NSArray *jsonValArray, NSArray *jsonRangeArray);
 		parseBlock = ^(NSString *typeString, NSArray *jsonValArray, NSArray *jsonRangeArray)	{
+			//NSLog(@"parseBlock() in %s",__func__);
+			//NSLog(@"\t\ttypeString is %@, valArray is %@, rangeArray is %@",typeString,jsonValArray,jsonRangeArray);
 			if (nsErr != nil)	{
 				NSLog(@"ERR: %@",nsErr);
 				return;
@@ -80,7 +83,7 @@
 			for (typeCharIndex=0; typeCharIndex<[typeString length]; ++typeCharIndex)	{
 				//	make sure that the val and range arrays are long enough to accommodate this entry in the type tag string
 				if (jsonValArray!=nil && arrayIndex>=[jsonValArray count])	{
-					nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"not enough entries is val array for type tage string" }];
+					nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"not enough entries in val array for type tage string" }];
 					NSLog(@"ERR: %@",nsErr);
 					nsErr = nil;
 					jsonValArray = nil;
@@ -98,10 +101,10 @@
 				
 				//	we're going to try to populate these in the following switch statement, and they will be put together after it
 				RemoteNodeControl	*newRemoteNodeControl = nil;
-				OSCValue			*newOSCVal = nil;
-				OSCValue			*newOSCMin = nil;
-				OSCValue			*newOSCMax = nil;
-				NSMutableArray<OSCValue*>	*newOSCVals = nil;
+				OSCValue			*newOSCVal = nil;	//	'VALUE'
+				OSCValue			*newOSCMin = nil;	//	'RANGE'-'MIN'
+				OSCValue			*newOSCMax = nil;	//	'RANGE'-'MAX'
+				NSMutableArray<OSCValue*>	*newOSCVals = nil;	//	'RANGE'-'VALS'
 				
 				//	get the character from the type tag string at this index
 				unichar			tmpTypeChar = [typeString characterAtIndex:typeCharIndex];
@@ -394,6 +397,8 @@
 				
 				//	if we made a new remote node value, finish populating it with whatever values we've extracted so far, then add it to our array
 				if (newRemoteNodeControl != nil)	{
+					//NSLog(@"\t\tmade a newRemoteNodeControl, %@",newRemoteNodeControl);
+					//NSLog(@"\t\tdefault val is %@",newOSCVal);
 					if (newOSCVal != nil)
 						[newRemoteNodeControl setValue:newOSCVal];
 					if (newOSCMin != nil)
@@ -533,6 +538,14 @@
 				else
 					[newMsg addValue:oscValForThisChar];
 				++arrayIndex;
+			}
+			//	T and F get mixed up easily in this app because they're kinda messed up- they're types with no accompanying value, which doesn't fit well with the class/object models
+			else if (([[oscValForThisChar typeTagString] isEqualToString:@"T"] || [[oscValForThisChar typeTagString] isEqualToString:@"F"])	&&
+			([tmpTypeString isEqualToString:@"T"] || [tmpTypeString isEqualToString:@"F"]))	{
+				if ([tmpTypeString isEqualToString:@"T"])
+					[newMsg addValue:[OSCValue createWithBool:YES]];
+				else
+					[newMsg addValue:[OSCValue createWithBool:NO]];
 			}
 			//	else there was a type tag string mismatch- log the error and bail
 			else	{

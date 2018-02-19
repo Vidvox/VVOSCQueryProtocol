@@ -61,10 +61,10 @@
 	[virtualDest sendMsg:m];
 }
 - (NSString *) receivingNodeName	{
-	return @"To Live OSCQuery Helper";
+	return @"To MIDI OSCQuery Helper";
 }
 - (NSString *) sendingNodeName	{
-	return @"From Live OSCQuery Helper";
+	return @"From MIDI OSCQuery Helper";
 }
 
 @synthesize selectedMIDIDst;

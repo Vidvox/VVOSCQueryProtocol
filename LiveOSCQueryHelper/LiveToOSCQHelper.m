@@ -22,6 +22,7 @@
 @implementation LiveToOSCQHelper
 
 + (NSDictionary *) OSCQueryJSONObjectForLiveProject:(NSString *)pathToProject	{
+	NSLog(@"%s",__func__);
 	ALSProject		*tmpProj = [[ALSProject alloc] initWithALSAtPath:pathToProject];
 	if (tmpProj == nil)
 		return nil;

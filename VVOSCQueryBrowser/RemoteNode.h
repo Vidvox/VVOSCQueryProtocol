@@ -22,7 +22,9 @@
 - (NSString *) fullPath;
 - (NSString *) oscDescription;
 
+//	generates a message populated with the values of the node's UI items
 - (void) sendMessage;
+
 - (NSString *) outlineViewIdentifier;
 - (NSUInteger) indexOfControl:(RemoteNodeControl*)n;
 

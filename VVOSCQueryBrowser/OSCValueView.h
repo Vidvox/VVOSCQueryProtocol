@@ -8,7 +8,9 @@
 typedef NS_ENUM(NSInteger, OSCValueViewHint)	{
 	OSCValueViewHint_None = 0,
 	OSCValueViewHint_Slider = 0x01,
-	OSCValueViewHint_PUB = 0x02
+	OSCValueViewHint_PUB = 0x02,
+	OSCValueViewHint_ClickButton = 0x04,
+	OSCValueViewHint_ToggleButton = 0x08
 };
 
 
@@ -26,10 +28,11 @@ typedef NS_ENUM(NSInteger, OSCValueViewHint)	{
 	IBOutlet NSPopUpButton		*popUpButton;
 	IBOutlet NSSlider			*slider;
 	IBOutlet NSButton			*button;
+	IBOutlet NSButton			*toggle;
 	IBOutlet NSTextField		*labelField;
 }
 
-//- (void) setType:(OSCValueType)t value:(OSCValue *)v;
+//	this shows/hides the appropriate UI items and stores the passed hint and value, but does not display them
 - (void) setType:(OSCValueType)t value:(OSCValue *)v hint:(OSCValueViewHint)h valsArray:(NSArray<OSCValue*>*)vals;
 
 @property (readonly) OSCValue * value;
@@ -44,6 +47,7 @@ typedef NS_ENUM(NSInteger, OSCValueViewHint)	{
 - (IBAction) popUpButtonUsed:(id)sender;
 - (IBAction) sliderUsed:(id)sender;
 - (IBAction) buttonUsed:(id)sender;
+- (IBAction) toggleUsed:(id)sender;
 
 - (NSTextField *) textField;
 - (NSColorWell *) colorWell;

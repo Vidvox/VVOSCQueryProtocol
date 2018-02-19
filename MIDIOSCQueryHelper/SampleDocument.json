@@ -1,0 +1,68 @@
+{
+  "CONTENTS" : {
+    "test" : {
+      "CONTENTS" : {
+        "testNote" : {
+          "TYPE" : "f",
+          "RANGE" : [
+            {
+              "MIN" : 0.0,
+              "MAX" : 1.0
+            }
+          ],
+          "MIDI_TYPE" : "NOTE",
+          "MIDI_CHANNEL" : 1,
+          "MIDI_VOICE" : 2
+        },
+        "testAftertouch" : {
+          "TYPE" : "f",
+          "RANGE" : [
+            {
+              "MIN" : 0.0,
+              "MAX" : 1.0
+            }
+          ],
+          "MIDI_TYPE" : "AFTERTOUCH",
+          "MIDI_CHANNEL" : 1,
+          "MIDI_VOICE" : 2
+        },
+        "testCC" : {
+          "TYPE" : "f",
+          "RANGE" : [
+            {
+              "MIN" : 0.0,
+              "MAX" : 1.0
+            }
+          ],
+          "MIDI_TYPE" : "CC",
+          "MIDI_CHANNEL" : 1,
+          "MIDI_VOICE" : 2
+        },
+        "testPGM" : {
+          "TYPE" : "i",
+          "RANGE" : [
+            {
+              "MIN" : 0,
+              "MAX" : 16
+            }
+          ],
+          "MIDI_TYPE" : "PGM",
+          "MIDI_CHANNEL" : 1,
+        },
+        "testPitch" : {
+          "TYPE" : "f",
+          "RANGE" : [
+            {
+              "MIN" : 0.0,
+              "MAX" : 1.0
+            }
+          ],
+          "MIDI_TYPE" : "PITCH",
+          "MIDI_CHANNEL" : 1,
+        }
+      },
+      "DESCRIPTION" : "test directory",
+    },
+  },
+  "DESCRIPTION" : "root node",
+}

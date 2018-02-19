@@ -49,7 +49,8 @@
 		if (tmpNodeJSONDict != nil && tmpKey != nil)
 			[contentsDict setObject:tmpNodeJSONDict forKey:tmpKey];
 	}
-	[returnMe setObject:contentsDict forKey:kVVOSCQ_ReqAttr_Contents];
+	if ([contentsDict count]>0)
+		[returnMe setObject:contentsDict forKey:kVVOSCQ_ReqAttr_Contents];
 	
 	return returnMe;
 }
@@ -129,7 +130,8 @@
 			if (tmpNodeJSONDict != nil && tmpKey != nil)
 				[contentsDict setObject:tmpNodeJSONDict forKey:tmpKey];
 		}
-		[returnMe setObject:contentsDict forKey:kVVOSCQ_ReqAttr_Contents];
+		if ([contentsDict count]>0)
+			[returnMe setObject:contentsDict forKey:kVVOSCQ_ReqAttr_Contents];
 	}
 	
 	return returnMe;

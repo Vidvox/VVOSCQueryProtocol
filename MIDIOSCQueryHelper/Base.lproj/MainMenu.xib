@@ -836,14 +836,14 @@
         <window title="Help Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="cuM-OG-ALe">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="850" height="683"/>
+            <rect key="contentRect" x="196" y="240" width="980" height="683"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <view key="contentView" id="7Gf-Zg-9sI">
-                <rect key="frame" x="0.0" y="0.0" width="850" height="683"/>
+            <view key="contentView" misplaced="YES" id="7Gf-Zg-9sI">
+                <rect key="frame" x="0.0" y="0.0" width="980" height="683"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="f8N-Jw-JTR">
-                        <rect key="frame" x="389" y="13" width="75" height="32"/>
+                        <rect key="frame" x="455" y="13" width="75" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="POL-NA-l5r">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -854,11 +854,11 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="uDj-ib-Vq2">
-                        <rect key="frame" x="18" y="85" width="814" height="578"/>
+                        <rect key="frame" x="18" y="85" width="944" height="578"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="BOu-KW-Ryi">
                             <font key="font" metaFont="system"/>
-                            <string key="title">MIDI OSCQuery Helper ("MOQH" from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI.
+                            <mutableString key="title">MIDI OSCQuery Helper ("MOQH" from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI.
 
 - This app uses JSON files loaded into it to create an OSC address space.
 - This app runs an OSC query server- this query server publishes the details of the address space.
@@ -873,17 +873,28 @@ If MOQH is running, the OSC query server is running- you can check it with any O
 
 FILE TYPE:
 
-- JSON files can be imported.  The JSON files that you import should be nearly identical to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  There are, however, several additional keys/values which must be used to indicate what sort of MIDI value should be sent- the query server will not publish any OSC nodes that are missing the following keys:
+- JSON files can be imported- a sample file demonstrating the various basic MIDI data types is already installed on your machine in "~/Documents/MIDI OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  There are, however, several additional keys/values which must be used to indicate what sort of MIDI value should be sent- the query server will not publish any OSC nodes that are missing the following keys:
 	- "MIDI_TYPE": The value stored at the key "MIDI_TYPE" must be one of the following strings: "NOTE", "AFTERTOUCH", "CC", "PGM", or "PITCH".  This value indicates what kind of MIDI message should be sent when an OSC message is received by this node.
 	- "MIDI_CHANNEL": The value stored at the key "MIDI_CHANNEL" must be an integer.  This value describes the channel on which the MIDI message will be sent.
-	- "MIDI_VOICE": The value stored at the key "MIDI_VOICE" must be an integer.  This value describes which controller or note will be used to send the value from the OSC message.</string>
+	- "MIDI_VOICE": The value stored at the key "MIDI_VOICE" must be an integer.  This value describes which controller or note will be used to send the value from the OSC message.</mutableString>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="rWD-c5-l1r">
+                        <rect key="frame" x="722" y="49" width="244" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Show Sample Document in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EC6-Su-a1b">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="showSampleDocInFinderClicked:" target="Voe-Tx-rLC" id="pLE-j6-ONT"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="380" y="446.5"/>
+            <point key="canvasLocation" x="445" y="446.5"/>
         </window>
         <customObject id="jaG-MP-jv1" userLabel="OSC Manager" customClass="MOQHOSCManager">
             <connections>

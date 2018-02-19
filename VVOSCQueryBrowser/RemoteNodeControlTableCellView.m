@@ -74,13 +74,31 @@
 	OSCValueViewHint	tmpHint = OSCValueViewHint_None;
 	//	if there's an array of explicit vals, we're going to be using a PUB
 	if (tmpVals!=nil && [tmpVals count]>0)	{
+		//NSLog(@"\t\tPUB hint");
 		tmpHint |= OSCValueViewHint_PUB;
 	}
 	//	else there isn't an array of explicit vals...
 	else	{
 		//	if there's a min and a max, provide a slider hint
-		if (tmpMin!=nil && tmpMax!=nil && [tmpMin compare:tmpMax]!=NSOrderedSame)
-			tmpHint |= OSCValueViewHint_Slider;
+		if (tmpMin!=nil && tmpMax!=nil)	{
+			//	if the min and max are different
+			if ([tmpMin compare:tmpMax] != NSOrderedSame)	{
+				//	if the min is 0 and the max is 1 and the type is int show a toggle
+				if ([tmpMin calculateIntValue]==0 && [tmpMax calculateIntValue]==1 && type==OSCValInt)	{
+					//NSLog(@"\t\ttoggle hint");
+					tmpHint |= OSCValueViewHint_ToggleButton;
+				}
+				else	{
+					//NSLog(@"\t\tslider hint");
+					tmpHint |= OSCValueViewHint_Slider;
+				}
+			}
+			//	else the min and max are the same, show a click button
+			else	{
+				//NSLog(@"\t\tclick button hint");
+				tmpHint |= OSCValueViewHint_ClickButton;
+			}
+		}
 	}
 	
 	//	update the value view with the type, value, value view hint, and array of explicit vals...
@@ -107,7 +125,7 @@
 		//	if a slider is visible, we have to set its min/max vals
 		NSSlider		*tmpSlider = [valueView slider];
 		if (![tmpSlider isHidden] && tmpMin!=nil && tmpMax!=nil)	{
-			if ([tmpSlider minValue] != [tmpMin calculateDoubleValue] || [tmpSlider maxValue] != [tmpMax calculateDoubleValue])	{
+			if (tmpMin!=nil && tmpMax!=nil)	{
 				//NSLog(@"\t\tmismatch in slider min/max, resetting them");
 				//	we have to do this twice because we don't know what the prior min/max were...
 				[tmpSlider setMinValue:[tmpMin calculateDoubleValue]];
@@ -115,6 +133,13 @@
 				[tmpSlider setMinValue:[tmpMin calculateDoubleValue]];
 				[tmpSlider setMaxValue:[tmpMax calculateDoubleValue]];
 			}
+			else	{
+				[tmpSlider setMinValue:0.0];
+				[tmpSlider setMaxValue:1.0];
+				[tmpSlider setMinValue:0.0];
+				[tmpSlider setMaxValue:1.0];
+			}
+			
 			if (tmpVal != nil)	{
 				//	we're going to use floats to do the comparison even though the vals are doubles
 				float		tmpValA = (float)[tmpSlider doubleValue];
@@ -123,7 +148,7 @@
 				{
 					//NSLog(@"\t\tfound val, setting slider val to %@",tmpVal);
 					//NSLog(@"\t\ttmpValA is %f, tmpValB is %f",tmpValA,tmpValB);
-					[tmpSlider setDoubleValue:[tmpVal doubleValue]];
+					[tmpSlider setFloatValue:tmpValB];
 				}
 			}
 			else	{

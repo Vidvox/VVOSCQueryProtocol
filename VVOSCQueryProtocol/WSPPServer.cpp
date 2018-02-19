@@ -531,6 +531,9 @@ void WSPPServer::sendPathRemovedToClients(const std::string & inRemovedPath)	{
 void WSPPServer::sendPathAddedToClients(const std::string & inAddedPath)	{
 	_sendStringToClients(FmtString("{ \"COMMAND\": \"PATH_ADDED\", \"DATA\": \"%s\" }",inAddedPath.c_str()));
 }
+void WSPPServer::sendJSONStringToClients(const std::string & inJSONString)	{
+	_sendStringToClients(inJSONString);
+}
 /*
 void WSPPServer::sendDataToClients(const void * bufferToSend, const int & sizeOfBuffer)	{
 	//cout << __PRETTY_FUNCTION__ << endl;

@@ -93,6 +93,8 @@
 		1A7C48F61FD586DB00AE4287 /* VVOSCQueryStringUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C48F41FD586DB00AE4287 /* VVOSCQueryStringUtilities.cpp */; };
 		1A7C48F71FD586DB00AE4287 /* VVOSCQueryStringUtilities.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 1A7C48F51FD586DB00AE4287 /* VVOSCQueryStringUtilities.hpp */; };
 		1A8A970D1FCF4E5500FEB54A /* OSCNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A970C1FCF4E5500FEB54A /* OSCNodeAdditions.m */; };
+		1A8FA952203C6AC400778651 /* SampleDocument.json in Resources */ = {isa = PBXBuildFile; fileRef = 1A8FA951203C6AC400778651 /* SampleDocument.json */; };
+		1A8FA954203C6E7C00778651 /* SampleDocument.json in Resources */ = {isa = PBXBuildFile; fileRef = 1A8FA953203C6E7C00778651 /* SampleDocument.json */; };
 		1A906E801FCC8D1700F0E412 /* NSNetServiceAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A906E7E1FCC8D1700F0E412 /* NSNetServiceAdditions.h */; };
 		1A906E811FCC8D1700F0E412 /* NSNetServiceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A906E7F1FCC8D1700F0E412 /* NSNetServiceAdditions.m */; };
 		1A906E8F1FCC9AAF00F0E412 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A906E8E1FCC9AAA00F0E412 /* Foundation.framework */; };
@@ -421,6 +423,8 @@
 		1A7C48F51FD586DB00AE4287 /* VVOSCQueryStringUtilities.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VVOSCQueryStringUtilities.hpp; sourceTree = "<group>"; };
 		1A8A970B1FCF4E5500FEB54A /* OSCNodeAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCNodeAdditions.h; sourceTree = "<group>"; };
 		1A8A970C1FCF4E5500FEB54A /* OSCNodeAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSCNodeAdditions.m; sourceTree = "<group>"; };
+		1A8FA951203C6AC400778651 /* SampleDocument.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SampleDocument.json; sourceTree = "<group>"; };
+		1A8FA953203C6E7C00778651 /* SampleDocument.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SampleDocument.json; sourceTree = "<group>"; };
 		1A906E7E1FCC8D1700F0E412 /* NSNetServiceAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSNetServiceAdditions.h; sourceTree = "<group>"; };
 		1A906E7F1FCC8D1700F0E412 /* NSNetServiceAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSNetServiceAdditions.m; sourceTree = "<group>"; };
 		1A906E8E1FCC9AAA00F0E412 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -596,6 +600,7 @@
 			children = (
 				1A1A866420250EE300D72817 /* OSCQueryHelperAppDelegate.h */,
 				1A1A866520250EE300D72817 /* OSCQueryHelperAppDelegate.m */,
+				1A8FA951203C6AC400778651 /* SampleDocument.json */,
 				1AE214BE20349C7E006FEC2B /* Credits.rtf */,
 				1A1A866720250EE300D72817 /* Assets.xcassets */,
 				1A1A866920250EE300D72817 /* MainMenu.xib */,
@@ -737,6 +742,7 @@
 			children = (
 				1AE8FD172033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.h */,
 				1AE8FD182033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.m */,
+				1A8FA953203C6E7C00778651 /* SampleDocument.json */,
 				1AE214C220349C96006FEC2B /* Credits.rtf */,
 				1AE8FD1A2033388F007A3398 /* Assets.xcassets */,
 				1AE8FD1C2033388F007A3398 /* MainMenu.xib */,
@@ -1048,6 +1054,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A8FA952203C6AC400778651 /* SampleDocument.json in Resources */,
 				1A1A866820250EE300D72817 /* Assets.xcassets in Resources */,
 				1AE214BF20349C7E006FEC2B /* Credits.rtf in Resources */,
 				1A1A866B20250EE300D72817 /* MainMenu.xib in Resources */,
@@ -1094,6 +1101,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A8FA954203C6E7C00778651 /* SampleDocument.json in Resources */,
 				1AE8FD1B2033388F007A3398 /* Assets.xcassets in Resources */,
 				1AE214C320349C96006FEC2B /* Credits.rtf in Resources */,
 				1AE8FD1E2033388F007A3398 /* MainMenu.xib in Resources */,

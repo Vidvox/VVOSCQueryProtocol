@@ -98,6 +98,7 @@ public:
 	void sendPathRenamedToClients(const std::string & inOldPath, const std::string & inNewPath);
 	void sendPathRemovedToClients(const std::string & inRemovedPath);
 	void sendPathAddedToClients(const std::string & inAddedPath);
+	void sendJSONStringToClients(const std::string & inJSONString);
 	
 	//void sendDataToClients(const void * bufferToSend, const int & sizeOfBuffer);
 	//	call this method to send the passed OSC packet data to the clients that signed up to LISTEN to the passed path.

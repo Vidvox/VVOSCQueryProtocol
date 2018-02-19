@@ -1,0 +1,283 @@
+{
+	"CONTENTS" : {
+		"test" : {
+			"CONTENTS" : {
+				"my_char" : {
+					"TYPE" : "c",
+					"DESCRIPTION" : "character node",
+					"TAGS" : [
+						"character input"
+					]
+				},
+				"my_color" : {
+					"TYPE" : "r",
+					"DESCRIPTION" : "color node",
+					"TAGS" : [
+						"color input"
+					],
+					"UNIT" : [
+						"RGBA"
+					]
+				},
+				"my_double" : {
+					"TYPE" : "d",
+					"DESCRIPTION" : "double node",
+					"RANGE" : [
+						{
+							"MAX" : 100,
+							"MIN" : 0
+						}
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"TAGS" : [
+						"double input"
+					],
+					"UNIT" : [
+						"precise unit"
+					]
+				},
+				"my_false" : {
+					"TYPE" : "F",
+					"DESCRIPTION" : "false node",
+					"TAGS" : [
+						"false input"
+					]
+				},
+				"my_float" : {
+					"TYPE" : "f",
+					"DESCRIPTION" : "float node",
+					"RANGE" : [
+						{
+							"MAX" : 100,
+							"MIN" : 0
+						}
+					],
+					"TAGS" : [
+						"float input"
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"UNIT" : [
+						"percent"
+					]
+				},
+				"my_infinity" : {
+					"TYPE" : "I",
+					"DESCRIPTION" : "infinity node",
+					"TAGS" : [
+						"infinity input"
+					]
+				},
+				"my_int" : {
+					"TYPE" : "i",
+					"DESCRIPTION" : "integer node",
+					"RANGE" : [
+						{
+							"MAX" : 100,
+							"MIN" : 0
+						}
+					],
+					"TAGS" : [
+						"integer input"
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"UNIT" : [
+						"dollars"
+					]
+				},
+				"my_longlong" : {
+					"TYPE" : "h",
+					"DESCRIPTION" : "64-bit int node",
+					"RANGE" : [
+						{
+							"MAX" : 100,
+							"MIN" : 0
+						}
+					],
+					"TAGS" : [
+						"64-bit integer input"
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"UNIT" : [
+						"big numbers"
+					]
+				},
+				"my_midi" : {
+					"DESCRIPTION" : "MIDI node",
+					"TAGS" : [
+						"midi input"
+					],
+					"TYPE" : "m"
+				},
+				"my_null" : {
+					"DESCRIPTION" : "null node",
+					"TAGS" : [
+						"null input"
+					],
+					"TYPE" : "N"
+				},
+				"my_string" : {
+					"DESCRIPTION" : "string node",
+					"TAGS" : [
+						"string input"
+					],
+					"TYPE" : "s"
+				},
+				"my_true" : {
+					"DESCRIPTION" : "true node",
+					"TAGS" : [
+						"true input"
+					],
+					"TYPE" : "T"
+				},
+				"timetag" : {
+					"DESCRIPTION" : "timetag node",
+					"TAGS" : [
+						"timetag input"
+					],
+					"TYPE" : "t"
+				}
+			},
+			"DESCRIPTION" : "directory",
+		},
+		"tuples" : {
+			"CONTENTS" : {
+				"first" : {
+					"TYPE" : "i[ii]i",
+					"DESCRIPTION" : "integer tuple node",
+					"RANGE" : [
+						{
+							"MAX" : 10,
+							"MIN" : 0
+						},
+						[
+							{
+								"MAX" : 20,
+								"MIN" : 10
+							},
+							{
+								"VALS" : [
+									22,
+									24,
+									26,
+									28,
+									29
+								]
+							}
+						],
+						{
+							"MAX" : 40,
+							"MIN" : 30
+						}
+					],
+					"TAGS" : [
+						"SUPER MEGA AWESOME input"
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"UNIT" : [
+						"stinky gym socks"
+					]
+				},
+				"second" : {
+					"TYPE" : "i[sf]dc",
+					"DESCRIPTION" : "integer tuple node",
+					"RANGE" : [
+						{
+							"MAX" : 10,
+							"MIN" : 0
+						},
+						[
+							{
+								"VALS" : [
+									"one",
+									"two",
+									"hey you"
+								]
+							},
+							{
+								"VALS" : [
+									22,
+									24,
+									26,
+									28,
+									29
+								]
+							}
+						],
+						{
+							"MAX" : 1,
+							"MIN" : 0
+						},
+						{
+							"VALS" : [
+								"a",
+								"b",
+								"c",
+								"d",
+								"z"
+							]
+						}
+					],
+					"TAGS" : [
+						"integer symbol float double char tuple input"
+					],
+					"CLIPMODE" : [
+						"none"
+					]
+				}
+			},
+			"DESCRIPTION" : "vecs directory",
+		},
+		"vecs" : {
+			"CONTENTS" : {
+				"first" : {
+					"TYPE" : "iiii",
+					"DESCRIPTION" : "integer vec node",
+					"RANGE" : [
+						{
+							"MAX" : 10,
+							"MIN" : 0
+						},
+						{
+							"MAX" : 20,
+							"MIN" : 10
+						},
+						{
+							"VALS" : [
+								22,
+								24,
+								26,
+								28,
+								29
+							]
+						},
+						{
+							"MAX" : 40,
+							"MIN" : 30
+						}
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"TAGS" : [
+						"integer vec input"
+					],
+					"UNIT" : [
+						"dollars"
+					]
+				}
+			},
+			"DESCRIPTION" : "vecs directory",
+		}
+	},
+	"DESCRIPTION" : "root node",
+}

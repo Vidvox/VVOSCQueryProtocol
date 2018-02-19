@@ -19,6 +19,7 @@
 	IBOutlet NSWindow		*helpWindow;
 }
 
+- (IBAction) showSampleDocInFinderClicked:(id)sender;
 
 @end
 

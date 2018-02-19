@@ -89,6 +89,11 @@
 	}
 	[delegates removeAllObjects];
 }
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename	{
+	NSLog(@"%s ... %@",__func__,filename);
+	[self _loadFile:filename];
+	return YES;
+}
 
 
 #pragma mark -------------------------- UI
@@ -203,7 +208,12 @@
 	//	rename the server!
 	NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
 	[server setName:fileName];
-	[server setBonjourName:[NSString stringWithFormat:@"%@ Live OSCQuery Helper",fileName]];
+	NSString			*bjName = [NSString stringWithFormat:@"%@ OSCQuery Helper",fileName];
+	int					nameLength = [bjName length];
+	if (nameLength > 63)	{
+		bjName = [NSString stringWithFormat:@"%@...%@",[bjName substringWithRange:NSMakeRange(0,30)],[bjName substringWithRange:NSMakeRange(nameLength-30,30)]];
+	}
+	[server setBonjourName:bjName];
 	
 	//	if i'm not reloading a file then i may want to stop observing the file
 	if (!reloadingTheFile)	{
@@ -313,10 +323,10 @@
 				[newNode setTags:objTags];
 			if (objExtType != nil && [objExtType isKindOfClass:[NSArray class]])
 				[newNode setExtendedType:objExtType];
-			if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
+			//if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
 				//[newNode setAccess:[objAccess intValue]];	//	don't do this, access is always write-only in this application (we can't read the remote app's OSC address space)
 				[newNode setAccess:2];
-			}
+			//}
 			if (objRange != nil && [objRange isKindOfClass:[NSArray class]])
 				[newNode setRange:objRange];
 			if (objUnits != nil && [objUnits isKindOfClass:[NSArray class]])

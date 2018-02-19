@@ -878,11 +878,11 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="pQV-4Z-NFR">
-                        <rect key="frame" x="18" y="112" width="663" height="425"/>
+                        <rect key="frame" x="18" y="112" width="663" height="442"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="m6n-mg-3TP">
                             <font key="font" metaFont="system"/>
-                            <string key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC, but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
+                            <mutableString key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC, but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
 
 HOW TO USE IT:
 1)- Tell OQH what file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  OQH will "watch" the file and if it is updated, the query server will automatically update itself, and then notify all connected clients that it has been updated.  For more information about the supported file type(s), see "FILE TYPE".
@@ -892,11 +892,22 @@ If OQH is running, the OSC query server is running- you can check it with any OS
 
 FILE TYPE:
 
-- JSON files can be imported.  The JSON files that you import should be nearly identical to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object to specify the connection details of the target app (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</string>
+- JSON files can be imported- a sample file demonstrating a wide variety of OSC types is already installed on your machine in "~/Documents/OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object if you want to hard-code the connection details of the target app or device (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</mutableString>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="SO3-BN-V8r">
+                        <rect key="frame" x="441" y="76" width="244" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Show Sample Document in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mW8-z7-oUy">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="showSampleDocInFinderClicked:" target="Voe-Tx-rLC" id="G5a-bj-JLV"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
             <point key="canvasLocation" x="304.5" y="414"/>
