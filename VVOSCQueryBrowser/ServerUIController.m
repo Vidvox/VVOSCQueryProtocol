@@ -112,11 +112,11 @@ static ServerUIController		*_global = nil;
 		return;
 	
 	//	resign as delegate from my existing server
-	[server setDelegate:nil];
+	[server removeDelegate:self];
 	
 	//	update my server, sign up as its delegate
 	server = n;
-	[server setDelegate:self];
+	[server addDelegate:self];
 	
 	//	do a full reload (reload the expand states too)
 	[self fullReloadData];
@@ -170,7 +170,7 @@ static ServerUIController		*_global = nil;
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
 	NSLog(@"%s ... %@",__func__,jsonObj);
-	NSLog(@"\t\tshould be checking for and handling PATH_CHANGED here, %s",__func__);
+	//NSLog(@"\t\tshould be checking for and handling PATH_CHANGED here, %s",__func__);
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer receivedOSCPacket:(const void *)packet sized:(size_t)packetSize	{
 	//NSLog(@"%s ... %p, %ld",__func__,packet,packetSize);
@@ -439,6 +439,7 @@ static ServerUIController		*_global = nil;
 	}
 	[self reloadRemoteNodes];
 	[uiItemOutlineView reloadData];
+	[uiItemOutlineView expandItem:nil expandChildren:YES];
 }
 
 

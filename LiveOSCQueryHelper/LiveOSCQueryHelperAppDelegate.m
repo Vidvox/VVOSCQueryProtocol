@@ -209,7 +209,7 @@
 	NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
 	[server setName:fileName];
 	NSString			*bjName = [NSString stringWithFormat:@"%@ OSCQuery Helper",fileName];
-	int					nameLength = [bjName length];
+	int					nameLength = (int)[bjName length];
 	if (nameLength > 63)	{
 		bjName = [NSString stringWithFormat:@"%@...%@",[bjName substringWithRange:NSMakeRange(0,30)],[bjName substringWithRange:NSMakeRange(nameLength-30,30)]];
 	}
@@ -304,7 +304,7 @@
 		NSString		*objDesc = [baseObj objectForKey:kVVOSCQ_ReqAttr_Desc];
 		NSArray			*objTags = [baseObj objectForKey:kVVOSCQ_OptAttr_Tags];
 		NSArray			*objExtType = [baseObj objectForKey:kVVOSCQ_OptAttr_Ext_Type];	//	one for each type from the type tag string
-		NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
+		//NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
 		NSArray			*objRange = [baseObj objectForKey:kVVOSCQ_OptAttr_Range];	//	one for each type from the type tag string
 		NSArray			*objUnits = [baseObj objectForKey:kVVOSCQ_OptAttr_Unit];	//	one for each type from the type tag string
 		NSNumber		*objCritical = [baseObj objectForKey:kVVOSCQ_OptAttr_Critical];

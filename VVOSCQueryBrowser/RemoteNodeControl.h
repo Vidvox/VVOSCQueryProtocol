@@ -62,6 +62,7 @@ case 'I':
 
 @property (weak) RemoteNode * parentNode;
 //@property (assign) int index;
+@property (readonly) int index;
 @property (strong) NSString * typeString;
 @property (strong) OSCValue * value;
 @property (strong) OSCValue * min;

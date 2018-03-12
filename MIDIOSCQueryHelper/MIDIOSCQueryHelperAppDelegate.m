@@ -198,7 +198,6 @@
 	NSString			*tmpString = [def objectForKey:@"lastOpenDocumentFile"];
 	//	if there's no default, try to find the sample document we include and use that
 	if (tmpString == nil)	{
-		NSFileManager		*fm = [NSFileManager defaultManager];
 		NSString			*samplePath = [@"~/Documents/MIDI OSCQuery Helper/SampleDocument.json" stringByExpandingTildeInPath];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:samplePath])
 			tmpString = samplePath;
@@ -258,7 +257,7 @@
 	NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
 	[server setName:fileName];
 	NSString			*bjName = [NSString stringWithFormat:@"%@ OSCQuery Helper",fileName];
-	int					nameLength = [bjName length];
+	int					nameLength = (int)[bjName length];
 	if (nameLength > 63)	{
 		bjName = [NSString stringWithFormat:@"%@...%@",[bjName substringWithRange:NSMakeRange(0,30)],[bjName substringWithRange:NSMakeRange(nameLength-30,30)]];
 	}

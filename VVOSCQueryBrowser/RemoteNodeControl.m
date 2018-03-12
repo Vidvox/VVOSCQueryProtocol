@@ -81,6 +81,9 @@
 
 
 @synthesize parentNode;
+- (int) index	{
+	return (parentNode==nil) ? 0 : (int)[parentNode indexOfControl:self];
+}
 @synthesize typeString;
 @synthesize value;
 @synthesize min;

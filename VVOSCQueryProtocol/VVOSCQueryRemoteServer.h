@@ -55,11 +55,7 @@
 	NSString		*wsServerAddressString;
 	int				wsServerPort;
 	
-#if __has_feature(objc_arc)
-	__weak id<VVOSCQueryRemoteServerDelegate>		delegate;
-#else
-	id<VVOSCQueryRemoteServerDelegate>		delegate;
-#endif
+	NSMutableArray		*delegateRefs;	//	array of ZWRObject instances, each instance is a zeroing weak ref to a delegate
 }
 
 //	you should try to avoid retaining any of these remote servers- use a weak ref if you want to store a ptr to one of them.
@@ -87,12 +83,10 @@
 @property (readonly) NSString *wsServerAddressString;
 @property (readonly) int wsServerPort;
 
-//	the delegate is notified if the remote server goes offline.  the delegate is also notified if the server delivers a JSON blob over the websocket connection.
-#if __has_feature(objc_arc)
-@property (weak) id<VVOSCQueryRemoteServerDelegate> delegate;
-#else
-@property (assign) id<VVOSCQueryRemoteServerDelegate> delegate;
-#endif
+//	delegates are informed of a variety of server events, including path add/remove/change callbacks, OSC packets delivered over the websocket connection, other miscellaneous websocket data, and offline callbacks
+- (void) addDelegate:(id<VVOSCQueryRemoteServerDelegate>)n;
+- (void) removeDelegate:(id<VVOSCQueryRemoteServerDelegate>)n;
+- (NSArray *) delegateRefs;
 
 //	synchronous- queries the remote server for its host info
 - (NSDictionary *) hostInfo;

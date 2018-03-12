@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #import "CURLDL.h"
 #include "WSPPClient.hpp"
+#import "ZWRObject.h"
 
 
 
@@ -76,6 +77,7 @@
 	return returnMe;
 }
 + (void) initialize	{
+	//NSLog(@"%s",__func__);
 	//	initialize the constants class, which will finish defining any constants if necessary
 	[VVOSCQueryConstants class];
 	//	initialize the server detector, which will start looking for bonjour services that list OSC query servers
@@ -99,7 +101,8 @@ bonjourName:(NSString *)inBonjourName	{
 		wsServerAddressString = nil;
 		wsServerPort = -1;
 		bonjourName = inBonjourName;
-		delegate = nil;
+		//delegate = nil;
+		delegateRefs = [[NSMutableArray alloc] init];
 		wsClient = make_shared<WSPPClient>();
 		
 		__weak id		bss = self;
@@ -128,9 +131,15 @@ bonjourName:(NSString *)inBonjourName	{
 				//	pass the parsed json object to my delegate, which may have a reply of some sort
 				if (parsedJSONObject != nil)	{
 					//NSLog(@"\t\tbss is %p",bss);
-					__weak id<VVOSCQueryRemoteServerDelegate>			tmpDelegate = [(VVOSCQueryRemoteServer*)bss delegate];
-					if (tmpDelegate != nil)
-						[tmpDelegate remoteServer:bss websocketDeliveredJSONObject:parsedJSONObject];
+					
+					dispatch_async(dispatch_get_main_queue(), ^{
+						for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+							id		tmpDelegate = [tmpDelegateHolder object];
+							if (tmpDelegate != nil)
+								[tmpDelegate remoteServer:bss websocketDeliveredJSONObject:parsedJSONObject];
+						}
+					});
+					
 				}
 				//	if i don't have a delegate, or my delegate doesn't have a reply, skip a reply
 				//if (returnMe == nil)	{
@@ -144,18 +153,22 @@ bonjourName:(NSString *)inBonjourName	{
 		wsClient->set_osc_callback([&,bss](const void * inBuffer, const size_t & inBufferSize)	{
 			//cout << __PRETTY_FUNCTION__ << " osc callback" << endl;
 			@autoreleasepool	{
-				__weak id<VVOSCQueryRemoteServerDelegate>			tmpDelegate = [(VVOSCQueryRemoteServer*)bss delegate];
-				if (tmpDelegate != nil)
-					[tmpDelegate remoteServer:bss receivedOSCPacket:inBuffer sized:inBufferSize];
+				for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+					id		tmpDelegate = [tmpDelegateHolder object];
+					if (tmpDelegate != nil)
+						[tmpDelegate remoteServer:bss receivedOSCPacket:inBuffer sized:inBufferSize];
+				}
 			}
 		});
 		wsClient->set_close_callback([&,bss](void)	{
 			@autoreleasepool	{
 				dispatch_async(dispatch_get_main_queue(), ^{
 					//	notify my delegate that this server went offline
-					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil)
-						[tmpDelegate remoteServerWentOffline:bss];
+					for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+						id		tmpDelegate = [tmpDelegateHolder object];
+						if (tmpDelegate != nil)
+							[tmpDelegate remoteServerWentOffline:bss];
+					}
 				});
 			}
 		});
@@ -163,9 +176,11 @@ bonjourName:(NSString *)inBonjourName	{
 			@autoreleasepool	{
 				NSString	*tmpString = [[NSString alloc] initWithCString:inPathString.c_str() encoding:NSUTF8StringEncoding];
 				dispatch_async(dispatch_get_main_queue(), ^{
-					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil)
-						[tmpDelegate remoteServer:bss pathChanged:tmpString];
+					for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+						id		tmpDelegate = [tmpDelegateHolder object];
+						if (tmpDelegate != nil)
+							[tmpDelegate remoteServer:bss pathChanged:tmpString];
+					}
 				});
 				tmpString = nil;
 			}
@@ -175,11 +190,10 @@ bonjourName:(NSString *)inBonjourName	{
 				NSString		*oldPath = [[NSString alloc] initWithCString:oldPathString.c_str() encoding:NSUTF8StringEncoding];
 				NSString		*newPath = [[NSString alloc] initWithCString:newPathString.c_str() encoding:NSUTF8StringEncoding];
 				dispatch_async(dispatch_get_main_queue(), ^{
-					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil)	{
-						[tmpDelegate remoteServer:bss
-							pathRenamedFrom:oldPath
-							to:newPath];
+					for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+						id		tmpDelegate = [tmpDelegateHolder object];
+						if (tmpDelegate != nil)
+							[tmpDelegate remoteServer:bss pathRenamedFrom:oldPath to:newPath];
 					}
 				});
 				oldPath = nil;
@@ -190,9 +204,11 @@ bonjourName:(NSString *)inBonjourName	{
 			@autoreleasepool	{
 				NSString	*tmpString = [NSString stringWithUTF8String:inPathString.c_str()];
 				dispatch_async(dispatch_get_main_queue(), ^{
-					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil && tmpString != nil)
-						[tmpDelegate remoteServer:bss pathRemoved:tmpString];
+					for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+						id		tmpDelegate = [tmpDelegateHolder object];
+						if (tmpDelegate != nil)
+							[tmpDelegate remoteServer:bss pathRemoved:tmpString];
+					}
 				});
 				tmpString = nil;
 			}
@@ -201,9 +217,11 @@ bonjourName:(NSString *)inBonjourName	{
 			@autoreleasepool	{
 				NSString	*tmpString = [NSString stringWithUTF8String:inPathString.c_str()];
 				dispatch_async(dispatch_get_main_queue(), ^{
-					id			tmpDelegate = [bss delegate];
-					if (tmpDelegate != nil && tmpString != nil)
-						[tmpDelegate remoteServer:bss pathAdded:tmpString];
+					for (id tmpDelegateHolder in [(VVOSCQueryRemoteServer*)bss delegateRefs])	{
+						id		tmpDelegate = [tmpDelegateHolder object];
+						if (tmpDelegate != nil)
+							[tmpDelegate remoteServer:bss pathAdded:tmpString];
+					}
 				});
 				tmpString = nil;
 			}
@@ -286,7 +304,7 @@ bonjourName:(NSString *)inBonjourName	{
 	webServerAddressString = nil;
 	oscServerAddressString = nil;
 	bonjourName = nil;
-	delegate = nil;
+	delegateRefs = nil;
 	if (wsClient != nullptr)	{
 		wsClient->disconnect();
 		int			tmpCount = 0;
@@ -323,7 +341,39 @@ bonjourName:(NSString *)inBonjourName	{
 @synthesize wsServerPort;
 @synthesize bonjourName;
 
-@synthesize delegate;
+
+- (void) addDelegate:(id<VVOSCQueryRemoteServerDelegate>)n	{
+	if (n==nil)
+		return;
+	ZWRObject		*tmpObj = [[ZWRObject alloc] initWithObject:n];
+	@synchronized (self)	{
+		if (tmpObj != nil)
+			[delegateRefs addObject:tmpObj];
+	}
+}
+- (void) removeDelegate:(id<VVOSCQueryRemoteServerDelegate>)n	{
+	if (n==nil)
+		return;
+	@synchronized (self)	{
+		int			tmpIndex = 0;
+		for (ZWRObject *tmpHolder in delegateRefs)	{
+			id			tmpObj = [tmpHolder object];
+			if (tmpObj!=nil && tmpObj==n)	{
+				[delegateRefs removeObjectAtIndex:tmpIndex];
+				break;
+			}
+			++tmpIndex;
+		}
+	}
+}
+- (NSArray *) delegateRefs	{
+	NSArray		*returnMe = nil;
+	@synchronized (self)	{
+		returnMe = [delegateRefs copy];
+	}
+	return returnMe;
+}
+
 
 - (NSDictionary *) hostInfo;	{
 	//NSLog(@"%s",__func__);
@@ -370,6 +420,7 @@ bonjourName:(NSString *)inBonjourName	{
 	return [self jsonObjectForOSCMethodAtAddress:inPath query:nil];
 }
 - (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
+	//NSLog(@"%s ... %@, %@",__func__,inPath,inQueryString);
 	if (inPath == nil)
 		return nil;
 	NSString		*sanitizedOSCAddress = [inPath stringBySanitizingForOSCPath];
@@ -380,6 +431,8 @@ bonjourName:(NSString *)inBonjourName	{
 		queryAddress = [NSString stringWithFormat:@"http://%@:%d%@",webServerAddressString,webServerPort,sanitizedOSCAddress];
 	else
 		queryAddress = [NSString stringWithFormat:@"http://%@:%d%@?%@",webServerAddressString,webServerPort,sanitizedOSCAddress,inQueryString];
+	queryAddress = [queryAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	//NSLog(@"\t\tqueryAddress is %@",queryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:queryAddress];
 	[downloader perform];
 	if ([downloader err] != 0)	{
@@ -387,8 +440,10 @@ bonjourName:(NSString *)inBonjourName	{
 		return nil;
 	}
 	NSData			*responseData = [downloader responseData];
-	if (responseData == nil)
+	if (responseData == nil)	{
+		NSLog(@"\t\terr: responseData null, %s: %@",__func__,queryAddress);
 		return nil;
+	}
 	NSError			*nsErr = nil;
 	NSDictionary	*returnMe = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&nsErr];
 	return returnMe;
@@ -429,12 +484,14 @@ bonjourName:(NSString *)inBonjourName	{
 	wsClient->send(std::string([tmpString UTF8String]));
 }
 - (void) startListeningTo:(NSString *)n	{
+	//NSLog(@"%s ... %@",__func__,n);
 	if (n==nil)
 		return;
 	NSString		*tmpString = [NSString stringWithFormat:@"{ \"COMMAND\": \"LISTEN\", \"DATA\": \"%@\" }",n];
 	wsClient->send(std::string([tmpString UTF8String]));
 }
 - (void) stopListeningTo:(NSString *)n	{
+	//NSLog(@"%s ... %@",__func__,n);
 	if (n==nil)
 		return;
 	NSString		*tmpString = [NSString stringWithFormat:@"{ \"COMMAND\": \"IGNORE\", \"DATA\": \"%@\" }",n];

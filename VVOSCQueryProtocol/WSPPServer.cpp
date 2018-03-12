@@ -5,7 +5,7 @@
 
 
 WSPPServer::WSPPServer()	{
-	cout << __PRETTY_FUNCTION__ << endl;
+	//cout << __PRETTY_FUNCTION__ << endl;
 	
 	//	reserve space for 100 simultaneous websocket connections
 	server_conns.reserve(100);
@@ -13,7 +13,7 @@ WSPPServer::WSPPServer()	{
 	_initServer();
 }
 WSPPServer::~WSPPServer()	{
-	cout << __PRETTY_FUNCTION__ << endl;
+	//cout << __PRETTY_FUNCTION__ << endl;
 	stop();
 	
 	//	explicitly delete the server
@@ -79,7 +79,7 @@ void WSPPServer::set_ignore_callback(IGNORECallback inCallback)	{
 void WSPPServer::_performWSCallbackSetup()	{
 	if (server != nullptr)	{
 		server->set_message_handler([&](connection_hdl hdl, server_t::message_ptr msg)	{
-			cout << __PRETTY_FUNCTION__ << endl;
+			//cout << __PRETTY_FUNCTION__ << endl;
 			//cout << "\t\tmsg is " << msg->get_payload() << endl;
 			
 			//WSPPQueryReply			tmpReply;
@@ -121,7 +121,7 @@ void WSPPServer::_performWSCallbackSetup()	{
 										break;
 									}
 								}
-								//	if i'm not already listening to this connection...
+								//	if the client on the other end of this connetion isn't already listening to this address
 								if (!alreadyListening)	{
 									
 									//	call the listen callback- this lets the delegate set up to listen, and determines if we should actually listen to the address (if it doesn't exist the delegate can prevent us from listening)
@@ -252,6 +252,7 @@ void WSPPServer::_initServer()	{
 	server->init_asio(ec);
 	server->set_reuse_addr(false);
 	server->clear_access_channels(log::alevel::all);
+	server->set_access_channels(log::alevel::none);
 	
 	server->set_socket_init_handler([](connection_hdl handler, asio::ip::tcp::socket& s)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
@@ -282,7 +283,7 @@ void WSPPServer::_initServer()	{
 		for (const std::weak_ptr<void> & tmpHDL : server_conns)	{
 			//if (tmpHDL.lock() == hdlToFind)
 			if (server->get_con_from_hdl(tmpHDL, ec) == hdlToFind) {
-				//cout << "\t\tfound conn to close at index " << tmpIndex << endl;
+				//cout << "\t\tfound conn to erase at index " << tmpIndex << endl;
 				server_conns.erase(server_conns.begin()+tmpIndex);
 				break;
 			}
@@ -297,15 +298,19 @@ void WSPPServer::_initServer()	{
 			for (std::vector<connection_hdl>::iterator serverConnIt=serverConns.begin(); serverConnIt!=serverConns.end(); )	{
 				//	if this connection matches the server that's closing
 				if (server->get_con_from_hdl(*serverConnIt, ec) == hdlToFind)	{
-					//cout << "\t\tdeleting conn " << hdlToFind->get_host() << "." << hdlToFind->get_port() << " at address " << addrServerIt->first << endl;
+					//cout << "\t\tdeleting conn " << hdlToFind->get_host() << "." << hdlToFind->get_port() << " from address " << addrServerIt->first << endl;
 					//	remove the connection from this entry's array of connections
 					serverConnIt = serverConns.erase(serverConnIt);
 					//	if this entry's array of connections is now empty
 					if (serverConns.size() == 0)	{
-						//cout << "\t\tdeleting entry " << addrServerIt->first << endl;
+						const std::string		tmpString = addrServerIt->first;
+						//cout << "\t\taddress " << tmpString << " has no more entries and is being removed..." << endl;
 						//	remove this entry
 						addrServerIt = servers_by_listenAddr.erase(addrServerIt);
-						break;
+						//	call the ignore callback!
+						if (ignoreCallback != nullptr)
+							ignoreCallback(tmpString);
+						break;	//	probably not necessary, if serverConns.size()==0 then serverConnIt==serverConns.end()...
 					}
 					//	else there are connections in this entry- we want to continue checking them
 					else	{
@@ -319,7 +324,8 @@ void WSPPServer::_initServer()	{
 				
 				//	increment the addrServerIt here when we've finished running through the serverConns
 				if (serverConnIt == serverConns.end())	{
-					++addrServerIt;
+					if (addrServerIt != servers_by_listenAddr.end())
+						++addrServerIt;
 					break;
 				}
 				
@@ -504,7 +510,7 @@ void WSPPServer::sendPathRenamedToClients(const std::string & inOldPath, const s
 		}
 		//	run through the array of OSC addresses that are affected by the rename op
 		for (const auto & keyToUpdate : keysToUpdate)	{
-			//	get the vector of c onnections stored in the map at the old string
+			//	get the vector of connections stored in the map at the old string
 			vector<connection_hdl>		tmpConns = servers_by_listenAddr[keyToUpdate];
 			//	figure out the new string
 			std::string			newKey = std::string(keyToUpdate);
@@ -513,6 +519,12 @@ void WSPPServer::sendPathRenamedToClients(const std::string & inOldPath, const s
 			//	store the vector at the new key, then clear out the val at the old key!
 			servers_by_listenAddr[newKey] = tmpConns;
 			servers_by_listenAddr.erase(keyToUpdate);
+			
+			//	if i have any listen/ignore blocks, execute them with the appropriate keys!
+			if (ignoreCallback != nullptr)
+				ignoreCallback(keyToUpdate);
+			if (listenCallback != nullptr)
+				listenCallback(newKey);
 		}
 	}
 	/*

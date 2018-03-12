@@ -74,7 +74,7 @@
 	[displayString appendFormat:@"%d servers detected:\n",(servers==nil) ? 0 : (int)[servers count]];
 	[displayString appendFormat:@"**************\n"];
 	for (VVOSCQueryRemoteServer *server in servers)	{
-		[server setDelegate:self];
+		[server addDelegate:self];
 		[displayString appendFormat:@"name: \"%@\"\n",[server oscName]];
 		[displayString appendFormat:@"\tbonjour: \"%@\"\n",[server bonjourName]];
 		[displayString appendFormat:@"\taddress: %@:%d\n",[server webServerAddressString],[server webServerPort]];

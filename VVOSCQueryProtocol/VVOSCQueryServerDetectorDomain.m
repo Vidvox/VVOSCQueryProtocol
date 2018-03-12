@@ -38,7 +38,7 @@
 
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didFindService:(NSNetService *)x moreComing:(BOOL)m	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if (n==nil || x==nil)
 		return;
 	@synchronized (self)	{

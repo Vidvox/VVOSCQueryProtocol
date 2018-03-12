@@ -58,9 +58,9 @@ critical:(BOOL)inCritical	{
 	if (self != nil)	{
 		jsonObject = jo;
 		errCode = 0;
-	}
-	if (jsonObject == nil)	{
-		self = nil;
+		if (jsonObject == nil)	{
+			self = nil;
+		}
 	}
 	return self;
 }

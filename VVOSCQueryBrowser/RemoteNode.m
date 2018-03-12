@@ -450,6 +450,19 @@
 				[contents addObject:newNode];
 			}
 		}];
+		[contents sortUsingComparator:(NSComparator)^(id obj1, id obj2)	{
+			NSString		*str1 = nil;
+			NSString		*str2 = nil;
+			if ([obj1 isKindOfClass:[RemoteNode class]])
+				str1 = [obj1 name];
+			else
+				str1 = [NSString stringWithFormat:@"%@-%d",[[obj1 parentNode] name],[(RemoteNodeControl*)obj1 index]];
+			if ([obj2 isKindOfClass:[RemoteNode class]])
+				str2 = [obj2 name];
+			else
+				str2 = [NSString stringWithFormat:@"%@-%d",[[obj2 parentNode] name],[(RemoteNodeControl*)obj2 index]];
+			return [str1 caseInsensitiveCompare:str2];
+		}];
 	}
 	return self;
 }

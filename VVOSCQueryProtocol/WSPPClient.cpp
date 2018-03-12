@@ -11,7 +11,8 @@ WSPPClient::WSPPClient()	{
 	lib::error_code			ec;
 	client->init_asio(ec);
 	//client->start_perpetual();	//	can mark this at any time from any thread, so perhaps best to flag it later...
-	//client->clear_access_channels(log::alevel::all);
+	client->clear_access_channels(log::alevel::all);
+	client->set_access_channels(log::alevel::none);
 	
 	client->set_socket_init_handler([](connection_hdl handler, asio::ip::tcp::socket& s)	{
 		asio::ip::tcp::no_delay			option(true);

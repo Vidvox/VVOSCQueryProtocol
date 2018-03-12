@@ -45,7 +45,9 @@
 				BOOL				hasHostInfoQuery = NO;
 				for (NSURLQueryItem *queryItem in queryItems)	{
 					NSString	*tmpKey = [queryItem name];
-					if (tmpKey!=nil && [tmpKey isEqualToString:kVVOSCQ_ReqAttr_HostInfo])
+					if (tmpKey == nil)
+						continue;
+					if ([tmpKey isEqualToString:kVVOSCQ_ReqAttr_HostInfo])
 						hasHostInfoQuery = YES;
 					id			tmpVal = [queryItem value];
 					if (tmpVal == nil)
@@ -113,7 +115,7 @@
 			}
 		});
 		webServer.set_websocket_callback([=](const std::string & inRawWSString)	{
-			cout << __PRETTY_FUNCTION__ << " ws callback" << endl;
+			//cout << __PRETTY_FUNCTION__ << " ws callback" << endl;
 			@autoreleasepool	{
 				//	we need to parse the raw string as a JSON object so we can figure out what to do with it
 				NSString		*rawString = [NSString stringWithUTF8String:inRawWSString.c_str()];
@@ -145,7 +147,7 @@
 			}
 		});
 		webServer.set_osc_callback([=](const void * inBuffer, const size_t & inBufferSize)	{
-			cout << __PRETTY_FUNCTION__ << " osc callback" << endl;
+			//cout << __PRETTY_FUNCTION__ << " osc callback" << endl;
 			@autoreleasepool	{
 				//	get my delegate, pass on the ptr to the raw OSC packet binary
 				id<VVOSCQueryServerDelegate>		localDelegate = [(VVOSCQueryServer*)bss delegate];
@@ -155,7 +157,7 @@
 		});
 		
 		webServer.set_listen_callback([=](const std::string & startListeningToMe)	{
-			//cout << __PRETTY_FUNCTION__ << " listen callback" << endl;
+			//cout << __PRETTY_FUNCTION__ << " listen callback" << ": " << startListeningToMe << endl;
 			@autoreleasepool	{
 				bool			returnMe = false;
 				//	get my delegate, ask it if it can listen
@@ -166,7 +168,7 @@
 			}
 		});
 		webServer.set_ignore_callback([=](const std::string & stopListeningToMe)	{
-			//cout << __PRETTY_FUNCTION__ << " listen callback" << endl;
+			//cout << __PRETTY_FUNCTION__ << " ignore callback" << ": " << stopListeningToMe << endl;
 			@autoreleasepool	{
 				//	get my delegate, inform it that it should be ignoring the passed path
 				id<VVOSCQueryServerDelegate>		localDelegate = [(VVOSCQueryServer*)bss delegate];
@@ -194,10 +196,10 @@
 
 /*
 - (void) threadedStart	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	//	start the server
 	webServer.start();
-	NSLog(@"\t\t%s - FINISHED",__func__);
+	//NSLog(@"\t\t%s - FINISHED",__func__);
 }
 */
 - (void) start	{
@@ -275,7 +277,7 @@
 @synthesize delegate;
 
 - (void) setName:(NSString *)n	{
-	NSLog(@"%s ... %@",__func__,n);
+	//NSLog(@"%s ... %@",__func__,n);
 	BOOL		changed = (name==nil || n==nil || ![name isEqualToString:n]) ? YES : NO;
 	BOOL		wasRunning = [self isRunning];
 	name = n;
@@ -286,7 +288,7 @@
 	return name;
 }
 - (void) setBonjourName:(NSString *)n	{
-	NSLog(@"%s ... %@",__func__,n);
+	//NSLog(@"%s ... %@",__func__,n);
 	BOOL		changed = (bonjourName==nil || n==nil || ![bonjourName isEqualToString:n]) ? YES : NO;
 	BOOL		wasRunning = [self isRunning];
 	bonjourName = n;
@@ -298,7 +300,7 @@
 }
 
 - (void) _resetBonjourService	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if (bonjourService != nil)	{
 		[bonjourService stop];
 		bonjourService = nil;
@@ -364,6 +366,7 @@
 }
 */
 - (void) listenerNeedsToSendOSCData:(void*)inData sized:(size_t)inDataSize fromOSCAddress:(NSString *)inAddress	{
+	//NSLog(@"%s",__func__);
 	if (inData==nil || inDataSize==0 || inAddress==nil)
 		return;
 	if (!webServer.isRunning())

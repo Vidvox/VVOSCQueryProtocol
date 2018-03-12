@@ -27,6 +27,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1A0B5F55203E0EC800948FDA /* ZWRObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0B5F53203E0EC800948FDA /* ZWRObject.m */; };
+		1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A0B5F54203E0EC800948FDA /* ZWRObject.h */; };
 		1A0E2F361FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */; };
 		1A0E2F381FD6D3CB00F0855D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0E2F371FD6D3CB00F0855D /* Assets.xcassets */; };
 		1A0E2F3B1FD6D3CB00F0855D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0E2F391FD6D3CB00F0855D /* MainMenu.xib */; };
@@ -347,6 +349,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1A0B5F53203E0EC800948FDA /* ZWRObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWRObject.m; sourceTree = "<group>"; };
+		1A0B5F54203E0EC800948FDA /* ZWRObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWRObject.h; sourceTree = "<group>"; };
 		1A0E2F321FD6D3CB00F0855D /* OSCQuery Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OSCQuery Browser.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0E2F341FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VVOSCQueryBrowserAppDelegate.h; sourceTree = "<group>"; };
 		1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VVOSCQueryBrowserAppDelegate.m; sourceTree = "<group>"; };
@@ -764,6 +768,8 @@
 		1AF1087C1FCDD7F3004566A8 /* internal */ = {
 			isa = PBXGroup;
 			children = (
+				1A0B5F54203E0EC800948FDA /* ZWRObject.h */,
+				1A0B5F53203E0EC800948FDA /* ZWRObject.m */,
 				1A906E7E1FCC8D1700F0E412 /* NSNetServiceAdditions.h */,
 				1A906E7F1FCC8D1700F0E412 /* NSNetServiceAdditions.m */,
 				1AF108781FCDC509004566A8 /* NSStringAdditions.h */,
@@ -803,6 +809,7 @@
 				1AF108761FCD9DC0004566A8 /* CURLDL.h in Headers */,
 				1A906E801FCC8D1700F0E412 /* NSNetServiceAdditions.h in Headers */,
 				1A336E941FC871900007877C /* VVOSCQueryRemoteServer.h in Headers */,
+				1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */,
 				1AB89C311FD1EE1B0094A66B /* WSPPServer.hpp in Headers */,
 				1AB4FB2C1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.h in Headers */,
 				1A480FE51FCAD55D00F86354 /* VVOSCQueryServerDetector.h in Headers */,
@@ -1152,6 +1159,7 @@
 				1AB89C301FD1EE1B0094A66B /* WSPPServer.cpp in Sources */,
 				1A480FDE1FC89A9D00F86354 /* VVOSCQueryReply.m in Sources */,
 				1AF108771FCD9DC0004566A8 /* CURLDL.m in Sources */,
+				1A0B5F55203E0EC800948FDA /* ZWRObject.m in Sources */,
 				1A7C48F61FD586DB00AE4287 /* VVOSCQueryStringUtilities.cpp in Sources */,
 				1A336E911FC871870007877C /* VVOSCQueryServer.mm in Sources */,
 				1A336E951FC871900007877C /* VVOSCQueryRemoteServer.mm in Sources */,

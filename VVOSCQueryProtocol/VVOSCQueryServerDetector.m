@@ -25,6 +25,7 @@ static VVOSCQueryServerDetector			*_global = nil;
 
 
 + (void) initialize	{
+	//NSLog(@"%s",__func__);
 	//	initialize the constants class, which will finish defining any constants if necessary
 	[VVOSCQueryConstants class];
 	if (_allRemoteServers == nil)	{
@@ -58,7 +59,7 @@ static VVOSCQueryServerDetector			*_global = nil;
 
 
 - (void) serviceRemoved:(NSNetService *)s	{
-	NSLog(@"%s ... %@",__func__,s);
+	//NSLog(@"%s ... %@",__func__,s);
 	NSString			*serviceName = [s name];
 	//	get the IP address and port for the passed service
 	NSString			*ipString = nil;
@@ -108,7 +109,7 @@ static VVOSCQueryServerDetector			*_global = nil;
 	}
 }
 - (void) serviceResolved:(NSNetService *)s	{
-	NSLog(@"%s ... %@",__func__,s);
+	//NSLog(@"%s ... %@",__func__,s);
 	//NSLog(@"\t\tdomain is %@",[s domain]);
 	//NSLog(@"\t\tname is %@",[s name]);
 	//NSLog(@"\t\ttype is %@",[s type]);
