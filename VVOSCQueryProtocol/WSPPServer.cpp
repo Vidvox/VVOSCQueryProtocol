@@ -295,6 +295,10 @@ void WSPPServer::_initServer()	{
 		for (std::map<string,vector<connection_hdl>>::iterator addrServerIt=servers_by_listenAddr.begin(); addrServerIt!=servers_by_listenAddr.end(); )	{
 			//	run through each connection in this entry
 			vector<connection_hdl>			&serverConns = addrServerIt->second;
+			if (serverConns.size()<1)	{
+				++addrServerIt;
+				continue;
+			}
 			for (std::vector<connection_hdl>::iterator serverConnIt=serverConns.begin(); serverConnIt!=serverConns.end(); )	{
 				//	if this connection matches the server that's closing
 				if (server->get_con_from_hdl(*serverConnIt, ec) == hdlToFind)	{
