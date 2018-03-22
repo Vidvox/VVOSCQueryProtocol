@@ -9,6 +9,7 @@
 @property (weak) IBOutlet NSWindow *window;
 - (void) _updateUIItems;
 - (void) populateOSCAddressSpace;
+- (void) populateStreamingDirectory;
 - (void) populateTestDirectory;
 - (void) populateVecsDirectory;
 - (void) populateTuplesDirectory;
@@ -133,6 +134,13 @@
 		msg = [OSCMessage createWithAddress:@"/test/dingus"];
 	[msg addFloat:(float)tmpVal];
 	[[OSCAddressSpace mainAddressSpace] dispatchMessage:msg];
+	
+	NSLog(@"\t\tsending %@",msg);
+	OSCPacket		*packet = [OSCPacket createWithContent:msg];
+	[server
+		listenerNeedsToSendOSCData:[packet payload]
+		sized:[packet bufferLength]
+		fromOSCAddress:[msg address]];
 }
 - (IBAction) renameButtonUsed:(id)sender	{
 	NSLog(@"%s",__func__);
@@ -321,10 +329,10 @@
 	//NSLog(@"%s ... %@",__func__,m);
 	if (m==nil)
 		return;
-	//	just pass the message to the OSC address space
+	//	pass the message to the OSC address space right away
 	[_mainVVOSCAddressSpace dispatchMessage:m];
 	
-	
+	//	create a new string, populate it with all the received messages in the array
 	NSMutableString		*tmpStr = [[NSMutableString alloc] init];
 	@synchronized (self)	{
 		[rxOSCMsgs addObject:m];
@@ -334,7 +342,7 @@
 		for (OSCMessage *msg in [rxOSCMsgs reverseObjectEnumerator])
 			[tmpStr appendFormat:@"%@\n",[msg description]];
 	}
-	
+	//	update the contents of the text view
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[rxOSCMessageView setString:tmpStr];
 	});
@@ -345,122 +353,133 @@
 
 
 - (void) populateOSCAddressSpace	{
+	//[self populateStreamingDirectory];
 	[self populateTestDirectory];
-	[self populateVecsDirectory];
-	[self populateTuplesDirectory];
+	//[self populateVecsDirectory];
+	//[self populateTuplesDirectory];
+}
+- (void) populateStreamingDirectory	{
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	OSCNode				*tmpNode = nil;
+	tmpNode = [as findNodeForAddress:@"/floatInput" createIfMissing:YES];
+	[tmpNode setNodeType:OSCNodeDirectory];
+	[tmpNode setOSCDescription:@"Float input that echoes values back out to all connected clients using the OSC Query Protocol's bidirectional streaming"];
+	[tmpNode setTypeTagString:@"f"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min: @0.0, kVVOSCQ_OptAttr_Range_Max: @100.0 } ]];
 }
 - (void) populateTestDirectory	{
 	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
-		OSCNode				*tmpNode = nil;
-		//	first make the "test" directory node (this will be created automatically if necessary, only fetching it as a discrete step here so we can set its description)
-		tmpNode = [as findNodeForAddress:@"/test" createIfMissing:YES];
-		[tmpNode setNodeType:OSCNodeDirectory];
-		[tmpNode setOSCDescription:@"test directory"];
-		
-		//	now make a bunch of other OSC nodes
-		tmpNode = [as findNodeForAddress:@"/test/my_int" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test integer node"];
-		[tmpNode setTypeTagString:@"i"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0, kVVOSCQ_OptAttr_Range_Max:@100 } ]];
-		[tmpNode setTags:@[ @"integer input" ]];
-		[tmpNode setClipmode:@[ @"none" ]];
-		[tmpNode setUnits:@[ @"dollars" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_float" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test float node"];
-		[tmpNode setTypeTagString:@"f"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0., kVVOSCQ_OptAttr_Range_Max:@100. } ]];
-		[tmpNode setTags:@[ @"float input" ]];
-		[tmpNode setClipmode:@[ @"none" ]];
-		[tmpNode setUnits:@[ @"percent" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_string" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeString];
-		[tmpNode setOSCDescription:@"test string node"];
-		[tmpNode setTypeTagString:@"s"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"string input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/timetag" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test timetag node"];
-		[tmpNode setTypeTagString:@"t"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"timetag input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_longlong" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test 64-bit int node"];
-		[tmpNode setTypeTagString:@"h"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0, kVVOSCQ_OptAttr_Range_Max:@100 } ]];
-		[tmpNode setTags:@[ @"64-bit integer input" ]];
-		[tmpNode setClipmode:@[ @"none" ]];
-		[tmpNode setUnits:@[ @"big numbers" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_double" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test double node"];
-		[tmpNode setTypeTagString:@"d"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0., kVVOSCQ_OptAttr_Range_Max:@100. } ]];
-		[tmpNode setTags:@[ @"double input" ]];
-		[tmpNode setClipmode:@[ @"none" ]];
-		[tmpNode setUnits:@[ @"precise unit" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_char" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeString];
-		[tmpNode setOSCDescription:@"test character node"];
-		[tmpNode setTypeTagString:@"c"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"character input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_color" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeColor];
-		[tmpNode setOSCDescription:@"test color node"];
-		[tmpNode setTypeTagString:@"r"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"color input" ]];
-		[tmpNode setUnits:@[ @"RGBA" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_midi" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test MIDI node"];
-		[tmpNode setTypeTagString:@"m"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"midi input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_true" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test true node"];
-		[tmpNode setTypeTagString:@"T"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"true input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_false" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test false node"];
-		[tmpNode setTypeTagString:@"F"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"false input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_null" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test null node"];
-		[tmpNode setTypeTagString:@"N"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"null input" ]];
-		
-		tmpNode = [as findNodeForAddress:@"/test/my_infinity" createIfMissing:YES];
-		//[tmpNode setNodeType:OSCNodeTypeNumber];
-		[tmpNode setOSCDescription:@"test infinity node"];
-		[tmpNode setTypeTagString:@"I"];
-		[tmpNode setAccess:OSCNodeAccess_RW];
-		[tmpNode setTags:@[ @"infinity input" ]];
+	OSCNode				*tmpNode = nil;
+	//	first make the "test" directory node (this will be created automatically if necessary, only fetching it as a discrete step here so we can set its description)
+	tmpNode = [as findNodeForAddress:@"/test" createIfMissing:YES];
+	[tmpNode setNodeType:OSCNodeDirectory];
+	[tmpNode setOSCDescription:@"test directory"];
+	
+	//	now make a bunch of other OSC nodes
+	tmpNode = [as findNodeForAddress:@"/test/my_int" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test integer node"];
+	[tmpNode setTypeTagString:@"i"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0, kVVOSCQ_OptAttr_Range_Max:@100 } ]];
+	[tmpNode setTags:@[ @"integer input" ]];
+	[tmpNode setClipmode:@[ @"none" ]];
+	[tmpNode setUnits:@[ @"dollars" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_float" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test float node"];
+	[tmpNode setTypeTagString:@"f"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0., kVVOSCQ_OptAttr_Range_Max:@100. } ]];
+	[tmpNode setTags:@[ @"float input" ]];
+	[tmpNode setClipmode:@[ @"none" ]];
+	[tmpNode setUnits:@[ @"percent" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_string" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeString];
+	[tmpNode setOSCDescription:@"test string node"];
+	[tmpNode setTypeTagString:@"s"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"string input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/timetag" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test timetag node"];
+	[tmpNode setTypeTagString:@"t"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"timetag input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_longlong" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test 64-bit int node"];
+	[tmpNode setTypeTagString:@"h"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0, kVVOSCQ_OptAttr_Range_Max:@100 } ]];
+	[tmpNode setTags:@[ @"64-bit integer input" ]];
+	[tmpNode setClipmode:@[ @"none" ]];
+	[tmpNode setUnits:@[ @"big numbers" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_double" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test double node"];
+	[tmpNode setTypeTagString:@"d"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0., kVVOSCQ_OptAttr_Range_Max:@100. } ]];
+	[tmpNode setTags:@[ @"double input" ]];
+	[tmpNode setClipmode:@[ @"none" ]];
+	[tmpNode setUnits:@[ @"precise unit" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_char" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeString];
+	[tmpNode setOSCDescription:@"test character node"];
+	[tmpNode setTypeTagString:@"c"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"character input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_color" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeColor];
+	[tmpNode setOSCDescription:@"test color node"];
+	[tmpNode setTypeTagString:@"r"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"color input" ]];
+	[tmpNode setUnits:@[ @"RGBA" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_midi" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test MIDI node"];
+	[tmpNode setTypeTagString:@"m"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"midi input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_true" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test true node"];
+	[tmpNode setTypeTagString:@"T"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"true input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_false" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test false node"];
+	[tmpNode setTypeTagString:@"F"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"false input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_null" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test null node"];
+	[tmpNode setTypeTagString:@"N"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"null input" ]];
+	
+	tmpNode = [as findNodeForAddress:@"/test/my_infinity" createIfMissing:YES];
+	//[tmpNode setNodeType:OSCNodeTypeNumber];
+	[tmpNode setOSCDescription:@"test infinity node"];
+	[tmpNode setTypeTagString:@"I"];
+	[tmpNode setAccess:OSCNodeAccess_RW];
+	[tmpNode setTags:@[ @"infinity input" ]];
 		
 }
 - (void) populateVecsDirectory	{
