@@ -89,10 +89,29 @@
 	}
 	[delegates removeAllObjects];
 }
-- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename	{
-	NSLog(@"%s ... %@",__func__,filename);
-	[self _loadFile:filename];
-	return YES;
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)inPath	{
+	//NSLog(@"%s ... %@",__func__,inPath);
+	NSFileManager		*fm = [NSFileManager defaultManager];
+	BOOL				isDirectory = NO;
+	NSError				*nsErr = nil;
+	if ([fm fileExistsAtPath:inPath isDirectory:&isDirectory])	{
+		if (!isDirectory)	{
+			[self _loadFile:inPath];
+			return YES;
+		}
+		else	{
+			NSArray			*filenames = [fm contentsOfDirectoryAtPath:inPath error:&nsErr];
+			for (NSString *filename in filenames)	{
+				if ([[filename pathExtension] caseInsensitiveCompare:@"als"]==NSOrderedSame)	{
+					NSString		*fullPath = [NSString stringWithFormat:@"%@/%@",inPath,filename];
+					[self _loadFile:fullPath];
+					return YES;
+				}
+			}
+		}
+	}
+	
+	return NO;
 }
 
 
@@ -100,7 +119,7 @@
 
 
 - (IBAction) openDocument:(id)sender	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	NSUserDefaults	*def = [NSUserDefaults standardUserDefaults];
 	NSString		*importDir = [def objectForKey:@"lastOpenDocumentFolder"];
 	if (importDir == nil)
@@ -141,7 +160,7 @@
 }
 
 - (IBAction) showHelp:(id)sender	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if (![NSThread isMainThread])	{
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self showHelp:sender];
@@ -153,7 +172,7 @@
 	}];
 }
 - (IBAction) closeHelp:(id)sender	{
-	NSLog(@"%s",__func__);
+	//NSLog(@"%s",__func__);
 	if (![NSThread isMainThread])	{
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self closeHelp:sender];

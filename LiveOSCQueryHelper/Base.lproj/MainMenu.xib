@@ -691,6 +691,7 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="365" y="787" width="308" height="390"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <value key="minSize" type="size" width="308" height="390"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="308" height="390"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -821,13 +822,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="ORm-XZ-yL0">
                             <font key="font" metaFont="system"/>
-                            <mutableString key="title">Live OSCQuery Helper ("LOQH" from now on) creates an OSC query server from an Ableton Live project file.  This app also creates an OSC server ("Live OSCQuery Helper"), as well as a virtual MIDI device ("From Live OSCQuery Helper").  Clients can browse the query server's OSC address space, and send OSC messages to the OSC server- these OSC messages are transformed into the appropriate MIDI messages, and published on the virtual MIDI device where Ableton Live can receive them.  This allows multiple clients to browse and interact with an Ableton Live project in realtime.
+                            <string key="title">Live OSCQuery Helper ("LOQH" from now on) creates an OSC query server from an Ableton Live project file.  This app also creates an OSC server ("Live OSCQuery Helper"), as well as a virtual MIDI device ("From Live OSCQuery Helper").  Clients can browse the query server's OSC address space, and send OSC messages to the OSC server- these OSC messages are transformed into the appropriate MIDI messages, and published on the virtual MIDI device where Ableton Live can receive them.  This allows multiple clients to browse and interact with an Ableton Live project in realtime.
 
 HOW TO USE IT:
 1)- Tell LOQH what Ableton Live project file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  LOQH will "watch" the file and if it is updated, the query server will automatically update itself, and then notify all connected clients that it has been updated.  LOQH will only create/publish OSC nodes for controls in your project file that have been mapped to MIDI- if a control doesn't have a MIDI mapping, it won't appear on the server!
 2)- Configure Ableton Live to receive MIDI data from the virtual device published by this app (named "From Live OSCQuery Helper")- this is how this app communicates with Ableton Live!
 
-If LOQH is running, the OSC query server is running- you can check it with any OSC query client, or a web browser.  The query server will stop when the app quits- if there's a problem with the file you load (if it's missing or malformed or corrupt) the query server will keep running, but its address space will be empty.</mutableString>
+If LOQH is running, the OSC query server is running- you can check it with any OSC query client, or a web browser.  The query server will stop when the app quits- if there's a problem with the file you load (if it's missing or malformed or corrupt) the query server will keep running, but its address space will be empty.</string>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
