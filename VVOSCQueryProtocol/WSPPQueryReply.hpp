@@ -12,7 +12,7 @@ public:
 	WSPPQueryReply() {}
 	WSPPQueryReply(const std::string & rs) : replyString(rs), replyCode(-1), performReply(true) {}
 	WSPPQueryReply(const int & rc) : replyString(""), replyCode(rc), performReply(true) {}
-	WSPPQueryReply(const bool & pr) : replyString(""), replyCode(-1), performReply(pr) {}
+	WSPPQueryReply(const bool & pr, const std::string & rs="") : replyString(rs), replyCode(-1), performReply(pr) {}
 	~WSPPQueryReply() {}
 	
 	const std::string & getReplyString() const	{	return replyString;	}

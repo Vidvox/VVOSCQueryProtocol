@@ -42,6 +42,7 @@
 @property (readonly) int webServerPort;
 @property (retain) NSString * name;
 @property (retain) NSString * bonjourName;
+@property (retain,setter=setHTMLDirectory:) NSString * htmlDirectory;
 #if __has_feature(objc_arc)
 @property (weak) id<VVOSCQueryServerDelegate> delegate;
 #else

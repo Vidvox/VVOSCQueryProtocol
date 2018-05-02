@@ -29,6 +29,8 @@ NSString * kVVOSCQ_OptAttr_Range_Vals = @"VALS";
 NSString * kVVOSCQ_OptAttr_Clipmode = @"CLIPMODE";
 NSString * kVVOSCQ_OptAttr_Unit = @"UNIT";
 NSString * kVVOSCQ_OptAttr_Critical = @"CRITICAL";
+NSString * kVVOSCQ_OptAttr_Overloads = @"OVERLOADS";
+NSString * kVVOSCQ_OptAttr_HTML = @"HTML";
 
 
 NSArray<NSString*> * kVVOSCQ_NonRecursiveAttrs = nil;
@@ -68,14 +70,19 @@ NSString * kVVOSCQueryRemoteServersUpdatedNotification = @"kVVOSCQueryRemoteServ
 
 + (void) initialize	{
 	kVVOSCQ_NonRecursiveAttrs = @[
-		kVVOSCQ_OptAttr_Tags,
+		kVVOSCQ_ReqAttr_Desc,
 		kVVOSCQ_ReqAttr_Type,
+		kVVOSCQ_ReqAttr_HostInfo,
+		kVVOSCQ_OptAttr_Tags,
+		kVVOSCQ_OptAttr_Ext_Type,
 		kVVOSCQ_OptAttr_Access,
 		kVVOSCQ_OptAttr_Value,
 		kVVOSCQ_OptAttr_Range,
 		kVVOSCQ_OptAttr_Clipmode,
 		kVVOSCQ_OptAttr_Unit,
-		kVVOSCQ_OptAttr_Critical
+		kVVOSCQ_OptAttr_Critical,
+		kVVOSCQ_OptAttr_Overloads,
+		kVVOSCQ_OptAttr_HTML
 	];
 }
 

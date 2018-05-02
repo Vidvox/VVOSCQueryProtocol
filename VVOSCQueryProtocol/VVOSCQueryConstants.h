@@ -40,6 +40,8 @@ extern NSString * kVVOSCQ_OptAttr_Range_Vals;	//	VALS
 extern NSString * kVVOSCQ_OptAttr_Clipmode;	//	CLIPMODE
 extern NSString * kVVOSCQ_OptAttr_Unit;		//	UNIT
 extern NSString * kVVOSCQ_OptAttr_Critical;	//	CRITICAL
+extern NSString * kVVOSCQ_OptAttr_Overloads;	//	OVERLOADS
+extern NSString * kVVOSCQ_OptAttr_HTML;	//	HTML
 
 /*		most OSC queries are "recursive" in the sense that they're going to return a full tree of 
 OSC nodes, gathered recursively.  really, the only queries that aren't recursive are queries 

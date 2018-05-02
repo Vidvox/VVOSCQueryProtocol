@@ -2,7 +2,7 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <VVOSCQueryProtocol/VVOSCQuery.h>
 #import <VVOSCQueryProtocol/VVOSCQueryReply.h>
-
+#import "NSStringAdditions.h"
 #include "WSPPServer.hpp"
 
 
@@ -43,21 +43,42 @@
 				NSArray				*queryItems = [urlComponents queryItems];
 				NSMutableDictionary	*urlParams = [[NSMutableDictionary alloc] init];
 				BOOL				hasHostInfoQuery = NO;
+				BOOL				isHTMLQuery = NO;
 				for (NSURLQueryItem *queryItem in queryItems)	{
 					NSString	*tmpKey = [queryItem name];
 					if (tmpKey == nil)
 						continue;
 					if ([tmpKey isEqualToString:kVVOSCQ_ReqAttr_HostInfo])
 						hasHostInfoQuery = YES;
+					else if ([tmpKey isEqualToString:kVVOSCQ_OptAttr_HTML])
+						isHTMLQuery = YES;
 					id			tmpVal = [queryItem value];
 					if (tmpVal == nil)
 						tmpVal = [NSNull null];
 					[urlParams setObject:tmpVal forKey:tmpKey];
 				}
+				
+				//	if it's an HTML query, return a false along with the path of the resource to serve- we don't want to return a query reply, we want to serve a file.  this is the only time the server returns a false reply (the client returns a false reply under different circumstances)
+				if (isHTMLQuery)	{
+					NSString		*basePath = [self htmlDirectory];
+					if (basePath != nil)
+						basePath = [basePath stringByDeletingLastAndAddingFirstSlash];
+					NSString		*frontPath = [urlComponents path];
+					NSString		*fullPath = nil;
+					if (basePath == nil)
+						fullPath = frontPath;
+					else
+						fullPath = [NSString stringWithFormat:@"%@%@",basePath,frontPath];
+					
+					return WSPPQueryReply(false, std::string([fullPath UTF8String]));
+				}
+				
 				NSArray				*urlParamKeys = [urlParams allKeys];
 				//	if the URL was querying a specific key, the query isn't looking for a recursive reply...
 				BOOL			isRecursive = YES;
-				if (urlParamKeys!=nil && [urlParamKeys firstObjectCommonWithArray:kVVOSCQ_NonRecursiveAttrs]!=nil)
+				if (hasHostInfoQuery || isHTMLQuery)
+					isRecursive = NO;
+				else if (urlParamKeys!=nil && [urlParamKeys firstObjectCommonWithArray:kVVOSCQ_NonRecursiveAttrs]!=nil)
 					isRecursive = NO;
 			
 				//	make an VVOSCQuery that describes this HTTP request
@@ -298,7 +319,7 @@
 - (NSString *) bonjourName	{
 	return bonjourName;
 }
-
+@synthesize htmlDirectory;
 - (void) _resetBonjourService	{
 	//NSLog(@"%s",__func__);
 	if (bonjourService != nil)	{

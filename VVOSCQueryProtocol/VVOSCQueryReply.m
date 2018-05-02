@@ -17,7 +17,8 @@ value:(NSArray *)inValueArray
 range:(NSArray *)inRangeArray
 clipmode:(NSArray *)inClipmodeArray
 units:(NSArray *)inUnitsArray
-critical:(BOOL)inCritical	{
+critical:(BOOL)inCritical
+overloads:(NSArray *)inOverloadsArray	{
 	NSMutableDictionary		*returnMe = [NSMutableDictionary dictionaryWithCapacity:0];
 	if (inFullPath != nil)
 		[returnMe setObject:inFullPath forKey:kVVOSCQ_ReqAttr_Path];
@@ -45,6 +46,8 @@ critical:(BOOL)inCritical	{
 		[returnMe setObject:inUnitsArray forKey:kVVOSCQ_OptAttr_Unit];
 	if (inCritical)
 		[returnMe setObject:[NSNumber numberWithBool:inCritical] forKey:kVVOSCQ_OptAttr_Critical];
+	if (inOverloadsArray)
+		[returnMe setObject:inOverloadsArray forKey:kVVOSCQ_OptAttr_Overloads];
 	return returnMe;
 }
 + (void) initialize	{

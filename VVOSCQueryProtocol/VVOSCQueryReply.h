@@ -32,7 +32,8 @@
 	range:(NSArray *)inRangeArray
 	clipmode:(NSArray *)inClipmodeArray	//	nil by default.  if non-nil, must be an array consisting only of instances of the kVVOSCQueryNodeClipMode* constants above.
 	units:(NSArray *)inUnitsArray
-	critical:(BOOL)inCritical;	//	NO by default.  if YES, try to use a TCP connection to send data to this node.
+	critical:(BOOL)inCritical	//	NO by default.  if YES, try to use a TCP connection to send data to this node.
+	overloads:(NSArray*)inOverloadsArray;
 #else
 + (NSDictionary *) jsonObjectWithPath:(NSString *)inFullPath	//	full path to this node in the OSC address space
 	contents:(NSArray*)inContents	//	subnodes (may be a hierarchy)
@@ -45,7 +46,8 @@
 	range:(NSArray *)inRangeArray
 	clipmode:(NSArray *)inClipmodeArray	//	nil by default.  if non-nil, must be an array consisting only of instances of the kVVOSCQueryNodeClipMode* constants above.
 	units:(NSArray *)inUnitsArray
-	critical:(BOOL)inCritical;	//	NO by default.  if YES, try to use a TCP connection to send data to this node.
+	critical:(BOOL)inCritical	//	NO by default.  if YES, try to use a TCP connection to send data to this node.
+	overloads:(NSArray*)inOverloadsArray;
 #endif
 - (instancetype) initWithJSONObject:(NSDictionary *)jo;
 - (instancetype) initWithErrorCode:(int)ec;

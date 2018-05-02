@@ -2,6 +2,9 @@
 #include "VVOSCQueryStringUtilities.hpp"
 #include "rapidjson/document.h"
 //#include <websocketpp/connection.hpp>
+#include <fstream>
+#include <iostream>
+#include <streambuf>
 
 
 WSPPServer::WSPPServer()	{
@@ -27,11 +30,13 @@ void WSPPServer::set_http_callback(HTTPCallback inCallback)	{
 	if (server != nullptr)	{
 		//	pass a block to the websocketpp backend that will extract the URI from the connection nad pass it to the provided callback, which will return an WSPPQueryReply object that will be used to assemble a reply
 		server->set_http_handler([=](connection_hdl hdl)	{
+			//cout << __PRETTY_FUNCTION__ << endl;
+			
 			lib::error_code			ec;
 			server_t::connection_ptr		conn = server->get_con_from_hdl(hdl, ec);
 			//	change some headers...
-			conn->replace_header("Content-Type", "application/json; charset=utf-8");
-			conn->replace_header("Connection", "close");
+			//conn->replace_header("Content-Type", "application/json; charset=utf-8");
+			//conn->replace_header("Connection", "close");
 			//	pull the full URI out, this is what we're going to pass to the callback
 			uri_ptr				uri = conn->get_uri();
 			const string		&fullURI = uri->str();
@@ -39,13 +44,64 @@ void WSPPServer::set_http_callback(HTTPCallback inCallback)	{
 			const WSPPQueryReply		&tmpReply = (httpCallback==nullptr) ? WSPPQueryReply(400) : httpCallback(fullURI);
 			//	use the WSPPQueryReply to reply to the http request
 			try	{
-				if (tmpReply.getReplyCode()<0)	{
+				if (!tmpReply.getPerformReply())	{
+					//cout << "should be vending a file here " << __PRETTY_FUNCTION__ << endl;
+					
+					
+					
+					//	get the resource from the query reply
+					const std::string		&tmpResource = tmpReply.getReplyString();
+					//cout << "file i should be vending is " << tmpResource << endl;
+					
+					std::ifstream		file;
+					std::string			response;
+					
+					file.open(tmpResource.c_str(), std::ios::in);
+					if (!file)	{
+						conn->set_status(websocketpp::http::status_code::not_found);
+						//conn->set_status((http::status_code::value)404);
+						
+						//	change some headers...
+						//conn->replace_header("Content-Type", "application/json; charset=utf-8");
+						conn->replace_header("Connection", "close");
+					
+					}
+					else	{
+						file.seekg(0, std::ios::end);
+						response.reserve(file.tellg());
+						file.seekg(0, std::ios::beg);
+						
+						response.assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+						conn->set_body(response);
+						conn->set_status(websocketpp::http::status_code::ok);
+						conn->replace_header("Connection", "close");
+					}
+					
+					
+					
+					
+					//	change some headers...
+					//conn->replace_header("Content-Type", "application/json; charset=utf-8");
+					//conn->replace_header("Connection", "close");
+				}
+				else if (tmpReply.getReplyCode()<0)	{
+					//cout << "\treply code is < 0..." << endl;
+					
 					conn->set_body(std::move(tmpReply.getReplyString()));
 					conn->set_status(websocketpp::http::status_code::ok);
+					
+					//	change some headers...
+					conn->replace_header("Content-Type", "application/json; charset=utf-8");
+					conn->replace_header("Connection", "close");
 				}
 				else	{
+					//cout << "\treturning a status code" << endl;
+					
 					//conn->set_status(websocketpp::http::status_code::not_found);
 					conn->set_status((http::status_code::value)tmpReply.getReplyCode());
+					//	change some headers...
+					conn->replace_header("Content-Type", "application/json; charset=utf-8");
+					conn->replace_header("Connection", "close");
 				}
 			}
 			catch (const websocketpp::exception& e)	{
