@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <streambuf>
+#include <sstream>
 
 
 WSPPServer::WSPPServer()	{
@@ -37,6 +38,7 @@ void WSPPServer::set_http_callback(HTTPCallback inCallback)	{
 			//	change some headers...
 			//conn->replace_header("Content-Type", "application/json; charset=utf-8");
 			//conn->replace_header("Connection", "close");
+			conn->replace_header("Access-Control-Allow-Origin", "*");
 			//	pull the full URI out, this is what we're going to pass to the callback
 			uri_ptr				uri = conn->get_uri();
 			const string		&fullURI = uri->str();
@@ -67,6 +69,7 @@ void WSPPServer::set_http_callback(HTTPCallback inCallback)	{
 					
 					}
 					else	{
+						/*
 						file.seekg(0, std::ios::end);
 						response.reserve(file.tellg());
 						file.seekg(0, std::ios::beg);
@@ -75,6 +78,63 @@ void WSPPServer::set_http_callback(HTTPCallback inCallback)	{
 						conn->set_body(response);
 						conn->set_status(websocketpp::http::status_code::ok);
 						conn->replace_header("Connection", "close");
+						*/
+						
+						
+						
+						//	reserve a bit of extra space in the response string
+						file.seekg(0, std::ios::end);
+						response.reserve((int)file.tellg() + 32);
+						file.seekg(0, std::ios::beg);
+						//	copy the data from the file into the response string
+						response.assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+						
+						
+						//	figure out if this is an HTML file by examining the extension of the last path component
+						bool			isHTMLFile = false;
+						
+						size_t			lastSlashIndex = tmpResource.find_last_of('/');
+						string			lastPathComponent;
+						if ((lastSlashIndex == std::string::npos) || (lastSlashIndex == (tmpResource.length()-1)))
+							lastPathComponent = tmpResource;
+						else
+							lastPathComponent = tmpResource.substr(lastSlashIndex+1);
+						auto			extIndex = lastPathComponent.find_last_of(".");
+						if ((extIndex==std::string::npos) ||
+						(extIndex==(lastPathComponent.length()-1)))	{
+							//	we couldn't find an extension or it was the very end and would be zero-length
+							//	do nothing, not an html file
+						}
+						//	else there's a path extension we need to check
+						else	{
+							string			pathExt = lastPathComponent.substr(extIndex+1);
+							std::transform(pathExt.begin(), pathExt.end(), pathExt.begin(), ::tolower);
+							if (pathExt == std::string("html"))	{
+								isHTMLFile = true;
+							}
+						}
+						//	if this is an HTML file, we're going to parse it and replace occurrences of "<%= hostUrl %>" with the host IP address and port.
+						if (isHTMLFile)	{
+							auto			local_endpoint = conn->get_raw_socket().local_endpoint();
+							std::string		local_IP = local_endpoint.address().to_string();
+							std::stringstream			ss;
+							ss << "http://" << local_IP << ":" << (int)local_endpoint.port();
+							std::string		local_address = ss.str();
+							
+							
+							string			searchString = string("<%= hostUrl %>");
+							size_t			foundIndex = response.rfind(searchString);
+							while (foundIndex != std::string::npos)	{
+								response.replace(foundIndex, searchString.length(), local_address);
+								foundIndex = response.rfind(searchString);
+							}
+						}
+						
+						
+						conn->set_body(response);
+						conn->set_status(websocketpp::http::status_code::ok);
+						conn->replace_header("Connection", "close");
+						
 					}
 					
 					
@@ -306,14 +366,14 @@ void WSPPServer::_initServer()	{
 		server = lib::make_shared<server_t>();
 	lib::error_code			ec;
 	server->init_asio(ec);
-	server->set_reuse_addr(false);
+	server->set_reuse_addr(true);
 	server->clear_access_channels(log::alevel::all);
 	server->set_access_channels(log::alevel::none);
 	
 	server->set_socket_init_handler([](connection_hdl handler, asio::ip::tcp::socket& s)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
 		asio::ip::tcp::no_delay			option(true);
-		s.set_option(option);
+		//s.set_option(option);
 	});
 	
 	//	the open handler should store the connection handle in the vector of connections
@@ -422,6 +482,7 @@ void WSPPServer::_initServer()	{
 }
 void WSPPServer::start(const int & inPort)	{
 	//cout << __PRETTY_FUNCTION__ << "... " << inPort << endl;
+	
 	//	if there's no server, make one
 	if (server == nullptr)	{
 		_initServer();
@@ -464,27 +525,6 @@ void WSPPServer::stop()	{
 		return;
 	}
 	
-	//	get a local copy of the server connections, then clear the server connections array
-	connsLock.lock();
-	std::vector<connection_hdl>		connsHdlsToClose(server_conns.begin(), server_conns.end());
-	server_conns.clear();
-	connsLock.unlock();
-	//	run through my open connections, closing each of them
-	for (const auto & connHdlToClose : connsHdlsToClose)	{
-		try	{
-			server->close(connHdlToClose, websocketpp::close::status::going_away, std::string(""));
-		}
-		catch (const websocketpp::exception& e)	{
-			cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << ", " << e.what() << endl;
-		}
-		catch (const std::exception& e)	{
-			cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << ", " << e.what() << endl;
-		}
-		catch (...)	{
-			cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << endl;
-		}
-	}
-	
 	try	{
 		//	tell the server to stop listening
 		server->stop_listening();
@@ -499,6 +539,46 @@ void WSPPServer::stop()	{
 		cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << endl;
 	}
 	
+	//	get a local copy of the server connections, then clear the server connections array
+	connsLock.lock();
+	std::vector<connection_hdl>		connsHdlsToClose(server_conns.begin(), server_conns.end());
+	server_conns.clear();
+	connsLock.unlock();
+	//	run through my open connections, closing each of them
+	for (const auto & connHdlToClose : connsHdlsToClose)	{
+		try	{
+			//server->close(connHdlToClose, websocketpp::close::status::going_away, std::string(""));
+			server->close(connHdlToClose, websocketpp::close::status::normal, std::string(""));
+		}
+		catch (const websocketpp::exception& e)	{
+			cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << ", " << e.what() << endl;
+		}
+		catch (const std::exception& e)	{
+			cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << ", " << e.what() << endl;
+		}
+		catch (...)	{
+			cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << endl;
+		}
+	}
+	
+	/*
+	//	tell the server to stop
+	try	{
+		//	tell the server to stop listening
+		server->stop();
+	}
+	catch (const websocketpp::exception& e)	{
+		cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << ", " << e.what() << endl;
+	}
+	catch (const std::exception& e)	{
+		cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << ", " << e.what() << endl;
+	}
+	catch (...)	{
+		cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << endl;
+	}
+	*/
+	
+	
 	//	join the thread
 	if (thread != nullptr)	{
 		//cout << "\tjoining the thread..." << endl;
@@ -506,6 +586,8 @@ void WSPPServer::stop()	{
 		thread = nullptr;
 		//cout << "\tdone joining the thread" << endl;
 	}
+	
+	
 	
 	try	{
 		//	delete the server
@@ -520,6 +602,7 @@ void WSPPServer::stop()	{
 	catch (...)	{
 		cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << endl;
 	}
+	
 }
 bool WSPPServer::isRunning()	{
 	return (server==nullptr) ? false : server->is_listening();

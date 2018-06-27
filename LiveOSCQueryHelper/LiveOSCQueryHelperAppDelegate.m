@@ -10,6 +10,7 @@
 	NSTimer		*fileChangeCoalesceTimer;
 }
 @property (weak) IBOutlet NSWindow *window;
+@property (strong) id activity;
 - (void) _loadLastFile;
 - (void) _loadFile:(NSString *)fullPath;
 - (void) _loadAbletonProjectFile:(NSString *)fullPath;
@@ -43,6 +44,9 @@
 - (id) init	{
 	self = [super init];
 	if (self != nil)	{
+		//	disable app nap
+		self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiated reason:@"Live OSCQuery Helper"];
+		
 		//	register the OSC address space
 		OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
 		//	by default, the address space registers for app terminate notifications so it can tear itself down.  we want to prevent this so we don't send "node deleted" messages to clients on app quit.
@@ -327,6 +331,7 @@
 		NSArray			*objRange = [baseObj objectForKey:kVVOSCQ_OptAttr_Range];	//	one for each type from the type tag string
 		NSArray			*objUnits = [baseObj objectForKey:kVVOSCQ_OptAttr_Unit];	//	one for each type from the type tag string
 		NSNumber		*objCritical = [baseObj objectForKey:kVVOSCQ_OptAttr_Critical];
+		NSArray			*objOverloads = [baseObj objectForKey:kVVOSCQ_OptAttr_Overloads];
 		
 		if (setUpAsMIDINode)	{
 			OSCNode			*newNode = [[OSCAddressSpace mainAddressSpace] findNodeForAddress:objFullPath createIfMissing:YES];
@@ -352,6 +357,8 @@
 				[newNode setUnits:objUnits];
 			if (objCritical != nil && [objCritical isKindOfClass:[NSNumber class]])
 				[newNode setCritical:[objCritical boolValue]];
+			if (objOverloads != nil && [objOverloads isKindOfClass:[NSArray class]])
+				[newNode setOverloads:objOverloads];
 		
 			//	make a delegate for the node, add it to the array
 			QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithMIDIManager:midim forAddress:[newNode fullName]];
@@ -484,18 +491,26 @@
 	if ([hostInfo objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCTransport] == nil)
 		[hostInfo setObject:kVVOSCQueryOSCTransportUDP forKey:kVVOSCQ_ReqAttr_HostInfo_OSCTransport];
 	//	supply an extensions array if there isn't already one
-	NSDictionary		*myExtDict = @{
+	NSDictionary		*extDict = @{
 		kVVOSCQ_OptAttr_Tags : @YES,
 		//kVVOSCQ_ReqAttr_Type : @YES,
 		kVVOSCQ_OptAttr_Access : @YES,
 		kVVOSCQ_OptAttr_Value : @YES,
 		kVVOSCQ_OptAttr_Range : @YES,
 		kVVOSCQ_OptAttr_Clipmode : @NO,
-		kVVOSCQ_OptAttr_Unit : @YES,
-		kVVOSCQ_OptAttr_Critical : @YES,
+		kVVOSCQ_OptAttr_Unit : @NO,
+		kVVOSCQ_OptAttr_Critical : @NO,
+		kVVOSCQ_OptAttr_Overloads : @NO,
+		kVVOSCQ_OptAttr_HTML : @YES,
+		kVVOSCQ_WSAttr_Cmd_Listen : @NO,
+		kVVOSCQ_WSAttr_Cmd_Ignore : @NO,
+		kVVOSCQ_WSAttr_Cmd_PathChanged : @YES,
+		kVVOSCQ_WSAttr_Cmd_PathRenamed : @NO,
+		kVVOSCQ_WSAttr_Cmd_PathRemoved : @NO,
+		kVVOSCQ_WSAttr_Cmd_PathAdded : @NO,
 	};
 	if ([hostInfo objectForKey:kVVOSCQ_ReqAttr_HostInfo_Exts] == nil)
-		[hostInfo setObject:myExtDict forKey:kVVOSCQ_ReqAttr_HostInfo_Exts];
+		[hostInfo setObject:extDict forKey:kVVOSCQ_ReqAttr_HostInfo_Exts];
 	
 	//	get the host info details from the osc manager
 	NSDictionary		*connectionHostInfo = [oscm oscQueryHostInfo];

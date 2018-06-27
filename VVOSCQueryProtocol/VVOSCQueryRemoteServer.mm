@@ -20,6 +20,7 @@
 @property (retain,setter=setOSCName:) NSString * oscName;
 @property (retain,setter=setWSServerAddressString:) NSString * wsServerAddressString;
 @property (assign,setter=setWSServerPort:) int wsServerPort;
+- (NSData *) _dataForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
 @end
 
 
@@ -383,8 +384,8 @@ bonjourName:(NSString *)inBonjourName	{
 	//NSLog(@"\t\thostInfoQueryAddress is %@",hostInfoQueryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:hostInfoQueryAddress];
 	[downloader appendStringToHeader:@"Connection: close"];
-	[downloader setConnectTimeout:5.];
-	[downloader setDNSCacheTimeout:5.];
+	[downloader setConnectTimeout:2.];
+	[downloader setDNSCacheTimeout:2.];
 	[downloader perform];
 	if ([downloader err] != 0)
 		NSLog(@"\t\terr: %ld, %s",[downloader err],__func__);
@@ -406,6 +407,8 @@ bonjourName:(NSString *)inBonjourName	{
 		return nil;
 	NSString		*queryAddress = [NSString stringWithFormat:@"http://%@:%d/",webServerAddressString,webServerPort];
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:queryAddress];
+	[downloader setDNSCacheTimeout:2.];
+	[downloader setConnectTimeout:2.];
 	[downloader perform];
 	if ([downloader err] != 0)	{
 		NSLog(@"\t\terr, couldnt download: %d, %s",[downloader err],__func__);
@@ -420,7 +423,24 @@ bonjourName:(NSString *)inBonjourName	{
 	return [self jsonObjectForOSCMethodAtAddress:inPath query:nil];
 }
 - (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
-	//NSLog(@"%s ... %@, %@",__func__,inPath,inQueryString);
+	NSData			*responseData = [self _dataForOSCMethodAtAddress:inPath query:inQueryString];
+	if (responseData == nil)
+		return nil;
+	NSError			*nsErr = nil;
+	NSDictionary	*returnMe = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&nsErr];
+	return returnMe;
+}
+- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath	{
+	return [self stringForOSCMethodAtAddress:inPath query:nil];
+}
+- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
+	NSData			*responseData = [self _dataForOSCMethodAtAddress:inPath query:inQueryString];
+	if (responseData == nil)
+		return nil;
+	NSString		*returnMe = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+	return returnMe;
+}
+- (NSData *) _dataForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
 	if (inPath == nil)
 		return nil;
 	NSString		*sanitizedOSCAddress = [inPath stringBySanitizingForOSCPath];
@@ -434,45 +454,15 @@ bonjourName:(NSString *)inBonjourName	{
 	queryAddress = [queryAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	//NSLog(@"\t\tqueryAddress is %@",queryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:queryAddress];
+	[downloader setDNSCacheTimeout:2.];
+	[downloader setConnectTimeout:2.];
 	[downloader perform];
 	if ([downloader err] != 0)	{
 		NSLog(@"\t\terr, couldnt download: %ld, %s",[downloader err],__func__);
 		return nil;
 	}
 	NSData			*responseData = [downloader responseData];
-	if (responseData == nil)	{
-		NSLog(@"\t\terr: responseData null, %s: %@",__func__,queryAddress);
-		return nil;
-	}
-	NSError			*nsErr = nil;
-	NSDictionary	*returnMe = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&nsErr];
-	return returnMe;
-}
-- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath	{
-	return [self stringForOSCMethodAtAddress:inPath query:nil];
-}
-- (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
-	if (inPath == nil)
-		return nil;
-	NSString		*sanitizedOSCAddress = [inPath stringBySanitizingForOSCPath];
-	if (sanitizedOSCAddress == nil)
-		sanitizedOSCAddress = @"/";
-	NSString		*queryAddress = nil;
-	if (inQueryString == nil)
-		queryAddress = [NSString stringWithFormat:@"http://%@:%d%@",webServerAddressString,webServerPort,sanitizedOSCAddress];
-	else
-		queryAddress = [NSString stringWithFormat:@"http://%@:%d%@?%@",webServerAddressString,webServerPort,sanitizedOSCAddress,inQueryString];
-	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:queryAddress];
-	[downloader perform];
-	if ([downloader err] != 0)	{
-		NSLog(@"\t\terr, couldnt download: %ld, %s",[downloader err],__func__);
-		return nil;
-	}
-	NSData			*responseData = [downloader responseData];
-	if (responseData == nil)
-		return nil;
-	NSString		*returnMe = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-	return returnMe;
+	return responseData;
 }
 
 

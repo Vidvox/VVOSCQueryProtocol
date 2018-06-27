@@ -51,7 +51,7 @@
 
 //	these methods send data to the clients using the websocket connection
 - (void) sendJSONObjectToClients:(NSDictionary *)anObj;
-- (void) listenerNeedsToSendOSCData:(void*)inData sized:(size_t)inDataSize fromOSCAddress:(NSString *)inAddress;
+- (void) sendOSCPacketData:(void*)inData sized:(size_t)inDataSize toClientsListeningToOSCAddress:(NSString *)inAddress;
 - (void) sendPathChangedToClients:(NSString *)n;
 - (void) sendPathRenamedToClients:(NSString *)op to:(NSString *)np;
 - (void) sendPathRemovedToClients:(NSString *)n;

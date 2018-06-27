@@ -8,8 +8,10 @@
 @interface OSCQueryProtocolServerAppDelegate : NSObject <NSApplicationDelegate,OSCDelegateProtocol,VVOSCQueryServerDelegate,OSCAddressSpaceDelegateProtocol>	{
 	OSCManager			*oscm;
 	OSCInPort			*oscIn;
-	VVOSCQueryServer		*server;
-	NSMutableArray			*serverNodeDelegates;	//	we create delegates for OSCNodes in the address space- these delegates send vals from the address space to the query server, and are retained here.
+	VVOSCQueryServer	*server;
+	NSMutableArray		*delegates;	//	we create delegates for OSCNodes in the address space- these delegates send vals from the address space to the query server, and are retained here.
+	
+	NSString			*loadedFilePath;	//	the path of the currently loaded file.
 	
 	NSMutableArray		*rxOSCMsgs;	//	a buffer of received OSCMessage instances are stored here, and rendered to human-readable text in the UI
 	
@@ -31,6 +33,8 @@
 - (IBAction) renameButtonUsed:(id)sender;
 
 - (IBAction) doSomethingClicked:(id)sender;
+
+- (IBAction) showSampleDocInFinderClicked:(id)sender;
 
 @end
 

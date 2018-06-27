@@ -16,7 +16,7 @@ WSPPClient::WSPPClient()	{
 	
 	client->set_socket_init_handler([](connection_hdl handler, asio::ip::tcp::socket& s)	{
 		asio::ip::tcp::no_delay			option(true);
-		s.set_option(option);
+		//s.set_option(option);
 	});
 	//	either open or fail will be called for every connection- close will be called for every connection that was opened
 	client->set_open_handler([&](connection_hdl hdl)	{

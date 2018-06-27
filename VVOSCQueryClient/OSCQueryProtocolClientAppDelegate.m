@@ -6,6 +6,7 @@
 
 @interface OSCQueryProtocolClientAppDelegate ()
 @property (weak) IBOutlet NSWindow *window;
+@property (strong) id activity;
 @end
 
 
@@ -17,6 +18,9 @@
 - (id) init	{
 	self = [super init];
 	if (self != nil)	{
+		//	disable app nap
+		self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiated reason:@"OSCQuery Client"];
+		
 		//	make an OSC manager, set myself up as its delegate so i receive any OSC traffic that i can display here
 		oscm = [[OSCManager alloc] init];
 		[oscm setDelegate:self];
@@ -118,9 +122,40 @@
 	NSLog(@"\t\tserver is %@",server);
 	[server websocketSendJSONObject:@{
 		kVVOSCQ_WSAttr_Command: kVVOSCQ_WSAttr_Cmd_Ignore,
-		kVVOSCQ_WSAttr_Data: @"/test/my_float" }];
+		kVVOSCQ_WSAttr_Data: @"/test/my_float"
+		}];
 	//[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/test/dingus" }];
 	//[server websocketSendJSONObject:@{ @"COMMAND": @"IGNORE", @"DATA": @"/foo/bar/baz/qux" }];
+}
+- (IBAction) testClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	NSArray						*servers = [VVOSCQueryRemoteServer remoteServers];
+	VVOSCQueryRemoteServer		*server = (servers==nil || [servers count]<1) ? nil : [servers objectAtIndex:0];
+	if (server == nil)
+		return;
+	OSCMessage			*msg = [OSCMessage createWithAddress:@"/test/my_float"];
+	[msg addFloat:0.33];
+	
+	//OSCPacket			*pkt = [OSCPacket createWithContent:msg];
+	//[server
+	//	sendOSCPacketData:[pkt payload]
+	//	sized:[pkt bufferLength]
+	//	toClientsListeningToOSCAddress:[msg address]];
+	
+	NSString		*ip = [server oscServerAddressString];
+	if (ip == nil)
+		ip = [server webServerAddressString];
+	int				port = [server oscServerPort];
+	//NSLog(@"\t\tremote server address is %@:%d",ip,port);
+	//	find the OSC output that matches my server's IP and port (create one if it doesn't exist yet)
+	OSCOutPort		*outPort = [oscm findOutputWithAddress:ip andPort:port];
+	if (outPort == nil)
+		outPort = [oscm createNewOutputToAddress:ip atPort:port];
+	if (outPort != nil)	{
+		[outPort sendThisMessage:msg];
+	}
+	else
+		NSLog(@"\t\terr: can't send, outPort nil, %s",__func__);
 }
 
 

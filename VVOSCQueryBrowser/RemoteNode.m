@@ -407,9 +407,9 @@
 						[newRemoteNodeControl setMax:newOSCMax];
 					if (newOSCVals != nil)
 						[newRemoteNodeControl setVals:newOSCVals];
-					if (controls == nil)
-						controls = [[NSMutableArray alloc] init];
-					[controls addObject:newRemoteNodeControl];
+					if (self->controls == nil)
+						self->controls = [[NSMutableArray alloc] init];
+					[self->controls addObject:newRemoteNodeControl];
 				}
 				
 				//	increment arrayIndex!
@@ -445,9 +445,9 @@
 		[contentsDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSDictionary *val, BOOL *stop)	{
 			if ([val isKindOfClass:[NSDictionary class]])	{
 				RemoteNode		*newNode = [[RemoteNode alloc] initWithParent:self dict:val];
-				if (contents == nil)
-					contents = [[NSMutableArray alloc] init];
-				[contents addObject:newNode];
+				if (self->contents == nil)
+					self->contents = [[NSMutableArray alloc] init];
+				[self->contents addObject:newNode];
 			}
 		}];
 		[contents sortUsingComparator:(NSComparator)^(id obj1, id obj2)	{

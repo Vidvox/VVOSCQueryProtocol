@@ -31,6 +31,7 @@
 	if (self != nil)	{
 		name = nil;
 		bonjourName = nil;
+		htmlDirectory = nil;
 		delegate = nil;
 		
 		//	populate the web server's HTTP handler
@@ -61,14 +62,35 @@
 				//	if it's an HTML query, return a false along with the path of the resource to serve- we don't want to return a query reply, we want to serve a file.  this is the only time the server returns a false reply (the client returns a false reply under different circumstances)
 				if (isHTMLQuery)	{
 					NSString		*basePath = [self htmlDirectory];
-					if (basePath != nil)
-						basePath = [basePath stringByDeletingLastAndAddingFirstSlash];
-					NSString		*frontPath = [urlComponents path];
-					NSString		*fullPath = nil;
 					if (basePath == nil)
-						fullPath = frontPath;
-					else
-						fullPath = [NSString stringWithFormat:@"%@%@",basePath,frontPath];
+						return WSPPQueryReply(404);
+					
+					basePath = [[basePath stringByDeletingLastAndAddingFirstSlash] stringByStandardizingPath];
+					if (basePath == nil)
+						return WSPPQueryReply(404);
+					
+					NSString		*frontPath = [urlComponents path];
+					NSString		*fullPath = [[NSString stringWithFormat:@"%@%@",basePath,frontPath] stringByStandardizingPath];
+					
+					//	we need to make it impossible to return files that are outside of the html directory.
+					NSFileManager		*fm = [NSFileManager defaultManager];
+					//NSString			*tmpPath = [@"~/../../NewTek NDI SDK" stringByExpandingTildeInPath];
+					//NSString			*tmpPath = [@"~/" stringByExpandingTildeInPath];
+					//NSLog(@"\t\torig path is %@",tmpPath);
+					//NSLog(@"\t\trevised path is %@",[[NSURL fileURLWithPath:tmpPath] path]);
+					NSURLRelationship	rel;
+					NSURL				*htmlDirURL = [NSURL fileURLWithPath:basePath isDirectory:YES];
+					NSURL				*requestedURL = [NSURL fileURLWithPath:fullPath isDirectory:NO];
+					NSError				*nsErr = nil;
+					BOOL				fileManagerOpSuccess = [fm
+						getRelationship:&rel
+						ofDirectoryAtURL:htmlDirURL
+						toItemAtURL:requestedURL
+						error:&nsErr];
+					if (!fileManagerOpSuccess || rel!=NSURLRelationshipContains)	{
+						NSLog(@"\tERR: rel is %ld, err is %@",rel,nsErr);
+						return WSPPQueryReply(404);
+					}
 					
 					return WSPPQueryReply(false, std::string([fullPath UTF8String]));
 				}
@@ -386,8 +408,8 @@
 	webServer.sendDataToClients(b, s);
 }
 */
-- (void) listenerNeedsToSendOSCData:(void*)inData sized:(size_t)inDataSize fromOSCAddress:(NSString *)inAddress	{
-	//NSLog(@"%s",__func__);
+- (void) sendOSCPacketData:(void*)inData sized:(size_t)inDataSize toClientsListeningToOSCAddress:(NSString *)inAddress	{
+	//NSLog(@"%s ... %@",__func__,inAddress);
 	if (inData==nil || inDataSize==0 || inAddress==nil)
 		return;
 	if (!webServer.isRunning())

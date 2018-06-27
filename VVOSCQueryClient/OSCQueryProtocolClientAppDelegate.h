@@ -13,6 +13,7 @@
 
 - (IBAction) listenClicked:(id)sender;
 - (IBAction) ignoreClicked:(id)sender;
+- (IBAction) testClicked:(id)sender;
 
 @end
 

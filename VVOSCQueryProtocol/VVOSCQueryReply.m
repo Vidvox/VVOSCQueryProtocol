@@ -82,5 +82,12 @@ overloads:(NSArray *)inOverloadsArray	{
 @synthesize jsonObject;
 @synthesize errCode;
 
+- (NSString *) description	{
+	if (jsonObject != nil)
+		return [NSString stringWithFormat:@"<VVOSCQueryReply: %@>",[jsonObject description]];
+	else
+		return [NSString stringWithFormat:@"<VVOSCQueryReply: %d>",errCode];
+}
+
 
 @end

@@ -1,7 +1,7 @@
 #import "VVOSCQueryBrowserAppDelegate.h"
 
 @interface VVOSCQueryBrowserAppDelegate ()
-
+@property (strong) id activity;
 @property (weak) IBOutlet NSWindow *window;
 @end
 
@@ -10,7 +10,8 @@
 - (id) init	{
 	self = [super init];
 	if (self != nil)	{
-		
+		//	disable app nap
+		self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:NSActivityUserInitiated reason:@"OSCQuery Browser"];
 	}
 	return self;
 }

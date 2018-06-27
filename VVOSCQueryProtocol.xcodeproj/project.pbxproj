@@ -150,6 +150,8 @@
 		1AEB5CC11FD723A400FFCE49 /* RemoteNodeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5CC01FD723A400FFCE49 /* RemoteNodeControl.m */; };
 		1AEB5CC41FD72F6F00FFCE49 /* RemoteNodeControlTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5CC31FD72F6F00FFCE49 /* RemoteNodeControlTableCellView.m */; };
 		1AEB5CC71FD7383B00FFCE49 /* OSCValueView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5CC61FD7383B00FFCE49 /* OSCValueView.m */; };
+		1AEF6B9620C83699009A54B1 /* SampleDocument.json in Resources */ = {isa = PBXBuildFile; fileRef = 1A8FA951203C6AC400778651 /* SampleDocument.json */; };
+		1AEF6B9720C83732009A54B1 /* VVKQueueCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4F158D2030F43800F4CF29 /* VVKQueueCenter.m */; };
 		1AF108581FCD7EF8004566A8 /* VVOSCQueryConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF108561FCD7EF8004566A8 /* VVOSCQueryConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AF108591FCD7EF8004566A8 /* VVOSCQueryConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF108571FCD7EF8004566A8 /* VVOSCQueryConstants.m */; };
 		1AF108761FCD9DC0004566A8 /* CURLDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF108741FCD9DC0004566A8 /* CURLDL.h */; };
@@ -959,12 +961,12 @@
 		1A336E421FC870E00007877C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = testAdmin;
 				TargetAttributes = {
 					1A0E2F311FD6D3CB00F0855D = {
 						CreatedOnToolsVersion = 9.1;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 0;
@@ -1082,6 +1084,7 @@
 			files = (
 				1A336EA01FC88C0C0007877C /* Assets.xcassets in Resources */,
 				1A336EA31FC88C0C0007877C /* MainMenu.xib in Resources */,
+				1AEF6B9620C83699009A54B1 /* SampleDocument.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1175,6 +1178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A336EA61FC88C0C0007877C /* main.m in Sources */,
+				1AEF6B9720C83732009A54B1 /* VVKQueueCenter.m in Sources */,
 				1A8A970D1FCF4E5500FEB54A /* OSCNodeAdditions.m in Sources */,
 				1AF75BCB1FE91B8700D59211 /* QueryServerNodeDelegate.m in Sources */,
 				1A336E9E1FC88C0C0007877C /* OSCQueryProtocolServerAppDelegate.m in Sources */,
@@ -1345,10 +1349,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
 				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
 				INFOPLIST_FILE = VVOSCQueryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1362,10 +1365,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
 				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
 				INFOPLIST_FILE = VVOSCQueryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1421,13 +1423,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1479,13 +1482,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1577,9 +1581,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/external_frameworks\"",
@@ -1587,6 +1589,7 @@
 				);
 				INFOPLIST_FILE = VVOSCQueryServer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.VVOSCQueryServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1597,10 +1600,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/external_frameworks\"",
@@ -1608,6 +1609,7 @@
 				);
 				INFOPLIST_FILE = VVOSCQueryServer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.VVOSCQueryServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
