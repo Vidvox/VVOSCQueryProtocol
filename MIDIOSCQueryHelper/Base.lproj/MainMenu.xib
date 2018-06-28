@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,6 +35,12 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Check for Updates..." id="0US-oo-cFf">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="checkForUpdates:" target="8mj-CT-XO7" id="B2O-VZ-aC5"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
@@ -858,7 +864,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="BOu-KW-Ryi">
                             <font key="font" metaFont="system"/>
-                            <mutableString key="title">MIDI OSCQuery Helper ("MOQH" from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI.
+                            <string key="title">MIDI OSCQuery Helper ("MOQH" from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI.
 
 - This app uses JSON files loaded into it to create an OSC address space.
 - This app runs an OSC query server- this query server publishes the details of the address space.
@@ -876,7 +882,7 @@ FILE TYPE:
 - JSON files can be imported- a sample file demonstrating the various basic MIDI data types is already installed on your machine in "~/Documents/MIDI OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  There are, however, several additional keys/values which must be used to indicate what sort of MIDI value should be sent- the query server will not publish any OSC nodes that are missing the following keys:
 	- "MIDI_TYPE": The value stored at the key "MIDI_TYPE" must be one of the following strings: "NOTE", "AFTERTOUCH", "CC", "PGM", or "PITCH".  This value indicates what kind of MIDI message should be sent when an OSC message is received by this node.
 	- "MIDI_CHANNEL": The value stored at the key "MIDI_CHANNEL" must be an integer.  This value describes the channel on which the MIDI message will be sent.
-	- "MIDI_VOICE": The value stored at the key "MIDI_VOICE" must be an integer.  This value describes which controller or note will be used to send the value from the OSC message.</mutableString>
+	- "MIDI_VOICE": The value stored at the key "MIDI_VOICE" must be an integer.  This value describes which controller or note will be used to send the value from the OSC message.</string>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
@@ -906,5 +912,6 @@ FILE TYPE:
                 <outlet property="selectedMIDIDstPUB" destination="K4S-Zc-C7y" id="Pcb-By-iBk"/>
             </connections>
         </customObject>
+        <customObject id="8mj-CT-XO7" customClass="SUUpdater"/>
     </objects>
 </document>

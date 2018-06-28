@@ -37,8 +37,8 @@ NSString * const TargetAppHostInfoChangedNotification = @"TargetAppHostInfoChang
 	//int				newPortInt = [tmpPort port];
 	NSString		*newPortString = [NSString stringWithFormat:@"%d",[tmpPort port]];
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if (![[portField stringValue] isEqualToString:newPortString])
-			[portField setStringValue:newPortString];
+		if (![[self->portField stringValue] isEqualToString:newPortString])
+			[self->portField setStringValue:newPortString];
 	});
 }
 - (NSDictionary *) oscQueryHostInfo	{

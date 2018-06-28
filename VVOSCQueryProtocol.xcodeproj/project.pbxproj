@@ -118,6 +118,14 @@
 		1ABC045B20233BD600539E55 /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1ABC045C20233BD600539E55 /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AC7D60E20252F1800C718D0 /* OSCNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A970C1FCF4E5500FEB54A /* OSCNodeAdditions.m */; };
+		1AC94ED220E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
+		1AC94ED320E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
+		1AC94ED420E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
+		1AC94ED520E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
+		1AC94ED620E52CD50035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1AC94ED720E52CDA0035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1AC94ED820E52CDD0035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1AC94ED920E52CE10035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AE214B320349AD6006FEC2B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214B220349AD6006FEC2B /* LICENSE */; };
 		1AE214BD20349C72006FEC2B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214BC20349C72006FEC2B /* Credits.rtf */; };
 		1AE214BF20349C7E006FEC2B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214BE20349C7E006FEC2B /* Credits.rtf */; };
@@ -263,6 +271,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1AC94ED620E52CD50035DC6B /* Sparkle.framework in Embed Frameworks */,
 				1A0E2F4D1FD6D3F000F0855D /* VVOSCQueryProtocol.framework in Embed Frameworks */,
 				1ABC045B20233BD600539E55 /* VVBasics.framework in Embed Frameworks */,
 				1ABC045C20233BD600539E55 /* VVOSC.framework in Embed Frameworks */,
@@ -276,6 +285,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1AC94ED720E52CDA0035DC6B /* Sparkle.framework in Embed Frameworks */,
 				1A1A867A2025103B00D72817 /* VVBasics.framework in Embed Frameworks */,
 				1A1A867B2025103B00D72817 /* VVOSC.framework in Embed Frameworks */,
 				1A1A86792025103500D72817 /* VVOSCQueryProtocol.framework in Embed Frameworks */,
@@ -325,6 +335,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1AC94ED820E52CDD0035DC6B /* Sparkle.framework in Embed Frameworks */,
 				1A43EB34203474830099D467 /* ALSKit.framework in Embed Frameworks */,
 				1AE8FD0D2033097B007A3398 /* VVMIDI.framework in Embed Frameworks */,
 				1A4F15A82030FD9D00F4CF29 /* VVOSCQueryProtocol.framework in Embed Frameworks */,
@@ -340,6 +351,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1AC94ED920E52CE10035DC6B /* Sparkle.framework in Embed Frameworks */,
 				1A1D9F5820348E2100920D80 /* VVOSCQueryProtocol.framework in Embed Frameworks */,
 				1AE8FD2D20333938007A3398 /* VVBasics.framework in Embed Frameworks */,
 				1AE8FD2E20333938007A3398 /* VVOSC.framework in Embed Frameworks */,
@@ -442,6 +454,7 @@
 		1AB89C2F1FD1EE1B0094A66B /* WSPPServer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WSPPServer.hpp; sourceTree = "<group>"; };
 		1ABC044F20233BC700539E55 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVBasics.framework; path = external_frameworks/VVBasics.framework; sourceTree = "<group>"; };
 		1ABC045020233BC700539E55 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVOSC.framework; path = external_frameworks/VVOSC.framework; sourceTree = "<group>"; };
+		1AC94ED120E52CCA0035DC6B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = external_frameworks/Sparkle.framework; sourceTree = "<group>"; };
 		1AE214B220349AD6006FEC2B /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		1AE214BC20349C72006FEC2B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Credits.rtf; path = common/Credits.rtf; sourceTree = SOURCE_ROOT; };
 		1AE214BE20349C7E006FEC2B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Credits.rtf; path = common/Credits.rtf; sourceTree = SOURCE_ROOT; };
@@ -500,6 +513,7 @@
 				1A0E2F491FD6D3E000F0855D /* VVOSCQueryProtocol.framework in Frameworks */,
 				1ABC045620233BC700539E55 /* VVOSC.framework in Frameworks */,
 				1ABC045320233BC700539E55 /* VVBasics.framework in Frameworks */,
+				1AC94ED220E52CCA0035DC6B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,6 +524,7 @@
 				1A1A86752025101E00D72817 /* VVOSCQueryProtocol.framework in Frameworks */,
 				1A1A86762025102500D72817 /* VVBasics.framework in Frameworks */,
 				1A1A86772025102500D72817 /* VVOSC.framework in Frameworks */,
+				1AC94ED320E52CCA0035DC6B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,6 +562,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A43EB332034747B0099D467 /* ALSKit.framework in Frameworks */,
+				1AC94ED420E52CCA0035DC6B /* Sparkle.framework in Frameworks */,
 				1A4F15A62030FD8C00F4CF29 /* VVOSCQueryProtocol.framework in Frameworks */,
 				1A4F15AB2030FDA600F4CF29 /* VVBasics.framework in Frameworks */,
 				1A4F15AC2030FDA600F4CF29 /* VVOSC.framework in Frameworks */,
@@ -560,6 +576,7 @@
 			files = (
 				1AE8FD282033392A007A3398 /* VVOSCQueryProtocol.framework in Frameworks */,
 				1AE8FD292033392F007A3398 /* VVBasics.framework in Frameworks */,
+				1AC94ED520E52CCA0035DC6B /* Sparkle.framework in Frameworks */,
 				1AE8FD2A2033392F007A3398 /* VVOSC.framework in Frameworks */,
 				1AE8FD2B2033392F007A3398 /* VVMIDI.framework in Frameworks */,
 			);
@@ -672,6 +689,7 @@
 		1A336E881FC871260007877C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1AC94ED120E52CCA0035DC6B /* Sparkle.framework */,
 				1A43EB322034747B0099D467 /* ALSKit.framework */,
 				1ABC044F20233BC700539E55 /* VVBasics.framework */,
 				1ABC045020233BC700539E55 /* VVOSC.framework */,
@@ -991,7 +1009,7 @@
 					};
 					1A1A866120250EE300D72817 = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					1A336E4A1FC870E00007877C = {
 						CreatedOnToolsVersion = 9.1;
@@ -1017,7 +1035,7 @@
 					};
 					1A4F15922030FBED00F4CF29 = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 0;
@@ -1030,7 +1048,7 @@
 					};
 					1AE8FD142033388F007A3398 = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 0;
@@ -1365,10 +1383,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
+				IBC_NOTICES = NO;
 				INFOPLIST_FILE = VVOSCQueryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.VVOSCQueryBrowser;
@@ -1382,9 +1400,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
-				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
+				IBC_NOTICES = NO;
 				INFOPLIST_FILE = VVOSCQueryBrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.VVOSCQueryBrowser;
@@ -1397,15 +1415,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
-				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
 				INFOPLIST_FILE = OSCQueryHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.OSCQueryHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1413,15 +1432,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
-				FRAMEWORK_SEARCH_PATHS = "\"$(PROJECT_DIR)/external_frameworks\"";
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
 				INFOPLIST_FILE = OSCQueryHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.OSCQueryHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -1600,12 +1620,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(PROJECT_DIR)/external_frameworks\"",
 					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryServer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.VVOSCQueryServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1620,12 +1638,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(PROJECT_DIR)/external_frameworks\"",
 					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryServer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.VVOSCQueryServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1642,7 +1658,6 @@
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(PROJECT_DIR)/external_frameworks\"",
 					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryClient/Info.plist;
@@ -1657,13 +1672,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(PROJECT_DIR)/external_frameworks\"",
 					"$(PROJECT_DIR)/external_frameworks",
 				);
 				INFOPLIST_FILE = VVOSCQueryClient/Info.plist;
@@ -1678,18 +1692,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(PROJECT_DIR)/external_frameworks\"",
-					"$(PROJECT_DIR)/external_frameworks",
-				);
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
 				INFOPLIST_FILE = LiveOSCQueryHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.LiveOSCQueryHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1697,18 +1709,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(PROJECT_DIR)/external_frameworks\"",
-					"$(PROJECT_DIR)/external_frameworks",
-				);
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
 				INFOPLIST_FILE = LiveOSCQueryHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.LiveOSCQueryHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -1732,18 +1742,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(PROJECT_DIR)/external_frameworks\"",
-					"$(PROJECT_DIR)/external_frameworks",
-				);
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
 				INFOPLIST_FILE = MIDIOSCQueryHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.MIDIOSCQueryHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1751,18 +1759,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = KH97KZU7A7;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(PROJECT_DIR)/external_frameworks\"",
-					"$(PROJECT_DIR)/external_frameworks",
-				);
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
 				INFOPLIST_FILE = MIDIOSCQueryHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.MIDIOSCQueryHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};

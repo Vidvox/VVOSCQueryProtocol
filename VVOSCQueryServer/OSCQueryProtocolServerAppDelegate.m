@@ -428,9 +428,9 @@
 			[newNode setOverloads:objOverloads];
 		
 		//	make a delegate for the node, add it to the array
-		QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:server forAddress:[newNode fullName]];
+		QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:self->server forAddress:[newNode fullName]];
 		[newNode addDelegate:tmpDelegate];
-		[delegates addObject:tmpDelegate];
+		[self->delegates addObject:tmpDelegate];
 		
 		//	run through the contents, calling this block recursively on each object
 		[objContents enumerateKeysAndObjectsUsingBlock:^(NSString * tmpName, NSDictionary * tmpContentsObj, BOOL *stop)	{
@@ -636,7 +636,7 @@
 	return YES;
 }
 - (void) server:(VVOSCQueryServer *)s wantsToIgnore:(NSString *)address	{
-	//NSLog(@"%s ... %@, %@",__func__,s,address);
+	NSLog(@"%s ... %@, %@",__func__,s,address);
 	//	find the node we want to ignore- don't create it
 	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
 	OSCNode				*listenNode = [as findNodeForAddress:address createIfMissing:NO];
@@ -710,7 +710,7 @@
 	}
 	//	update the contents of the text view
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[rxOSCMessageView setString:tmpStr];
+		[self->rxOSCMessageView setString:tmpStr];
 	});
 }
 

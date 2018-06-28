@@ -364,9 +364,9 @@
 			[newNode setOverloads:objOverloads];
 		
 		//	make a delegate for the node, add it to the array
-		QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:server forAddress:[newNode fullName]];
+		QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithQueryServer:self->server forAddress:[newNode fullName]];
 		[newNode addDelegate:tmpDelegate];
-		[delegates addObject:tmpDelegate];
+		[self->delegates addObject:tmpDelegate];
 		
 		//	run through the contents, calling this block recursively on each object
 		[objContents enumerateKeysAndObjectsUsingBlock:^(NSString * tmpName, NSDictionary * tmpContentsObj, BOOL *stop)	{
@@ -428,7 +428,7 @@
 	[server stop];
 	//	wait a bit before restarting it...
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.25*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		[server start];
+		[self->server start];
 		//	wait a bit more before updating the UI...
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.25*NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 			[self _updateUIItems];
