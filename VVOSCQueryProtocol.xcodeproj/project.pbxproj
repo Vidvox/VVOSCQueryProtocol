@@ -627,12 +627,8 @@
 			isa = PBXGroup;
 			children = (
 				1A336E4D1FC870E00007877C /* VVOSCQueryProtocol */,
-				1A336E9B1FC88C0C0007877C /* VVOSCQueryServer */,
-				1A336EB01FC88C170007877C /* VVOSCQueryClient */,
-				1A0E2F331FD6D3CB00F0855D /* VVOSCQueryBrowser */,
-				1A1A866320250EE300D72817 /* OSCQueryHelper */,
-				1A4F15942030FBED00F4CF29 /* LiveOSCQueryHelper */,
-				1AE8FD162033388F007A3398 /* MIDIOSCQueryHelper */,
+				1AC94ED020E52C260035DC6B /* Test apps for Developers */,
+				1AC94ECF20E52C240035DC6B /* OSCQuery Utilities for Users */,
 				1A336E4C1FC870E00007877C /* Products */,
 				1A336E881FC871260007877C /* Frameworks */,
 			);
@@ -741,6 +737,26 @@
 				1A43EB2F203474700099D467 /* LiveToOSCQHelper.m */,
 			);
 			path = LiveOSCQueryHelper;
+			sourceTree = "<group>";
+		};
+		1AC94ECF20E52C240035DC6B /* OSCQuery Utilities for Users */ = {
+			isa = PBXGroup;
+			children = (
+				1A0E2F331FD6D3CB00F0855D /* VVOSCQueryBrowser */,
+				1A1A866320250EE300D72817 /* OSCQueryHelper */,
+				1A4F15942030FBED00F4CF29 /* LiveOSCQueryHelper */,
+				1AE8FD162033388F007A3398 /* MIDIOSCQueryHelper */,
+			);
+			name = "OSCQuery Utilities for Users";
+			sourceTree = "<group>";
+		};
+		1AC94ED020E52C260035DC6B /* Test apps for Developers */ = {
+			isa = PBXGroup;
+			children = (
+				1A336E9B1FC88C0C0007877C /* VVOSCQueryServer */,
+				1A336EB01FC88C170007877C /* VVOSCQueryClient */,
+			);
+			name = "Test apps for Developers";
 			sourceTree = "<group>";
 		};
 		1AE8FD162033388F007A3398 /* MIDIOSCQueryHelper */ = {
