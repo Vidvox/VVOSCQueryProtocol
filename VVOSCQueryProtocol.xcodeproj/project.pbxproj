@@ -18,7 +18,6 @@
 				1AE214A92034907E006FEC2B /* PBXTargetDependency */,
 				1AE214AB2034907E006FEC2B /* PBXTargetDependency */,
 				1AE214AD2034907E006FEC2B /* PBXTargetDependency */,
-				1AE214AF2034907E006FEC2B /* PBXTargetDependency */,
 				1AE214B12034907E006FEC2B /* PBXTargetDependency */,
 			);
 			name = "All Apps";
@@ -27,6 +26,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1A04694C20EC24E8002E591D /* OSCQueryHelperAppIcon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 1A04694B20EC24E8002E591D /* OSCQueryHelperAppIcon.iconset */; };
+		1A04695020EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 1A04694F20EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset */; };
+		1A04696020ECF845002E591D /* oscqueryhtml in Resources */ = {isa = PBXBuildFile; fileRef = 1A04695F20ECF845002E591D /* oscqueryhtml */; };
 		1A0B5F55203E0EC800948FDA /* ZWRObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0B5F53203E0EC800948FDA /* ZWRObject.m */; };
 		1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A0B5F54203E0EC800948FDA /* ZWRObject.h */; };
 		1A0E2F361FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */; };
@@ -46,11 +48,7 @@
 		1A1A86792025103500D72817 /* VVOSCQueryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A1A867A2025103B00D72817 /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A1A867B2025103B00D72817 /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A1D9F572034892400920D80 /* LOQHMIDIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1D9F562034892400920D80 /* LOQHMIDIManager.m */; };
 		1A1D9F5820348E2100920D80 /* VVOSCQueryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A28F4CA2031D0F4004B60FD /* VVKQueueCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A28F4C92031D0F4004B60FD /* VVKQueueCenter.m */; };
-		1A28F4CD2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A28F4CC2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.m */; };
-		1A28F4D02031D134004B60FD /* QueryServerNodeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A28F4CF2031D134004B60FD /* QueryServerNodeDelegate.m */; };
 		1A336E501FC870E00007877C /* VVOSCQueryProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A336E4E1FC870E00007877C /* VVOSCQueryProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A336E901FC871870007877C /* VVOSCQueryServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A336E8E1FC871870007877C /* VVOSCQueryServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A336E911FC871870007877C /* VVOSCQueryServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A336E8F1FC871870007877C /* VVOSCQueryServer.mm */; };
@@ -69,9 +67,6 @@
 		1A336EC71FC88C770007877C /* VVOSCQueryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A336EC91FC88C890007877C /* VVOSCQueryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A36DC4A20271B5C00C060E1 /* OQHOSCManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A36DC4920271B5C00C060E1 /* OQHOSCManager.mm */; };
-		1A43EB31203474700099D467 /* LiveToOSCQHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A43EB2F203474700099D467 /* LiveToOSCQHelper.m */; };
-		1A43EB332034747B0099D467 /* ALSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A43EB322034747B0099D467 /* ALSKit.framework */; };
-		1A43EB34203474830099D467 /* ALSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A43EB322034747B0099D467 /* ALSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A480FDD1FC89A9D00F86354 /* VVOSCQueryReply.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A480FDB1FC89A9D00F86354 /* VVOSCQueryReply.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A480FDE1FC89A9D00F86354 /* VVOSCQueryReply.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A480FDC1FC89A9D00F86354 /* VVOSCQueryReply.m */; };
 		1A480FE11FC8A0EC00F86354 /* VVOSCQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A480FDF1FC8A0EC00F86354 /* VVOSCQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -81,15 +76,6 @@
 		1A4D91B51FD41817007138A8 /* WSPPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D91B31FD41817007138A8 /* WSPPClient.cpp */; };
 		1A4D91B61FD41817007138A8 /* WSPPClient.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 1A4D91B41FD41817007138A8 /* WSPPClient.hpp */; };
 		1A4F158E2030F43800F4CF29 /* VVKQueueCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4F158D2030F43800F4CF29 /* VVKQueueCenter.m */; };
-		1A4F15992030FBEE00F4CF29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A4F15982030FBEE00F4CF29 /* Assets.xcassets */; };
-		1A4F159C2030FBEE00F4CF29 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A4F159A2030FBEE00F4CF29 /* MainMenu.xib */; };
-		1A4F159F2030FBEE00F4CF29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4F159E2030FBEE00F4CF29 /* main.m */; };
-		1A4F15A62030FD8C00F4CF29 /* VVOSCQueryProtocol.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */; };
-		1A4F15A82030FD9D00F4CF29 /* VVOSCQueryProtocol.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A4F15A92030FD9D00F4CF29 /* VVBasics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A4F15AA2030FD9D00F4CF29 /* VVOSC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1A4F15AB2030FDA600F4CF29 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
-		1A4F15AC2030FDA600F4CF29 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC045020233BC700539E55 /* VVOSC.framework */; };
 		1A71ADAF1FD1F26300B01872 /* WSPPQueryReply.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 1A71ADAE1FD1F26300B01872 /* WSPPQueryReply.hpp */; };
 		1A71AE0C1FD2049200B01872 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A71ADDE1FD2048700B01872 /* SystemConfiguration.framework */; };
 		1A7C48F61FD586DB00AE4287 /* VVOSCQueryStringUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A7C48F41FD586DB00AE4287 /* VVOSCQueryStringUtilities.cpp */; };
@@ -120,20 +106,15 @@
 		1AC7D60E20252F1800C718D0 /* OSCNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A970C1FCF4E5500FEB54A /* OSCNodeAdditions.m */; };
 		1AC94ED220E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
 		1AC94ED320E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
-		1AC94ED420E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
 		1AC94ED520E52CCA0035DC6B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; };
 		1AC94ED620E52CD50035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AC94ED720E52CDA0035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1AC94ED820E52CDD0035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AC94ED920E52CE10035DC6B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC94ED120E52CCA0035DC6B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1ACEFAEC20EC237200A4B81C /* OSCQueryBrowserAppIcon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 1ACEFAEB20EC237200A4B81C /* OSCQueryBrowserAppIcon.iconset */; };
 		1AE214B320349AD6006FEC2B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214B220349AD6006FEC2B /* LICENSE */; };
 		1AE214BD20349C72006FEC2B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214BC20349C72006FEC2B /* Credits.rtf */; };
 		1AE214BF20349C7E006FEC2B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214BE20349C7E006FEC2B /* Credits.rtf */; };
-		1AE214C120349C8E006FEC2B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214C020349C8E006FEC2B /* Credits.rtf */; };
 		1AE214C320349C96006FEC2B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AE214C220349C96006FEC2B /* Credits.rtf */; };
-		1AE8FD0C20330972007A3398 /* VVMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE8FD0B20330972007A3398 /* VVMIDI.framework */; };
-		1AE8FD0D2033097B007A3398 /* VVMIDI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE8FD0B20330972007A3398 /* VVMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1AE8FD1020330B7D007A3398 /* LOQHOSCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE8FD0F20330B7D007A3398 /* LOQHOSCManager.m */; };
 		1AE8FD192033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE8FD182033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.m */; };
 		1AE8FD1B2033388F007A3398 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AE8FD1A2033388F007A3398 /* Assets.xcassets */; };
 		1AE8FD1E2033388F007A3398 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1AE8FD1C2033388F007A3398 /* MainMenu.xib */; };
@@ -149,7 +130,6 @@
 		1AE8FD3520333993007A3398 /* QueryServerNodeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE8FD3420333993007A3398 /* QueryServerNodeDelegate.m */; };
 		1AE8FD38203339A5007A3398 /* MOQHOSCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE8FD37203339A5007A3398 /* MOQHOSCManager.m */; };
 		1AE8FD44203346D9007A3398 /* MOQHMIDIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE8FD43203346D9007A3398 /* MOQHMIDIManager.m */; };
-		1AE8FD4520339631007A3398 /* OSCNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A970C1FCF4E5500FEB54A /* OSCNodeAdditions.m */; };
 		1AE8FD4620339632007A3398 /* OSCNodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8A970C1FCF4E5500FEB54A /* OSCNodeAdditions.m */; };
 		1AEB5C881FD6E71700FFCE49 /* ServerListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5C871FD6E71700FFCE49 /* ServerListController.m */; };
 		1AEB5CB81FD6E74D00FFCE49 /* ServerUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB5CB71FD6E74D00FFCE49 /* ServerUIController.m */; };
@@ -167,6 +147,9 @@
 		1AF1087A1FCDC509004566A8 /* NSStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AF108781FCDC509004566A8 /* NSStringAdditions.h */; };
 		1AF1087B1FCDC509004566A8 /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF108791FCDC509004566A8 /* NSStringAdditions.m */; };
 		1AF75BCB1FE91B8700D59211 /* QueryServerNodeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF75BCA1FE91B8700D59211 /* QueryServerNodeDelegate.m */; };
+		1AFC99E120EF785100F6B90E /* LiveToOSCQHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFC99E020EF785100F6B90E /* LiveToOSCQHelper.m */; };
+		1AFC99E220EF789400F6B90E /* ALSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A43EB322034747B0099D467 /* ALSKit.framework */; };
+		1AFC99E320EF789E00F6B90E /* ALSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1A43EB322034747B0099D467 /* ALSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1AFCB16D202799F100B70A37 /* QueryServerNodeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFCB16C202799F100B70A37 /* QueryServerNodeDelegate.m */; };
 /* End PBXBuildFile section */
 
@@ -198,13 +181,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1A336E4A1FC870E00007877C;
 			remoteInfo = OSCQueryProtocol;
-		};
-		1A4F15A42030FD8600F4CF29 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1A336E421FC870E00007877C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A336E4A1FC870E00007877C;
-			remoteInfo = VVOSCQueryProtocol;
 		};
 		1AE214A42034907E006FEC2B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -240,13 +216,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1A1A866120250EE300D72817;
 			remoteInfo = "OSCQuery Helper";
-		};
-		1AE214AE2034907E006FEC2B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1A336E421FC870E00007877C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A4F15922030FBED00F4CF29;
-			remoteInfo = "Live OSCQuery Helper";
 		};
 		1AE214B02034907E006FEC2B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -329,22 +298,6 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A4F15A72030FD8F00F4CF29 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1AC94ED820E52CDD0035DC6B /* Sparkle.framework in Embed Frameworks */,
-				1A43EB34203474830099D467 /* ALSKit.framework in Embed Frameworks */,
-				1AE8FD0D2033097B007A3398 /* VVMIDI.framework in Embed Frameworks */,
-				1A4F15A82030FD9D00F4CF29 /* VVOSCQueryProtocol.framework in Embed Frameworks */,
-				1A4F15A92030FD9D00F4CF29 /* VVBasics.framework in Embed Frameworks */,
-				1A4F15AA2030FD9D00F4CF29 /* VVOSC.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1AE8FD2C20333931007A3398 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -356,6 +309,7 @@
 				1AE8FD2D20333938007A3398 /* VVBasics.framework in Embed Frameworks */,
 				1AE8FD2E20333938007A3398 /* VVOSC.framework in Embed Frameworks */,
 				1AE8FD2F20333938007A3398 /* VVMIDI.framework in Embed Frameworks */,
+				1AFC99E320EF789E00F6B90E /* ALSKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,6 +317,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1A04694B20EC24E8002E591D /* OSCQueryHelperAppIcon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = OSCQueryHelperAppIcon.iconset; sourceTree = "<group>"; };
+		1A04694F20EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = MIDIOSCQueryHelperAppIcon.iconset; sourceTree = "<group>"; };
+		1A04695F20ECF845002E591D /* oscqueryhtml */ = {isa = PBXFileReference; lastKnownFileType = folder; name = oscqueryhtml; path = external_projects/oscqueryhtml; sourceTree = SOURCE_ROOT; };
 		1A0B5F53203E0EC800948FDA /* ZWRObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWRObject.m; sourceTree = "<group>"; };
 		1A0B5F54203E0EC800948FDA /* ZWRObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWRObject.h; sourceTree = "<group>"; };
 		1A0E2F321FD6D3CB00F0855D /* OSCQuery Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OSCQuery Browser.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -383,14 +340,6 @@
 		1A1A866C20250EE300D72817 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A1A866D20250EE300D72817 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1A1A866F20250EE300D72817 /* OSCQueryHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OSCQueryHelper.entitlements; sourceTree = "<group>"; };
-		1A1D9F552034892400920D80 /* LOQHMIDIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LOQHMIDIManager.h; sourceTree = "<group>"; };
-		1A1D9F562034892400920D80 /* LOQHMIDIManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LOQHMIDIManager.m; sourceTree = "<group>"; };
-		1A28F4C82031D0F4004B60FD /* VVKQueueCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVKQueueCenter.h; path = common/VVKQueueCenter.h; sourceTree = SOURCE_ROOT; };
-		1A28F4C92031D0F4004B60FD /* VVKQueueCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVKQueueCenter.m; path = common/VVKQueueCenter.m; sourceTree = SOURCE_ROOT; };
-		1A28F4CB2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveOSCQueryHelperAppDelegate.h; sourceTree = "<group>"; };
-		1A28F4CC2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveOSCQueryHelperAppDelegate.m; sourceTree = "<group>"; };
-		1A28F4CE2031D134004B60FD /* QueryServerNodeDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryServerNodeDelegate.h; sourceTree = "<group>"; };
-		1A28F4CF2031D134004B60FD /* QueryServerNodeDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryServerNodeDelegate.m; sourceTree = "<group>"; };
 		1A336E4B1FC870E00007877C /* VVOSCQueryProtocol.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VVOSCQueryProtocol.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A336E4E1FC870E00007877C /* VVOSCQueryProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VVOSCQueryProtocol.h; sourceTree = "<group>"; };
 		1A336E4F1FC870E00007877C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -416,8 +365,6 @@
 		1A336EBC1FC88C170007877C /* OSCQueryProtocolClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OSCQueryProtocolClient.entitlements; sourceTree = "<group>"; };
 		1A36DC4820271B5C00C060E1 /* OQHOSCManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OQHOSCManager.h; sourceTree = "<group>"; };
 		1A36DC4920271B5C00C060E1 /* OQHOSCManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OQHOSCManager.mm; sourceTree = "<group>"; };
-		1A43EB2F203474700099D467 /* LiveToOSCQHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveToOSCQHelper.m; sourceTree = "<group>"; };
-		1A43EB30203474700099D467 /* LiveToOSCQHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveToOSCQHelper.h; sourceTree = "<group>"; };
 		1A43EB322034747B0099D467 /* ALSKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ALSKit.framework; path = external_frameworks/ALSKit.framework; sourceTree = "<group>"; };
 		1A480FDB1FC89A9D00F86354 /* VVOSCQueryReply.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VVOSCQueryReply.h; sourceTree = "<group>"; };
 		1A480FDC1FC89A9D00F86354 /* VVOSCQueryReply.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VVOSCQueryReply.m; sourceTree = "<group>"; };
@@ -429,12 +376,6 @@
 		1A4D91B41FD41817007138A8 /* WSPPClient.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WSPPClient.hpp; sourceTree = "<group>"; };
 		1A4F158C2030F43800F4CF29 /* VVKQueueCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVKQueueCenter.h; path = common/VVKQueueCenter.h; sourceTree = SOURCE_ROOT; };
 		1A4F158D2030F43800F4CF29 /* VVKQueueCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVKQueueCenter.m; path = common/VVKQueueCenter.m; sourceTree = SOURCE_ROOT; };
-		1A4F15932030FBED00F4CF29 /* Live OSCQuery Helper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Live OSCQuery Helper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1A4F15982030FBEE00F4CF29 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1A4F159B2030FBEE00F4CF29 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		1A4F159D2030FBEE00F4CF29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1A4F159E2030FBEE00F4CF29 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		1A4F15A02030FBEE00F4CF29 /* LiveOSCQueryHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveOSCQueryHelper.entitlements; sourceTree = "<group>"; };
 		1A71ADAE1FD1F26300B01872 /* WSPPQueryReply.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WSPPQueryReply.hpp; sourceTree = "<group>"; };
 		1A71ADDE1FD2048700B01872 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		1A7C48F41FD586DB00AE4287 /* VVOSCQueryStringUtilities.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VVOSCQueryStringUtilities.cpp; sourceTree = "<group>"; };
@@ -455,14 +396,12 @@
 		1ABC044F20233BC700539E55 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVBasics.framework; path = external_frameworks/VVBasics.framework; sourceTree = "<group>"; };
 		1ABC045020233BC700539E55 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVOSC.framework; path = external_frameworks/VVOSC.framework; sourceTree = "<group>"; };
 		1AC94ED120E52CCA0035DC6B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = external_frameworks/Sparkle.framework; sourceTree = "<group>"; };
+		1ACEFAEB20EC237200A4B81C /* OSCQueryBrowserAppIcon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = OSCQueryBrowserAppIcon.iconset; sourceTree = "<group>"; };
 		1AE214B220349AD6006FEC2B /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		1AE214BC20349C72006FEC2B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Credits.rtf; path = common/Credits.rtf; sourceTree = SOURCE_ROOT; };
 		1AE214BE20349C7E006FEC2B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Credits.rtf; path = common/Credits.rtf; sourceTree = SOURCE_ROOT; };
-		1AE214C020349C8E006FEC2B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Credits.rtf; path = common/Credits.rtf; sourceTree = SOURCE_ROOT; };
 		1AE214C220349C96006FEC2B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Credits.rtf; path = common/Credits.rtf; sourceTree = SOURCE_ROOT; };
 		1AE8FD0B20330972007A3398 /* VVMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVMIDI.framework; path = external_frameworks/VVMIDI.framework; sourceTree = "<group>"; };
-		1AE8FD0E20330B7D007A3398 /* LOQHOSCManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LOQHOSCManager.h; sourceTree = "<group>"; };
-		1AE8FD0F20330B7D007A3398 /* LOQHOSCManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LOQHOSCManager.m; sourceTree = "<group>"; };
 		1AE8FD152033388F007A3398 /* MIDI OSCQuery Helper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI OSCQuery Helper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AE8FD172033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MIDIOSCQueryHelperAppDelegate.h; sourceTree = "<group>"; };
 		1AE8FD182033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MIDIOSCQueryHelperAppDelegate.m; sourceTree = "<group>"; };
@@ -501,6 +440,8 @@
 		1AF108791FCDC509004566A8 /* NSStringAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSStringAdditions.m; sourceTree = "<group>"; };
 		1AF75BC91FE91B8700D59211 /* QueryServerNodeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryServerNodeDelegate.h; sourceTree = "<group>"; };
 		1AF75BCA1FE91B8700D59211 /* QueryServerNodeDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryServerNodeDelegate.m; sourceTree = "<group>"; };
+		1AFC99DF20EF785100F6B90E /* LiveToOSCQHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveToOSCQHelper.h; sourceTree = "<group>"; };
+		1AFC99E020EF785100F6B90E /* LiveToOSCQHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveToOSCQHelper.m; sourceTree = "<group>"; };
 		1AFCB16B202799F100B70A37 /* QueryServerNodeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryServerNodeDelegate.h; sourceTree = "<group>"; };
 		1AFCB16C202799F100B70A37 /* QueryServerNodeDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryServerNodeDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -557,23 +498,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A4F15902030FBED00F4CF29 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1A43EB332034747B0099D467 /* ALSKit.framework in Frameworks */,
-				1AC94ED420E52CCA0035DC6B /* Sparkle.framework in Frameworks */,
-				1A4F15A62030FD8C00F4CF29 /* VVOSCQueryProtocol.framework in Frameworks */,
-				1A4F15AB2030FDA600F4CF29 /* VVBasics.framework in Frameworks */,
-				1A4F15AC2030FDA600F4CF29 /* VVOSC.framework in Frameworks */,
-				1AE8FD0C20330972007A3398 /* VVMIDI.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1AE8FD122033388F007A3398 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AFC99E220EF789400F6B90E /* ALSKit.framework in Frameworks */,
 				1AE8FD282033392A007A3398 /* VVOSCQueryProtocol.framework in Frameworks */,
 				1AE8FD292033392F007A3398 /* VVBasics.framework in Frameworks */,
 				1AC94ED520E52CCA0035DC6B /* Sparkle.framework in Frameworks */,
@@ -588,6 +517,7 @@
 		1A0E2F331FD6D3CB00F0855D /* VVOSCQueryBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				1ACEFAEB20EC237200A4B81C /* OSCQueryBrowserAppIcon.iconset */,
 				1A0E2F341FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.h */,
 				1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */,
 				1AE214BC20349C72006FEC2B /* Credits.rtf */,
@@ -621,6 +551,7 @@
 		1A1A866320250EE300D72817 /* OSCQueryHelper */ = {
 			isa = PBXGroup;
 			children = (
+				1A04694B20EC24E8002E591D /* OSCQueryHelperAppIcon.iconset */,
 				1A1A866420250EE300D72817 /* OSCQueryHelperAppDelegate.h */,
 				1A1A866520250EE300D72817 /* OSCQueryHelperAppDelegate.m */,
 				1A8FA951203C6AC400778651 /* SampleDocument.json */,
@@ -659,7 +590,6 @@
 				1A336EAF1FC88C170007877C /* VVOSCQueryClient.app */,
 				1A0E2F321FD6D3CB00F0855D /* OSCQuery Browser.app */,
 				1A1A866220250EE300D72817 /* OSCQuery Helper.app */,
-				1A4F15932030FBED00F4CF29 /* Live OSCQuery Helper.app */,
 				1AE8FD152033388F007A3398 /* MIDI OSCQuery Helper.app */,
 			);
 			name = Products;
@@ -681,6 +611,7 @@
 				1A480FDC1FC89A9D00F86354 /* VVOSCQueryReply.m */,
 				1A480FDF1FC8A0EC00F86354 /* VVOSCQuery.h */,
 				1A480FE01FC8A0EC00F86354 /* VVOSCQuery.m */,
+				1A04695F20ECF845002E591D /* oscqueryhtml */,
 				1AF1087C1FCDD7F3004566A8 /* internal */,
 			);
 			path = VVOSCQueryProtocol;
@@ -732,37 +663,11 @@
 			path = VVOSCQueryClient;
 			sourceTree = "<group>";
 		};
-		1A4F15942030FBED00F4CF29 /* LiveOSCQueryHelper */ = {
-			isa = PBXGroup;
-			children = (
-				1A28F4CB2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.h */,
-				1A28F4CC2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.m */,
-				1AE214C020349C8E006FEC2B /* Credits.rtf */,
-				1A4F15982030FBEE00F4CF29 /* Assets.xcassets */,
-				1A4F159A2030FBEE00F4CF29 /* MainMenu.xib */,
-				1A4F159D2030FBEE00F4CF29 /* Info.plist */,
-				1A4F159E2030FBEE00F4CF29 /* main.m */,
-				1A4F15A02030FBEE00F4CF29 /* LiveOSCQueryHelper.entitlements */,
-				1A28F4C82031D0F4004B60FD /* VVKQueueCenter.h */,
-				1A28F4C92031D0F4004B60FD /* VVKQueueCenter.m */,
-				1A28F4CE2031D134004B60FD /* QueryServerNodeDelegate.h */,
-				1A28F4CF2031D134004B60FD /* QueryServerNodeDelegate.m */,
-				1AE8FD0E20330B7D007A3398 /* LOQHOSCManager.h */,
-				1AE8FD0F20330B7D007A3398 /* LOQHOSCManager.m */,
-				1A1D9F552034892400920D80 /* LOQHMIDIManager.h */,
-				1A1D9F562034892400920D80 /* LOQHMIDIManager.m */,
-				1A43EB30203474700099D467 /* LiveToOSCQHelper.h */,
-				1A43EB2F203474700099D467 /* LiveToOSCQHelper.m */,
-			);
-			path = LiveOSCQueryHelper;
-			sourceTree = "<group>";
-		};
 		1AC94ECF20E52C240035DC6B /* OSCQuery Utilities for Users */ = {
 			isa = PBXGroup;
 			children = (
 				1A0E2F331FD6D3CB00F0855D /* VVOSCQueryBrowser */,
 				1A1A866320250EE300D72817 /* OSCQueryHelper */,
-				1A4F15942030FBED00F4CF29 /* LiveOSCQueryHelper */,
 				1AE8FD162033388F007A3398 /* MIDIOSCQueryHelper */,
 			);
 			name = "OSCQuery Utilities for Users";
@@ -780,8 +685,11 @@
 		1AE8FD162033388F007A3398 /* MIDIOSCQueryHelper */ = {
 			isa = PBXGroup;
 			children = (
+				1A04694F20EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset */,
 				1AE8FD172033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.h */,
 				1AE8FD182033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.m */,
+				1AFC99DF20EF785100F6B90E /* LiveToOSCQHelper.h */,
+				1AFC99E020EF785100F6B90E /* LiveToOSCQHelper.m */,
 				1A8FA953203C6E7C00778651 /* SampleDocument.json */,
 				1AE214C220349C96006FEC2B /* Credits.rtf */,
 				1AE8FD1A2033388F007A3398 /* Assets.xcassets */,
@@ -951,25 +859,6 @@
 			productReference = 1A336EAF1FC88C170007877C /* VVOSCQueryClient.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1A4F15922030FBED00F4CF29 /* Live OSCQuery Helper */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1A4F15A12030FBEE00F4CF29 /* Build configuration list for PBXNativeTarget "Live OSCQuery Helper" */;
-			buildPhases = (
-				1A4F158F2030FBED00F4CF29 /* Sources */,
-				1A4F15902030FBED00F4CF29 /* Frameworks */,
-				1A4F15912030FBED00F4CF29 /* Resources */,
-				1A4F15A72030FD8F00F4CF29 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1A4F15A52030FD8600F4CF29 /* PBXTargetDependency */,
-			);
-			name = "Live OSCQuery Helper";
-			productName = LiveOSCQueryHelper;
-			productReference = 1A4F15932030FBED00F4CF29 /* Live OSCQuery Helper.app */;
-			productType = "com.apple.product-type.application";
-		};
 		1AE8FD142033388F007A3398 /* MIDI OSCQuery Helper */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1AE8FD232033388F007A3398 /* Build configuration list for PBXNativeTarget "MIDI OSCQuery Helper" */;
@@ -1033,15 +922,6 @@
 							};
 						};
 					};
-					1A4F15922030FBED00F4CF29 = {
-						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Manual;
-						SystemCapabilities = {
-							com.apple.Sandbox = {
-								enabled = 0;
-							};
-						};
-					};
 					1AE214A02034906D006FEC2B = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
@@ -1075,7 +955,6 @@
 				1A336EAE1FC88C170007877C /* VVOSCQueryClient */,
 				1A0E2F311FD6D3CB00F0855D /* OSCQuery Browser */,
 				1A1A866120250EE300D72817 /* OSCQuery Helper */,
-				1A4F15922030FBED00F4CF29 /* Live OSCQuery Helper */,
 				1AE8FD142033388F007A3398 /* MIDI OSCQuery Helper */,
 				1AE214A02034906D006FEC2B /* All Apps */,
 			);
@@ -1089,6 +968,7 @@
 			files = (
 				1A0E2F381FD6D3CB00F0855D /* Assets.xcassets in Resources */,
 				1AE214BD20349C72006FEC2B /* Credits.rtf in Resources */,
+				1ACEFAEC20EC237200A4B81C /* OSCQueryBrowserAppIcon.iconset in Resources */,
 				1A0E2F3B1FD6D3CB00F0855D /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1101,6 +981,7 @@
 				1A1A866820250EE300D72817 /* Assets.xcassets in Resources */,
 				1AE214BF20349C7E006FEC2B /* Credits.rtf in Resources */,
 				1A1A866B20250EE300D72817 /* MainMenu.xib in Resources */,
+				1A04694C20EC24E8002E591D /* OSCQueryHelperAppIcon.iconset in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1108,6 +989,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A04696020ECF845002E591D /* oscqueryhtml in Resources */,
 				1AE214B320349AD6006FEC2B /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1131,16 +1013,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A4F15912030FBED00F4CF29 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1A4F15992030FBEE00F4CF29 /* Assets.xcassets in Resources */,
-				1AE214C120349C8E006FEC2B /* Credits.rtf in Resources */,
-				1A4F159C2030FBEE00F4CF29 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1AE8FD132033388F007A3398 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1149,6 +1021,7 @@
 				1AE8FD1B2033388F007A3398 /* Assets.xcassets in Resources */,
 				1AE214C320349C96006FEC2B /* Credits.rtf in Resources */,
 				1AE8FD1E2033388F007A3398 /* MainMenu.xib in Resources */,
+				1A04695020EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1228,21 +1101,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1A4F158F2030FBED00F4CF29 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1AE8FD1020330B7D007A3398 /* LOQHOSCManager.m in Sources */,
-				1AE8FD4520339631007A3398 /* OSCNodeAdditions.m in Sources */,
-				1A28F4CA2031D0F4004B60FD /* VVKQueueCenter.m in Sources */,
-				1A28F4CD2031D12D004B60FD /* LiveOSCQueryHelperAppDelegate.m in Sources */,
-				1A28F4D02031D134004B60FD /* QueryServerNodeDelegate.m in Sources */,
-				1A43EB31203474700099D467 /* LiveToOSCQHelper.m in Sources */,
-				1A1D9F572034892400920D80 /* LOQHMIDIManager.m in Sources */,
-				1A4F159F2030FBEE00F4CF29 /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1AE8FD112033388F007A3398 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1253,6 +1111,7 @@
 				1AE8FD3520333993007A3398 /* QueryServerNodeDelegate.m in Sources */,
 				1AE8FD192033388F007A3398 /* MIDIOSCQueryHelperAppDelegate.m in Sources */,
 				1AE8FD44203346D9007A3398 /* MOQHMIDIManager.m in Sources */,
+				1AFC99E120EF785100F6B90E /* LiveToOSCQHelper.m in Sources */,
 				1AE8FD4620339632007A3398 /* OSCNodeAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1280,11 +1139,6 @@
 			target = 1A336E4A1FC870E00007877C /* VVOSCQueryProtocol */;
 			targetProxy = 1A336EC21FC88C5D0007877C /* PBXContainerItemProxy */;
 		};
-		1A4F15A52030FD8600F4CF29 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1A336E4A1FC870E00007877C /* VVOSCQueryProtocol */;
-			targetProxy = 1A4F15A42030FD8600F4CF29 /* PBXContainerItemProxy */;
-		};
 		1AE214A52034907E006FEC2B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1A336E4A1FC870E00007877C /* VVOSCQueryProtocol */;
@@ -1309,11 +1163,6 @@
 			isa = PBXTargetDependency;
 			target = 1A1A866120250EE300D72817 /* OSCQuery Helper */;
 			targetProxy = 1AE214AC2034907E006FEC2B /* PBXContainerItemProxy */;
-		};
-		1AE214AF2034907E006FEC2B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1A4F15922030FBED00F4CF29 /* Live OSCQuery Helper */;
-			targetProxy = 1AE214AE2034907E006FEC2B /* PBXContainerItemProxy */;
 		};
 		1AE214B12034907E006FEC2B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1356,14 +1205,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				1A336EB71FC88C170007877C /* Base */,
-			);
-			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
-		1A4F159A2030FBEE00F4CF29 /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1A4F159B2030FBEE00F4CF29 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -1688,40 +1529,6 @@
 			};
 			name = Release;
 		};
-		1A4F15A22030FBEE00F4CF29 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
-				INFOPLIST_FILE = LiveOSCQueryHelper/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.LiveOSCQueryHelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-			};
-			name = Debug;
-		};
-		1A4F15A32030FBEE00F4CF29 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Vidvox, LLC (KH97KZU7A7)";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/external_frameworks";
-				INFOPLIST_FILE = LiveOSCQueryHelper/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.vidvox.LiveOSCQueryHelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-			};
-			name = Release;
-		};
 		1AE214A22034906E006FEC2B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1825,15 +1632,6 @@
 			buildConfigurations = (
 				1A336EBE1FC88C170007877C /* Debug */,
 				1A336EBF1FC88C170007877C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1A4F15A12030FBEE00F4CF29 /* Build configuration list for PBXNativeTarget "Live OSCQuery Helper" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1A4F15A22030FBEE00F4CF29 /* Debug */,
-				1A4F15A32030FBEE00F4CF29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -702,11 +702,11 @@
         <window title="OSCQuery Helper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
-            <rect key="contentRect" x="731" y="787" width="308" height="390"/>
+            <rect key="contentRect" x="731" y="787" width="308" height="434"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <value key="minSize" type="size" width="308" height="390"/>
-            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="308" height="390"/>
+            <value key="minSize" type="size" width="308" height="434"/>
+            <view key="contentView" wantsLayer="YES" misplaced="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="308" height="434"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="Q4E-wj-fxf">
@@ -721,7 +721,7 @@
                         </connections>
                     </button>
                     <box title="FILE STATUS" id="I2I-Mj-JBA">
-                        <rect key="frame" x="17" y="272" width="274" height="98"/>
+                        <rect key="frame" x="17" y="316" width="274" height="98"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="eG9-he-dap">
                             <rect key="frame" x="2" y="2" width="270" height="81"/>
@@ -750,15 +750,15 @@
                             </subviews>
                         </view>
                     </box>
-                    <box title="OSC QUERY SERVER STATUS" id="rGU-6d-ExB">
-                        <rect key="frame" x="17" y="189" width="274" height="79"/>
+                    <box misplaced="YES" title="OSC QUERY SERVER STATUS" id="rGU-6d-ExB">
+                        <rect key="frame" x="17" y="175" width="274" height="137"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="KCJ-bs-wZ7">
-                            <rect key="frame" x="2" y="2" width="270" height="62"/>
+                            <rect key="frame" x="2" y="2" width="270" height="120"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="HPd-Zw-nel">
-                                    <rect key="frame" x="18" y="25" width="234" height="17"/>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="HPd-Zw-nel">
+                                    <rect key="frame" x="18" y="20" width="234" height="80"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="CtD-Mu-Yfv">
                                         <font key="font" metaFont="system"/>
@@ -769,8 +769,8 @@
                             </subviews>
                         </view>
                     </box>
-                    <box title="TARGET APP OSC RECEIVER" id="aDp-by-CNh">
-                        <rect key="frame" x="17" y="84" width="274" height="101"/>
+                    <box misplaced="YES" title="TARGET APP OSC RECEIVER" id="aDp-by-CNh">
+                        <rect key="frame" x="17" y="70" width="274" height="101"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="ceZ-KN-3KA">
                             <rect key="frame" x="2" y="2" width="270" height="84"/>
@@ -862,7 +862,7 @@
                     </box>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="50" y="-451"/>
+            <point key="canvasLocation" x="50" y="-429"/>
         </window>
         <window title="Help Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="nIT-9J-6zt">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -889,7 +889,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="m6n-mg-3TP">
                             <font key="font" metaFont="system"/>
-                            <string key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC, but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
+                            <mutableString key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC (can receive OSC), but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
 
 HOW TO USE IT:
 1)- Tell OQH what file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  OQH will "watch" the file and if it is updated, the query server will automatically update itself, and then notify all connected clients that it has been updated.  For more information about the supported file type(s), see "FILE TYPE".
@@ -899,7 +899,7 @@ If OQH is running, the OSC query server is running- you can check it with any OS
 
 FILE TYPE:
 
-- JSON files can be imported- a sample file demonstrating a wide variety of OSC types is already installed on your machine in "~/Documents/OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object if you want to hard-code the connection details of the target app or device (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</string>
+- JSON files can be imported- a sample file demonstrating a wide variety of OSC types is already installed on your machine in "~/Documents/OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object if you want to hard-code the connection details of the target app or device (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</mutableString>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>

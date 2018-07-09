@@ -59,11 +59,14 @@
 		newMsg = [[VVMIDIMessage alloc] initFromVals:[oscVal midiPort]:[oscVal midiStatus]:[oscVal midiData1]:[oscVal midiData2]];
 		[self sendMsg:newMsg];
 		return;	//	return, not break!
-	case OSCValFloat:
-	case OSCValDouble:
 	case OSCValInt:
 	case OSCVal64Int:
 	case OSCValChar:
+		msgNormVal = 0.;
+		msgIntVal = [oscVal calculateIntValue];
+		break;
+	case OSCValFloat:
+	case OSCValDouble:
 		if (hasMin && hasMax)	{
 			msgNormVal = [oscVal calculateDoubleValue];
 			msgNormVal = (msgNormVal-minVal)/(maxVal-minVal);
@@ -102,6 +105,7 @@
 		break;
 	}
 	//NSLog(@"\t\tmsgIntVal is %ld, msgNormVal is %0.2f",msgIntVal,msgNormVal);
+	
 	
 	//	now that we have tried to assemble both a raw integer value and a normalized double, we can try to assemble a message
 	switch (midiMsgType)	{
@@ -150,6 +154,7 @@
 	case VVMIDIMsgUnknown:
 		break;
 	}
+	
 	
 	//	send the msg...
 	[self sendMsg:newMsg];

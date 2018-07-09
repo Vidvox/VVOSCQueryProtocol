@@ -184,6 +184,27 @@
 					break;
 				case 'h':	//	64 bit int
 					//	not supported yet- maybe base64 data encoding?
+					
+					newRemoteNodeControl = [[RemoteNodeControl alloc] initWithParent:self typeString:tmpTypeString];
+					if (jsonObj!=nil && [jsonObj isKindOfClass:[NSNumber class]])
+						newOSCVal = [OSCValue createWithLongLong:[jsonObj longLongValue]];
+					
+					tmpObj = jsonRangeDict[kVVOSCQ_OptAttr_Range_Min];
+					if (tmpObj!=nil && [tmpObj isKindOfClass:[NSNumber class]])
+						newOSCMin = [OSCValue createWithDouble:[tmpObj longLongValue]];
+					tmpObj = jsonRangeDict[kVVOSCQ_OptAttr_Range_Max];
+					if (tmpObj!=nil && [tmpObj isKindOfClass:[NSNumber class]])
+						newOSCMax = [OSCValue createWithDouble:[tmpObj longLongValue]];
+					tmpObj = jsonRangeDict[kVVOSCQ_OptAttr_Range_Vals];
+					if (tmpObj!=nil && [tmpObj isKindOfClass:[NSArray class]])	{
+						newOSCVals = [[NSMutableArray alloc] init];
+						for (tmpObj in jsonRangeDict[kVVOSCQ_OptAttr_Range_Vals])	{
+							if ([tmpObj isKindOfClass:[NSNumber class]])	{
+								tmpOSCVal = [OSCValue createWithLongLong:[tmpObj longLongValue]];
+								[newOSCVals addObject:tmpOSCVal];
+							}
+						}
+					}
 					break;
 				case 't':	//	time tag
 					//	not supported yet- maybe base64 data encoding?
@@ -536,6 +557,7 @@
 		case 'F':	//	false
 		case 'N':	//	nil
 		case 'I':	//	infinity
+		case 'h':	//	64 bit int
 			//	ask the corresponding control to create a current OSC value- if it can't, bail because somethign went wrong
 			oscValForThisChar = (arrayIndex>=[controls count]) ? nil : [[controls objectAtIndex:arrayIndex] createCurrentOSCValue];
 			if (oscValForThisChar == nil)	{
@@ -593,9 +615,6 @@
 		//	the following OSC types are not supported for display in this application yet...
 		
 		case 'b':	//	blob
-			//	not supported yet- maybe base64 data encoding?
-			break;
-		case 'h':	//	64 bit int
 			//	not supported yet- maybe base64 data encoding?
 			break;
 		case 't':	//	time tag

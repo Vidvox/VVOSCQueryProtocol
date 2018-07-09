@@ -695,15 +695,16 @@
         <window title="MIDI OSCQuery Helper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
-            <rect key="contentRect" x="0.0" y="696" width="308" height="481"/>
+            <rect key="contentRect" x="1085" y="639" width="308" height="538"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="308" height="481"/>
+            <value key="minSize" type="size" width="308" height="538"/>
+            <view key="contentView" wantsLayer="YES" misplaced="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="308" height="538"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="UZ8-Rl-1oy">
                         <rect key="frame" x="120" y="22" width="68" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Help" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="W0f-hS-TUD">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -713,8 +714,8 @@
                         </connections>
                     </button>
                     <box title="FILE STATUS" id="43q-Ze-y4r">
-                        <rect key="frame" x="17" y="363" width="274" height="98"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <rect key="frame" x="17" y="420" width="274" height="98"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="O0B-mh-zVZ">
                             <rect key="frame" x="2" y="2" width="270" height="81"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -742,15 +743,15 @@
                             </subviews>
                         </view>
                     </box>
-                    <box title="OSC QUERY SERVER STATUS" id="fRc-iZ-1I9">
-                        <rect key="frame" x="17" y="280" width="274" height="79"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <box misplaced="YES" title="OSC QUERY SERVER STATUS" id="fRc-iZ-1I9">
+                        <rect key="frame" x="17" y="279" width="274" height="137"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="mM1-Z3-bej">
-                            <rect key="frame" x="2" y="2" width="270" height="62"/>
+                            <rect key="frame" x="2" y="2" width="270" height="120"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="EkP-PP-ZoW">
-                                    <rect key="frame" x="18" y="25" width="234" height="17"/>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="EkP-PP-ZoW">
+                                    <rect key="frame" x="18" y="20" width="234" height="80"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="dGr-mt-1zE">
                                         <font key="font" metaFont="system"/>
@@ -761,9 +762,9 @@
                             </subviews>
                         </view>
                     </box>
-                    <box title="OSC SERVER (RECEIVES OSC)" id="DXG-jl-gAt">
-                        <rect key="frame" x="17" y="196" width="274" height="80"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <box misplaced="YES" title="OSC SERVER (RECEIVES OSC)" id="DXG-jl-gAt">
+                        <rect key="frame" x="17" y="195" width="274" height="80"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="bjl-Rd-ctY">
                             <rect key="frame" x="2" y="2" width="270" height="63"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -798,9 +799,9 @@
                             </subviews>
                         </view>
                     </box>
-                    <box title="SEND MIDI TO:" id="vbV-N3-sy8">
-                        <rect key="frame" x="17" y="89" width="274" height="103"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <box misplaced="YES" title="SEND MIDI TO:" id="vbV-N3-sy8">
+                        <rect key="frame" x="17" y="88" width="274" height="103"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="vyI-Q3-lHU">
                             <rect key="frame" x="2" y="2" width="270" height="86"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -837,19 +838,19 @@
                     </box>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="405" y="517"/>
+            <point key="canvasLocation" x="405" y="545"/>
         </window>
         <window title="Help Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="cuM-OG-ALe">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="980" height="683"/>
+            <rect key="contentRect" x="196" y="240" width="1090" height="633"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
             <view key="contentView" misplaced="YES" id="7Gf-Zg-9sI">
-                <rect key="frame" x="0.0" y="0.0" width="980" height="683"/>
+                <rect key="frame" x="0.0" y="0.0" width="1090" height="633"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="f8N-Jw-JTR">
-                        <rect key="frame" x="455" y="13" width="75" height="32"/>
+                        <rect key="frame" x="510" y="13" width="75" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="POL-NA-l5r">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -859,36 +860,8 @@
                             <action selector="closeHelp:" target="Voe-Tx-rLC" id="JjL-gU-nJJ"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="uDj-ib-Vq2">
-                        <rect key="frame" x="18" y="85" width="944" height="578"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="BOu-KW-Ryi">
-                            <font key="font" metaFont="system"/>
-                            <string key="title">MIDI OSCQuery Helper ("MOQH" from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI.
-
-- This app uses JSON files loaded into it to create an OSC address space.
-- This app runs an OSC query server- this query server publishes the details of the address space.
-- This app runs an OSC server- this server listens on a dedicated port for OSC messages.  Clients browsing the OSC query server send OSC messages to this OSC server.
-- This app creates a virtual MIDI device ("From MIDI OSCQuery Helper").  This app also lets you optionally pick an existing MIDI device.  The OSC messages received by this app's OSC server are converted into MIDI messages (using data from the JSON file you loaded), and these MIDI messages are sent out both the virtual MIDI device created by this app as well as the existing MIDI device you selected (if any).
-
-HOW TO USE IT:
-1)- Tell MOQH what file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  MOQH will "watch" the file and if it is updated, the query server will automatically update itself, and then notify all connected clients that it has been updated.  For more information about the supported file type(s), see "FILE TYPE".
-2)- Select a MIDI destination you want this app to send MIDI data to.  This step is optional- MOQH also creates a virtual MIDI device ("From MIDI OSCQuery Helper") which other applications can listen to.
-
-If MOQH is running, the OSC query server is running- you can check it with any OSC query client, or a web browser.  The query server will stop when the app quits- if there's a problem with the file you load (if it's missing or malformed or corrupt) the query server will keep running, but its address space will be empty.
-
-FILE TYPE:
-
-- JSON files can be imported- a sample file demonstrating the various basic MIDI data types is already installed on your machine in "~/Documents/MIDI OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  There are, however, several additional keys/values which must be used to indicate what sort of MIDI value should be sent- the query server will not publish any OSC nodes that are missing the following keys:
-	- "MIDI_TYPE": The value stored at the key "MIDI_TYPE" must be one of the following strings: "NOTE", "AFTERTOUCH", "CC", "PGM", or "PITCH".  This value indicates what kind of MIDI message should be sent when an OSC message is received by this node.
-	- "MIDI_CHANNEL": The value stored at the key "MIDI_CHANNEL" must be an integer.  This value describes the channel on which the MIDI message will be sent.
-	- "MIDI_VOICE": The value stored at the key "MIDI_VOICE" must be an integer.  This value describes which controller or note will be used to send the value from the OSC message.</string>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <button verticalHuggingPriority="750" misplaced="YES" id="rWD-c5-l1r">
-                        <rect key="frame" x="722" y="49" width="244" height="32"/>
+                        <rect key="frame" x="832" y="13" width="244" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Show Sample Document in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EC6-Su-a1b">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -898,9 +871,79 @@ FILE TYPE:
                             <action selector="showSampleDocInFinderClicked:" target="Voe-Tx-rLC" id="pLE-j6-ONT"/>
                         </connections>
                     </button>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="Ezw-DW-2QS">
+                        <rect key="frame" x="18" y="462" width="1054" height="126"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" selectable="YES" sendsActionOnEndEditing="YES" id="jED-3z-Vdo">
+                            <font key="font" metaFont="smallSystem"/>
+                            <mutableString key="title">- This app loads a file- Ableton Live project files (*.als) and simple JSON text files (*.txt, *.json) are the recognized document formats.  The file you load creates and populates an OSC address space (if you load an Ableton project file, the OSC address space will be populated with every MIDI mapping in the project file- for more information, see "FILE TYPES").
+- This app runs an OSC query server- this query server publishes the details of the address space using JSON and HTTP.  More information about the OSC query server can be found here: https://github.com/mrRay/OSCQueryProposal
+- This app runs an OSC server- this server listens on a dedicated port for OSC messages.  Clients browsing the OSC query server send OSC messages to this OSC server.  More information about OSC can be found here: http://www.opensoundcontrol.org
+- This app creates a virtual MIDI device ("From MIDI OSCQuery Helper").  This app also lets you optionally pick an existing MIDI device.  The OSC messages received by this app's OSC server are converted into MIDI messages (using data from the JSON or Ableton project file you loaded), and these MIDI messages are sent out both the virtual MIDI device created by this app as well as the existing MIDI device you selected (if any).</mutableString>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="ANa-gK-PnX">
+                        <rect key="frame" x="18" y="319" width="1054" height="98"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" selectable="YES" sendsActionOnEndEditing="YES" id="dgb-Ra-bdX">
+                            <font key="font" metaFont="smallSystem"/>
+                            <mutableString key="title">1)- Tell MOQH which file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  MOQH will "watch" the file, and if it is updated the query server will automatically update itself and then notify all connected clients that it has been updated.  For more information about the supported file types, see "FILE TYPES".
+2)- Select a MIDI destination you want this app to send MIDI data to.  This step is optional- MOQH also creates a virtual MIDI device ("From MIDI OSCQuery Helper") which other applications can listen to (if you're working with an Ableton project file, Ableton needs to be configured to receive MIDI data from this virtual MIDI device).
+
+If MOQH is running, the OSC query server is running- you can check it with any OSC query client, or a web browser.  The query server will stop when the app quits- if there's a problem with the file you load (if it's missing or malformed or corrupt) the query server will keep running, but its address space will be empty.</mutableString>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="5xd-xx-Tdh">
+                        <rect key="frame" x="18" y="596" width="1054" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="MIDI OSCQuery Helper (&quot;MOQH&quot; from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI." id="T1k-qN-Vvc">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="24z-AZ-k4T">
+                        <rect key="frame" x="18" y="425" width="1054" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="HOW TO USE THIS APP:" id="Bxa-IX-qv1">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="Onr-Un-awG">
+                        <rect key="frame" x="18" y="64" width="1054" height="210"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" selectable="YES" sendsActionOnEndEditing="YES" id="0yY-DP-buT">
+                            <font key="font" metaFont="smallSystem"/>
+                            <mutableString key="title">- Ableton Live project files can be imported (.als).  No modifications are necessary for these files- the rest of this information is for people who want to load or create JSON files that describe the MIDI inputs of other applications.
+
+- JSON files can be imported- a sample file demonstrating the various basic MIDI data types is already installed on your machine in "~/Documents/MIDI OSCQuery Helper/SampleDocument.json", and will re-create itself if you delete it and relaunch this app.  The JSON files that you import should have a structure nearly identical to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).
+	- As a matter of convenience, you can omit the FULL_PATH attribute- it can be derived from the structure of the JSON object you're writing, and leaving it out makes changing the structure and layout of your objects faster and easier.
+	- There are a couple additional keys/values which must be used to indicate what sort of MIDI value should be sent- the query server will not publish any OSC nodes that are missing the following two or three keys (depending on the MIDI output type):
+		- "MIDI_TYPE": The value stored at the key "MIDI_TYPE" must be one of the following strings: "NOTE", "AFTERTOUCH", "CC", "PGM", or "PITCH".  This value indicates what kind of MIDI message should be sent when an OSC message is received by this node.
+		- "MIDI_VOICE": If the MIDI_TYPE is "NOTE", "AFTERTOUCH, or "CC", an integer value must be provided for the "MIDI_VOICE" key.  This key/value is not required if the MIDI_TYPE is "PGM" or "PITCH".
+		- "MIDI_CHANNEL": The value stored at the key "MIDI_CHANNEL" must be an integer.  This value describes the channel on which the MIDI message will be sent.</mutableString>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="fSO-Jw-wur">
+                        <rect key="frame" x="18" y="282" width="1054" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="FILE TYPES:" id="5V5-wv-hya">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="445" y="446.5"/>
+            <point key="canvasLocation" x="760" y="297.5"/>
         </window>
         <customObject id="jaG-MP-jv1" userLabel="OSC Manager" customClass="MOQHOSCManager">
             <connections>

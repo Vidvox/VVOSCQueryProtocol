@@ -13,6 +13,7 @@
 - (void) _loadLastFile;
 - (void) _loadFile:(NSString *)fullPath;
 - (void) _updateUIItems;
+- (NSString *) _assembleHTMLString;
 @end
 
 
@@ -61,7 +62,8 @@
 		[server setName:@"OSCQuery Helper"];
 		[server setBonjourName:@"OSCQuery Helper"];
 		[server setDelegate:self];
-		[server setHTMLDirectory:[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent]];
+		//[server setHTMLDirectory:[[NSBundle mainBundle] resourcePath]];
+		[server setHTMLDirectory:[[NSBundle bundleForClass:[VVOSCQueryServer class]] pathForResource:@"oscqueryhtml" ofType:nil]];
 		
 		//	this notification is posted by our OSC manager subclass when the host info changes as a result of user interaction
 		[[NSNotificationCenter defaultCenter]
@@ -407,14 +409,60 @@
 	
 	//	update the server status field
 	if ([server isRunning])	{
-		NSString		*fullAddressString = [NSString stringWithFormat:@"http://localhost:%d",[server webServerPort]];
-		NSString		*htmlString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",fullAddressString,fullAddressString];
+		NSString		*htmlString = [self _assembleHTMLString];
 		NSAttributedString	*htmlAttrStr = [htmlString renderedHTMLWithFont:nil];
+		//NSLog(@"\t\tsetting val to %@",htmlAttrStr);
 		[serverStatusField setAttributedStringValue:htmlAttrStr];
 	}
 	else	{
 		[serverStatusField setStringValue:@"Not running!"];
 	}
+}
+- (NSString *) _assembleHTMLString	{
+	NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
+	//NSLog(@"\t\taddrs are %@",addrs);
+	int				tmpPort = [server webServerPort];
+	NSMutableString		*sectionHTMLString = nil;
+	NSString		*fullHTMLString = nil;
+	
+	//	run through and make a clickable URL for each NIC for the plain OSC query server (these will return JSON objects)
+	for (NSString *addr in addrs)	{
+		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		if (sectionHTMLString == nil)	{
+			sectionHTMLString = [[NSMutableString alloc] init];
+			[sectionHTMLString appendString:tmpHTMLString];
+		}
+		else
+			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+	}
+	if (sectionHTMLString !=nil)	{
+		fullHTMLString = [NSString stringWithString:sectionHTMLString];
+	}
+	
+	//	run through and make a clickable URL for each NIC for the fancy HTML controls
+	sectionHTMLString = nil;
+	for (NSString *addr in addrs)	{
+		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		if (sectionHTMLString == nil)	{
+			sectionHTMLString = [[NSMutableString alloc] init];
+			[sectionHTMLString appendString:tmpHTMLString];
+		}
+		else
+			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+	}
+	if (fullHTMLString == nil)	{
+		if (sectionHTMLString != nil)
+			fullHTMLString = [NSString stringWithString:sectionHTMLString];
+	}
+	else	{
+		if (sectionHTMLString != nil)	{
+			fullHTMLString = [fullHTMLString stringByAppendingFormat:@"<BR>%@",sectionHTMLString];
+		}
+	}
+	
+	return fullHTMLString;
 }
 - (void) targetAppHostInfoChangedNotification:(NSNotification *)note	{
 	if (![NSThread isMainThread])	{

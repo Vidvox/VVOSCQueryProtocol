@@ -1,0 +1,102 @@
+body {
+  font-family: Arial;
+}
+
+.dir-container {
+  border: solid 2px black;
+  margin-bottom: 8px;
+}
+
+.dir-name {
+  font-size: 140%;
+  font-weight: bold;
+}
+
+.control {
+  border: solid 1px black;
+  padding: 2px;
+  margin: 3px;
+}
+
+.control-name {
+  font-size: 120%;
+  display: block;
+  font-weight: bold;
+}
+
+.listen-label {
+  position: relative;
+  margin-top: 4px;
+  float: left;
+}
+
+.listen-button {
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.full-path {
+  font-size: 80%;
+  padding-left: 10px;
+  color: #666;
+  display: block;
+}
+
+.description {
+  font-size: 80%;
+  padding-left: 10px;
+  color: #aaa;
+  display: block;
+}
+
+.curr-val {
+  color: #888;
+  font-size: 80%;
+  padding-bottom: 8px;
+}
+
+.range-val {
+  color: #888;
+  font-size: 80%;
+  padding-bottom: 8px;
+}
+
+#colorPicker {
+  position: absolute;
+  display: none;
+  width: 200px;
+  background-color: #ccc;
+  padding: 8px;
+}
+
+#picker-wrapper {
+  position: relative;
+  float: left;
+  width: 160px;
+}
+
+#slider-wrapper {
+  position: relative;
+  float: left;
+  width: 20px;
+  margin-left: 12px;
+}
+
+#colorPicker-clear {
+  clear: both;
+}
+
+.color-control {
+  width: 30px;
+  height: 20px;
+  margin: 3px;
+  border: solid 3px #ccc;
+}
+
+img.toggle-hide {
+  padding: 4px 2px;
+}
+
+img.toggle-show {
+  padding: 4px 2px;
+}

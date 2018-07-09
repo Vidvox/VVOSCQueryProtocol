@@ -1,6 +1,7 @@
 #import "MIDIOSCQueryHelperAppDelegate.h"
 #import "QueryServerNodeDelegate.h"
 #import "OSCNodeAdditions.h"
+#import "LiveToOSCQHelper.h"
 
 
 
@@ -11,9 +12,11 @@
 @property (weak) IBOutlet NSWindow *window;
 @property (strong) id activity;
 - (void) _loadLastFile;
-- (void) _loadFile:(NSString *)fullPath;
-- (void) _loadJSONFile:(NSString *)fullPath;
+- (BOOL) _loadFile:(NSString *)fullPath;
+- (BOOL) _loadAbletonProject:(NSString *)fullPath;
+- (BOOL) _loadJSONFile:(NSString *)fullPath;
 - (void) _updateUIItems;
+- (NSString *) _assembleHTMLString;
 @end
 
 
@@ -60,6 +63,8 @@
 		[server setName:@"MIDI OSCQuery Helper"];
 		[server setBonjourName:@"MIDI OSCQuery Helper"];
 		[server setDelegate:self];
+		//[server setHTMLDirectory:[[NSBundle mainBundle] resourcePath]];
+		[server setHTMLDirectory:[[NSBundle bundleForClass:[VVOSCQueryServer class]] pathForResource:@"oscqueryhtml" ofType:nil]];
 		
 		//	this notification is posted by our OSC manager subclass when the host info changes as a result of user interaction
 		[[NSNotificationCenter defaultCenter]
@@ -135,9 +140,9 @@
 	[op setAllowsMultipleSelection:NO];
 	[op setCanChooseDirectories:NO];
 	[op setResolvesAliases:YES];
-	[op setMessage:@"Select JSON file to open (see Help for more)"];
+	[op setMessage:@"Select JSON file or Ableton project file (.als) to open (see Help for more)"];
 	[op setTitle:@"Open file"];
-	[op setAllowedFileTypes:@[ @"json", @"txt" ]];
+	[op setAllowedFileTypes:@[ @"json", @"txt", @"als" ]];
 	//[op setDirectoryURL:[NSURL fileURLWithPath:importDir]];
 	if (importFile != nil)
 		[op setDirectoryURL:[NSURL fileURLWithPath:importFile]];
@@ -198,6 +203,7 @@
 
 
 - (void) _loadLastFile	{
+	NSLog(@"%s",__func__);
 	NSUserDefaults		*def = [NSUserDefaults standardUserDefaults];
 	NSString			*tmpString = [def objectForKey:@"lastOpenDocumentFile"];
 	//	if there's no default, try to find the sample document we include and use that
@@ -210,17 +216,243 @@
 	}
 	[self _loadFile:tmpString];
 }
-- (void) _loadFile:(NSString *)fullPath	{
-	//NSLog(@"%s ... %@",__func__,fullPath);
+- (BOOL) _loadFile:(NSString *)fullPath	{
+	NSLog(@"%s ... %@",__func__,fullPath);
+	if (fullPath == nil)
+		return NO;
+	
+	BOOL			returnMe = NO;
 	NSString		*ext = (fullPath==nil) ? nil : [fullPath pathExtension];
+	BOOL			isJSONFile = NO;
+	BOOL			isAbletonFile = NO;
 	if ([ext caseInsensitiveCompare:@"json"]==NSOrderedSame || [ext caseInsensitiveCompare:@"txt"]==NSOrderedSame)	{
-		[self _loadJSONFile:fullPath];
+		isJSONFile = YES;
 	}
+	else if ([ext caseInsensitiveCompare:@"als"] == NSOrderedSame)	{
+		isAbletonFile = YES;
+	}
+	
+	
+	NSUserDefaults		*def = [NSUserDefaults standardUserDefaults];
+	BOOL				reloadingTheFile = YES;
+	BOOL				wasRunning = [server isRunning];
+	if (isJSONFile || isAbletonFile)	{
+		//	if this is a different file, stop the server
+		if (loadedFilePath==nil || (loadedFilePath!=nil && ![loadedFilePath isEqualToString:fullPath]))
+			reloadingTheFile = NO;
+		if (!reloadingTheFile && wasRunning)
+			[server stop];
+	
+		//	rename the server!
+		NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
+		[server setName:fileName];
+		NSString			*bjName = [NSString stringWithFormat:@"%@ OSCQuery Helper",fileName];
+		int					nameLength = (int)[bjName length];
+		if (nameLength > 63)	{
+			bjName = [NSString stringWithFormat:@"%@...%@",[bjName substringWithRange:NSMakeRange(0,30)],[bjName substringWithRange:NSMakeRange(nameLength-30,30)]];
+		}
+		[server setBonjourName:bjName];
+	
+		//	if i'm not reloading a file then i may want to stop observing the file
+		if (!reloadingTheFile)	{
+			//	if i've already got a file loaded i need to stop observing it
+			if (loadedFilePath!=nil)	{
+				[VVKQueueCenter removeObserver:self forPath:loadedFilePath];
+			}
+		}
+		//	update my local var storing the file path
+		loadedFilePath = fullPath;
+		//	if i'm not reloading the file, add myself as an observer so i'll know if the file changes
+		if (!reloadingTheFile)	{
+			[VVKQueueCenter addObserver:self forPath:loadedFilePath];
+		}
+		//	update my user defaults so i know what file i last loaded
+		[def setObject:fullPath forKey:@"lastOpenDocumentFile"];
+		[def synchronize];
+	}
+	
+	
+	if (isJSONFile)	{
+		returnMe = [self _loadJSONFile:fullPath];
+	}
+	else if (isAbletonFile)	{
+		returnMe = [self _loadAbletonProject:fullPath];
+	}
+	
+	
+	
+	if (isJSONFile || isAbletonFile)	{
+		//	restart the server if appropriate
+		if (!reloadingTheFile && wasRunning)
+			[server start];
+	
+		//	tell the OSC query server to send a PATH_CHANGED message for the root node
+		if (reloadingTheFile)
+			[server sendPathChangedToClients:@"/"];
+	
+		[self _updateUIItems];
+	}
+	
+	return returnMe;
 }
-- (void) _loadJSONFile:(NSString *)fullPath	{
+- (BOOL) _loadAbletonProject:(NSString *)fullPath	{
 	//NSLog(@"%s ... %@",__func__,fullPath);
 	if (fullPath == nil)
-		return;
+		return NO;
+	//	unserialize the file at the path into a series of JSON objects
+	//NSError			*nsErr = nil;
+	NSDictionary	*rawFileObj = [LiveToOSCQHelper OSCQueryJSONObjectForLiveProject:fullPath];
+	if (rawFileObj==nil || ![rawFileObj isKindOfClass:[NSDictionary class]])	{
+		NSLog(@"\t\terr: raw object is nil or of wrong type for path %@",fullPath);
+		return NO;
+	}
+	NSMutableDictionary		*fileObject = (rawFileObj==nil) ? nil : [rawFileObj mutableCopy];
+	//NSLog(@"\t\tfileObject is %@",fileObject);
+	
+	
+	//	make sure that the file object doesn't have a host info dict
+	[fileObject removeObjectForKey:kVVOSCQ_ReqAttr_HostInfo];
+	
+	
+	//	...now i need to run through the objects from the file, and create OSCNodes from them in an address space
+	
+	
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	//	destroy all the delegates immediately- we don't want them sending any messages while we're clearing the address space
+	for (QueryServerNodeDelegate *tmpDelegate in delegates)	{
+		[as removeDelegate:tmpDelegate forPath:[tmpDelegate address]];
+	}
+	[delegates removeAllObjects];
+	
+	//	clear out the OSC address space
+	NSArray		*baseNodes = [[as nodeContents] lockCreateArrayCopy];
+	for (OSCNode *baseNode in baseNodes)	{
+		[baseNode removeFromAddressSpace];
+	}
+	
+	//	now run through 'fileObject' recursively using this block, creating OSC nodes for all the objects
+	__block __weak void		(^ParseJSONObj)(NSDictionary *);
+	ParseJSONObj = ^(NSDictionary * baseObj)	{
+		NSString		*objFullPath = [baseObj objectForKey:kVVOSCQ_ReqAttr_Path];
+		//NSLog(@"ParseJSONObj() called on %@",objFullPath);
+		if (objFullPath == nil)	{
+			NSLog(@"\t\terr: bailing, node missing full path, %s",__func__);
+			return;
+		}
+					
+		//	parse the base object, looking for entries that describe the type of MIDI message to send
+		NSString		*tmpString = [baseObj objectForKey:@"MIDI_TYPE"];
+		VVMIDIMsgType	objMIDIMsgType = VVMIDIMsgUnknown;
+		if (tmpString != nil)	{
+			if ([tmpString caseInsensitiveCompare:@"NOTE"] == NSOrderedSame)	{
+				objMIDIMsgType = VVMIDINoteOnVal;
+			}
+			else if ([tmpString caseInsensitiveCompare:@"AFTERTOUCH"] == NSOrderedSame)	{
+				objMIDIMsgType = VVMIDIAfterTouchVal;
+			}
+			else if ([tmpString caseInsensitiveCompare:@"CC"] == NSOrderedSame)	{
+				objMIDIMsgType = VVMIDIControlChangeVal;
+			}
+			else if ([tmpString caseInsensitiveCompare:@"PGM"] == NSOrderedSame)	{
+				objMIDIMsgType = VVMIDIProgramChangeVal;
+			}
+			else if ([tmpString caseInsensitiveCompare:@"PITCH"] == NSOrderedSame)	{
+				objMIDIMsgType = VVMIDIPitchWheelVal;
+			}
+		}
+		
+		BOOL			setUpAsMIDINode = YES;
+		//	if the message type is unrecognized or there's no channel, bail
+		NSNumber		*objMIDIChannelNum = [baseObj objectForKey:@"MIDI_CHANNEL"];
+		if (objMIDIMsgType==VVMIDIMsgUnknown || objMIDIChannelNum==nil)	{
+			setUpAsMIDINode = NO;
+			//NSLog(@"\t\terr: bailing, node missing msg type or channel num, %s",__func__);
+			//return;
+		}
+		//	if there's no midi voice and i'm not pitch bend, bail (everything but pitch bend has a voice, pitch bend is 14-bit)
+		NSNumber		*objMIDIVoiceNum = [baseObj objectForKey:@"MIDI_VOICE"];
+		if (objMIDIVoiceNum==nil && (objMIDIMsgType!=VVMIDIPitchWheelVal && objMIDIMsgType!=VVMIDIProgramChangeVal))	{
+			setUpAsMIDINode = NO;
+			//NSLog(@"\t\terr: bailing, node missing voice num, %s",__func__);
+			//return;
+		}
+		
+		//	parse the base object, looking for entries that describe the kind of OSC node to publish
+		NSString		*objTypeTagString = [baseObj objectForKey:kVVOSCQ_ReqAttr_Type];
+		NSDictionary	*objContents = [baseObj objectForKey:kVVOSCQ_ReqAttr_Contents];
+		NSString		*objDesc = [baseObj objectForKey:kVVOSCQ_ReqAttr_Desc];
+		NSArray			*objTags = [baseObj objectForKey:kVVOSCQ_OptAttr_Tags];
+		NSArray			*objExtType = [baseObj objectForKey:kVVOSCQ_OptAttr_Ext_Type];	//	one for each type from the type tag string
+		//NSNumber		*objAccess = [baseObj objectForKey:kVVOSCQ_OptAttr_Access];
+		NSArray			*objRange = [baseObj objectForKey:kVVOSCQ_OptAttr_Range];	//	one for each type from the type tag string
+		NSArray			*objUnits = [baseObj objectForKey:kVVOSCQ_OptAttr_Unit];	//	one for each type from the type tag string
+		NSNumber		*objCritical = [baseObj objectForKey:kVVOSCQ_OptAttr_Critical];
+		NSArray			*objOverloads = [baseObj objectForKey:kVVOSCQ_OptAttr_Overloads];
+		
+		if (setUpAsMIDINode)	{
+			OSCNode			*newNode = [[OSCAddressSpace mainAddressSpace] findNodeForAddress:objFullPath createIfMissing:YES];
+			if (objTypeTagString != nil)	{
+				[newNode setTypeTagString:objTypeTagString];
+				[newNode setNodeType:OSCNodeTypeNumber];
+			}
+			else
+				[newNode setNodeType:OSCNodeDirectory];
+			if (objDesc != nil && [objDesc isKindOfClass:[NSString class]])
+				[newNode setOSCDescription:objDesc];
+			if (objTags != nil && [objTags isKindOfClass:[NSArray class]])
+				[newNode setTags:objTags];
+			if (objExtType != nil && [objExtType isKindOfClass:[NSArray class]])
+				[newNode setExtendedType:objExtType];
+			//if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
+				//[newNode setAccess:[objAccess intValue]];	//	don't do this, access is always write-only in this application (we can't read the remote app's OSC address space)
+				[newNode setAccess:2];
+			//}
+			if (objRange != nil && [objRange isKindOfClass:[NSArray class]])
+				[newNode setRange:objRange];
+			if (objUnits != nil && [objUnits isKindOfClass:[NSArray class]])
+				[newNode setUnits:objUnits];
+			if (objCritical != nil && [objCritical isKindOfClass:[NSNumber class]])
+				[newNode setCritical:[objCritical boolValue]];
+			if (objOverloads != nil && [objOverloads isKindOfClass:[NSArray class]])
+				[newNode setOverloads:objOverloads];
+		
+			//	make a delegate for the node, add it to the array
+			QueryServerNodeDelegate		*tmpDelegate = [[QueryServerNodeDelegate alloc] initWithMIDIManager:self->midim forAddress:[newNode fullName]];
+			[tmpDelegate setMIDIMsgType:objMIDIMsgType];
+			[tmpDelegate setMIDIChannel:[objMIDIChannelNum intValue]];
+			[tmpDelegate setMIDIVoice:[objMIDIVoiceNum intValue]];
+			if (objRange != nil)	{
+				NSDictionary		*tmpRange = [objRange objectAtIndex:0];
+				NSNumber			*tmpMin = [tmpRange objectForKey:kVVOSCQ_OptAttr_Range_Min];
+				if (tmpMin != nil)	{
+					[tmpDelegate setHasMin:YES];
+					[tmpDelegate setMinVal:[tmpMin doubleValue]];
+				}
+				NSNumber			*tmpMax = [tmpRange objectForKey:kVVOSCQ_OptAttr_Range_Max];
+				if (tmpMax != nil)	{
+					[tmpDelegate setHasMax:YES];
+					[tmpDelegate setMaxVal:[tmpMax doubleValue]];
+				}
+			}
+			[newNode addDelegate:tmpDelegate];
+			[self->delegates addObject:tmpDelegate];
+		}
+		
+		//	run through the contents, calling this block recursively on each object
+		[objContents enumerateKeysAndObjectsUsingBlock:^(NSString * tmpName, NSDictionary * tmpContentsObj, BOOL *stop)	{
+			if ([tmpContentsObj isKindOfClass:[NSDictionary class]])	{
+				ParseJSONObj(tmpContentsObj);
+			}
+		}];
+	};
+	ParseJSONObj(fileObject);
+	
+	return YES;
+}
+- (BOOL) _loadJSONFile:(NSString *)fullPath	{
+	//NSLog(@"%s ... %@",__func__,fullPath);
+	if (fullPath == nil)
+		return NO;
 	//	unserialize the file at the path into a series of JSON objects
 	NSError			*nsErr = nil;
 	NSData			*fileData = [NSData dataWithContentsOfFile:fullPath];
@@ -243,48 +475,14 @@
 					nil);
 			}
 		});
-		return;
+		return NO;
 	}
 	NSMutableDictionary		*fileObject = (rawFileObj==nil) ? nil : [rawFileObj mutableCopy];
 	//NSLog(@"\t\tfileObject is %@",fileObject);
 	
-	//	if this is a different file, stop the server
-	NSUserDefaults		*def = [NSUserDefaults standardUserDefaults];
-	BOOL				reloadingTheFile = YES;
-	BOOL				wasRunning = [server isRunning];
-	if (loadedFilePath==nil || (loadedFilePath!=nil && ![loadedFilePath isEqualToString:fullPath]))
-		reloadingTheFile = NO;
-	if (!reloadingTheFile && wasRunning)
-		[server stop];
 	
-	//	rename the server!
-	NSString			*fileName = [[fullPath lastPathComponent] stringByDeletingPathExtension];
-	[server setName:fileName];
-	NSString			*bjName = [NSString stringWithFormat:@"%@ OSCQuery Helper",fileName];
-	int					nameLength = (int)[bjName length];
-	if (nameLength > 63)	{
-		bjName = [NSString stringWithFormat:@"%@...%@",[bjName substringWithRange:NSMakeRange(0,30)],[bjName substringWithRange:NSMakeRange(nameLength-30,30)]];
-	}
-	[server setBonjourName:bjName];
-	
-	//	if i'm not reloading a file then i may want to stop observing the file
-	if (!reloadingTheFile)	{
-		//	if i've already got a file loaded i need to stop observing it
-		if (loadedFilePath!=nil)	{
-			[VVKQueueCenter removeObserver:self forPath:loadedFilePath];
-		}
-	}
-	//	update my local var storing the file path
-	loadedFilePath = fullPath;
-	//	if i'm not reloading the file, add myself as an observer so i'll know if the file changes
-	if (!reloadingTheFile)	{
-		[VVKQueueCenter addObserver:self forPath:loadedFilePath];
-	}
 	//	make sure that the file object doesn't have a host info dict
 	[fileObject removeObjectForKey:kVVOSCQ_ReqAttr_HostInfo];
-	//	update my user defaults so i know what file i last loaded
-	[def setObject:fullPath forKey:@"lastOpenDocumentFile"];
-	[def synchronize];
 	
 	
 	//	...now i need to run through the objects from the file, and create OSCNodes from them in an address space
@@ -415,15 +613,7 @@
 	};
 	ParseJSONObj(fileObject, @"");
 	
-	//	restart the server if appropriate
-	if (!reloadingTheFile && wasRunning)
-		[server start];
-	
-	//	tell the OSC query server to send a PATH_CHANGED message for the root node
-	if (reloadingTheFile)
-		[server sendPathChangedToClients:@"/"];
-	
-	[self _updateUIItems];
+	return YES;
 }
 - (void) _updateUIItems	{
 	//	make sure this method is called on the main thread
@@ -442,14 +632,60 @@
 	
 	//	update the server status field
 	if ([server isRunning])	{
-		NSString		*fullAddressString = [NSString stringWithFormat:@"http://localhost:%d",[server webServerPort]];
-		NSString		*htmlString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",fullAddressString,fullAddressString];
+		NSString		*htmlString = [self _assembleHTMLString];
 		NSAttributedString	*htmlAttrStr = [htmlString renderedHTMLWithFont:nil];
+		//NSLog(@"\t\tsetting val to %@",htmlAttrStr);
 		[serverStatusField setAttributedStringValue:htmlAttrStr];
 	}
 	else	{
 		[serverStatusField setStringValue:@"Not running!"];
 	}
+}
+- (NSString *) _assembleHTMLString	{
+	NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
+	//NSLog(@"\t\taddrs are %@",addrs);
+	int				tmpPort = [server webServerPort];
+	NSMutableString		*sectionHTMLString = nil;
+	NSString		*fullHTMLString = nil;
+	
+	//	run through and make a clickable URL for each NIC for the plain OSC query server (these will return JSON objects)
+	for (NSString *addr in addrs)	{
+		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		if (sectionHTMLString == nil)	{
+			sectionHTMLString = [[NSMutableString alloc] init];
+			[sectionHTMLString appendString:tmpHTMLString];
+		}
+		else
+			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+	}
+	if (sectionHTMLString !=nil)	{
+		fullHTMLString = [NSString stringWithString:sectionHTMLString];
+	}
+	
+	//	run through and make a clickable URL for each NIC for the fancy HTML controls
+	sectionHTMLString = nil;
+	for (NSString *addr in addrs)	{
+		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		if (sectionHTMLString == nil)	{
+			sectionHTMLString = [[NSMutableString alloc] init];
+			[sectionHTMLString appendString:tmpHTMLString];
+		}
+		else
+			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+	}
+	if (fullHTMLString == nil)	{
+		if (sectionHTMLString != nil)
+			fullHTMLString = [NSString stringWithString:sectionHTMLString];
+	}
+	else	{
+		if (sectionHTMLString != nil)	{
+			fullHTMLString = [fullHTMLString stringByAppendingFormat:@"<BR>%@",sectionHTMLString];
+		}
+	}
+	
+	return fullHTMLString;
 }
 - (void) targetAppHostInfoChangedNotification:(NSNotification *)note	{
 	//	make sure this method is called on the main thread

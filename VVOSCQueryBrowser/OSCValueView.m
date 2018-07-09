@@ -68,8 +68,10 @@
 	//	if the type of the passed value matches the type i was passed then use it- else if there's a mismatch, nil out my value
 	if (v!=nil && [v type]==t)
 		[self setValue:v];
-	else
-		[self setValue:nil];
+	else	{
+		//[self setValue:nil];
+		[self setValue:[v createValByConvertingToType:t]];
+	}
 	[self setHint:h];
 	//	if there's an array of values, locate and populate the pop-up button
 	if (vals != nil && [vals count]>0)	{
@@ -116,7 +118,7 @@
 	//	...if i'm here, i know i'm not displaying a pop-up button.
 	
 	switch (type)	{
-	//	these will display either a text field or a slider if the view is wide enough
+	//	these will display either a text field or a slider
 	case OSCValFloat:
 	case OSCValDouble:
 		//[textField setHidden:YES];

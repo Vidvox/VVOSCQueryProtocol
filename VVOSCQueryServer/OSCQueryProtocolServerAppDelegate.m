@@ -14,6 +14,7 @@
 - (void) _loadLastFile;
 - (void) _loadFile:(NSString *)fullPath;
 - (void) _updateUIItems;
+- (NSString *) _assembleHTMLString;
 - (void) populateOSCAddressSpace;
 - (void) populateStreamingDirectory;
 - (void) populateTestDirectory;
@@ -56,6 +57,7 @@
 		[server setBonjourName:@"server bonjour name"];
 		[server setDelegate:self];
 		[server setHTMLDirectory:[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent]];
+		//[server setHTMLDirectory:[[NSBundle bundleForClass:[VVOSCQueryServer class]] pathForResource:@"oscqueryhtml" ofType:nil]];
 		NSLog(@"\t\thtml directory is %@",[server htmlDirectory]);
 		
 		
@@ -460,31 +462,7 @@
 		return;
 	}
 	if ([server isRunning])	{
-		NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
-		//NSLog(@"\t\taddrs are %@",addrs);
-		int				tmpPort = [server webServerPort];
-		NSMutableString		*htmlString = nil;
-		for (NSString *addr in addrs)	{
-			NSString		*rawStr = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
-			NSString		*fancyStr = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
-			NSString		*tmpStr = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A> / <A HREF=\"%@\">%@</A>",rawStr,rawStr,fancyStr,fancyStr];
-			if (htmlString == nil)	{
-				htmlString = [[NSMutableString alloc] init];
-				[htmlString appendString:tmpStr];
-			}
-			else
-				[htmlString appendFormat:@"<BR>%@",tmpStr];
-		}
-		
-		
-		
-		
-		
-		
-		
-		//NSString		*fullAddressString = [NSString stringWithFormat:@"http://localhost:%d",[server webServerPort]];
-		//NSString		*htmlString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",fullAddressString,fullAddressString];
-		
+		NSString		*htmlString = [self _assembleHTMLString];
 		NSAttributedString	*htmlAttrStr = [htmlString renderedHTMLWithFont:nil];
 		//NSLog(@"\t\tsetting val to %@",htmlAttrStr);
 		[statusField setAttributedStringValue:htmlAttrStr];
@@ -501,6 +479,52 @@
 		NSString		*portString = [NSString stringWithFormat:@"%d",[server webServerPort]];
 		[portField setStringValue:portString];
 	}
+}
+- (NSString *) _assembleHTMLString	{
+	NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
+	//NSLog(@"\t\taddrs are %@",addrs);
+	int				tmpPort = [server webServerPort];
+	NSMutableString		*sectionHTMLString = nil;
+	NSString		*fullHTMLString = nil;
+	
+	//	run through and make a clickable URL for each NIC for the plain OSC query server (these will return JSON objects)
+	for (NSString *addr in addrs)	{
+		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		if (sectionHTMLString == nil)	{
+			sectionHTMLString = [[NSMutableString alloc] init];
+			[sectionHTMLString appendString:tmpHTMLString];
+		}
+		else
+			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+	}
+	if (sectionHTMLString !=nil)	{
+		fullHTMLString = [NSString stringWithString:sectionHTMLString];
+	}
+	
+	//	run through and make a clickable URL for each NIC for the fancy HTML controls
+	sectionHTMLString = nil;
+	for (NSString *addr in addrs)	{
+		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		if (sectionHTMLString == nil)	{
+			sectionHTMLString = [[NSMutableString alloc] init];
+			[sectionHTMLString appendString:tmpHTMLString];
+		}
+		else
+			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+	}
+	if (fullHTMLString == nil)	{
+		if (sectionHTMLString != nil)
+			fullHTMLString = [NSString stringWithString:sectionHTMLString];
+	}
+	else	{
+		if (sectionHTMLString != nil)	{
+			fullHTMLString = [fullHTMLString stringByAppendingFormat:@"<BR>%@",sectionHTMLString];
+		}
+	}
+	
+	return fullHTMLString;
 }
 
 
@@ -565,8 +589,8 @@
 		//kVVOSCQ_OptAttr_Critical : @NO,
 		//kVVOSCQ_OptAttr_Overloads : @NO,
 		kVVOSCQ_OptAttr_HTML : @YES,
-		//kVVOSCQ_WSAttr_Cmd_Listen : @NO,
-		//kVVOSCQ_WSAttr_Cmd_Ignore : @NO,
+		kVVOSCQ_WSAttr_Cmd_Listen : @YES,
+		kVVOSCQ_WSAttr_Cmd_Ignore : @YES,
 		kVVOSCQ_WSAttr_Cmd_PathChanged : @YES,
 		//kVVOSCQ_WSAttr_Cmd_PathRenamed : @NO,
 		//kVVOSCQ_WSAttr_Cmd_PathRemoved : @NO,

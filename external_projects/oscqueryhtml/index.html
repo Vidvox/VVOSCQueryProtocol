@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OSC Query Tool</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css?HTML"/>
+    <script src="bundle.js?HTML"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function(event) {
+  var hostUrl = "<%= hostUrl %>";
+  oscQuery.createApp(hostUrl);
+});
+    </script>
+  </head>
+  <body>
+    <h1>OSC Query Tool</h1>
+    <div id="mainContents"></div>
+  </body>
+</html>
