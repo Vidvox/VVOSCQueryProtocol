@@ -9,7 +9,12 @@ The OSCQuery protocol defines a way for machines to query the properties of [OSC
 The proposal itself is small, relatively simple, and is posted here: https://github.com/mrRay/OSCQueryProposal
 
 This repository contains a number of different targets:
-* **VVOSCQueryProtocol.framework** is a Cocoa framework that provides classes which can be used to implement this protocol in software that already has an existing OSC implementation- it does so in a simple, generic and library-agnostic fashion.  By itself, this framework does *NOT* send or receive OSC data, nor does it provide classes to let you create an OSC address space- this is all functionality that has already been implemented in a variety of other OSC libraries.  Instead, this framework gives you the tools you need to add support for the OSCQuery protocol to whatever OSC implementation you're already working with.
+
+
+This framework aims to provide classes that implement the OSCQuery protocol in software that already has an existing OSC implementation. It does so in a simple, generic, OSC-library-agnostic fashion, so adding support for OSCQuery is a matter of "adding some code" instead of "change all of my existing OSC code to use this weird new protocol".
+
+
+* **VVOSCQueryProtocol.framework** is a Cocoa framework that provides classes which can be used to implement this protocol in software that already has an existing OSC implementation- it does so in a simple, generic and library-agnostic fashion, so adding support for OSCQuery is a matter of "adding some code" instead of "rip out all of my existing OSC code to use this weird new protocol/framework".  By itself, this framework does *NOT* send or receive OSC data, nor does it provide classes to let you create an OSC address space- this is all functionality that has already been implemented in a variety of other OSC libraries.  Instead, this framework gives you the tools you need to add support for the OSCQuery protocol to whatever OSC implementation you're already working with.
 * **Utilities for Users**
     * **OSCQuery Browser** is a GUI that lets you browse the contents of OSCQuery servers on the local network and send data to the various OSC nodes.
     * **OSCQuery Helper** is a Cocoa app that lets you add OSCQuery support to other applications that already support OSC, but do not yet support OSCQuery.
@@ -32,4 +37,4 @@ VVOSCQueryProtocol is a framework: it contains a dynamic library and all the hea
 
 **Documentation:**
 
-The API for VVOSCQueryProtocol.framework is minimal, and the header files are clean and have a high signal to noise ratio- there are only two main classes (client & server!), and VVOSCQueryProtocol.h does a good job of introducing them and giving you a quick overview.  Fancier documentation is coming soon...
+The API for VVOSCQueryProtocol.framework is minimal, and the header files are clean and have a high signal to noise ratio- there are only two main classes (client & server!), and VVOSCQueryProtocol.h does a good job of introducing them and giving you a quick overview.  The generated doxygen documentation is [available here](https://www.vidvox.net/rays_oddsnends/VVOSCQueryProtocol_Doxygen/html/index.html).

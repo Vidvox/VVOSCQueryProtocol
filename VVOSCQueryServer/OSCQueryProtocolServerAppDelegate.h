@@ -33,6 +33,9 @@
 - (IBAction) renameButtonUsed:(id)sender;
 
 - (IBAction) doSomethingClicked:(id)sender;
+- (IBAction) makeANodeClicked:(id)sender;
+- (IBAction) renameTheNodeClicked:(id)sender;
+- (IBAction) deleteTheNodeClicked:(id)sender;
 
 - (IBAction) showSampleDocInFinderClicked:(id)sender;
 

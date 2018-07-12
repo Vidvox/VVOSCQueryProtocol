@@ -50,7 +50,7 @@ static ServerUIController		*_global = nil;
 
 
 - (IBAction) urlFieldUsed:(id)sender	{
-	//NSLog(@"%s",__func__);
+	NSLog(@"%s",__func__);
 	if (![NSThread isMainThread])	{
 		dispatch_async(dispatch_get_main_queue(), ^{ [self urlFieldUsed:sender]; });
 		return;
@@ -100,7 +100,7 @@ static ServerUIController		*_global = nil;
 
 
 - (void) newServerChosen:(VVOSCQueryRemoteServer*)n	{
-	//NSLog(@"%s ... %@",__func__,n);
+	NSLog(@"%s ... %@",__func__,n);
 	if (![NSThread isMainThread])	{
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self newServerChosen:n];
@@ -160,20 +160,20 @@ static ServerUIController		*_global = nil;
 	if (![NSThread isMainThread])	{
 		NSLog(@"\t\tERR: NOT MAIN THREAD, %s",__func__);
 	}
-	
+	NSLog(@"%s",__func__);
 	if (remoteServer != server)
 		return;
-	server = nil;
+	//server = nil;
 	[urlField setStringValue:@"/"];
 	[self fullReloadData];
-	[rawJSONTextView setString:@""];
+	//[rawJSONTextView setString:@""];
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer websocketDeliveredJSONObject:(NSDictionary *)jsonObj	{
 	NSLog(@"%s ... %@",__func__,jsonObj);
 	//NSLog(@"\t\tshould be checking for and handling PATH_CHANGED here, %s",__func__);
 }
 - (void) remoteServer:(VVOSCQueryRemoteServer *)remoteServer receivedOSCPacket:(const void *)packet sized:(size_t)packetSize	{
-	//NSLog(@"%s ... %p, %ld",__func__,packet,packetSize);
+	NSLog(@"%s ... %p, %ld",__func__,packet,packetSize);
 	
 	
 	
@@ -364,7 +364,7 @@ static ServerUIController		*_global = nil;
 
 
 - (void) reloadRemoteNodes	{
-	//NSLog(@"%s",__func__);
+	NSLog(@"%s",__func__);
 	//	we're going to strip any queries out of the URL field and then sanitize the path
 	NSURL			*url = [NSURL URLWithString:[urlField stringValue]];
 	NSString		*pathString = [[url absoluteString] stringBySanitizingForOSCPath];
@@ -379,7 +379,7 @@ static ServerUIController		*_global = nil;
 	//	convert the reply string to a JSON object (a dict)
 	NSData			*urlReplyData = [urlReplyString dataUsingEncoding:NSUTF8StringEncoding];
 	NSDictionary	*urlReplyDict = (urlReplyString==nil) ? nil : [NSJSONSerialization JSONObjectWithData:urlReplyData options:0 error:nil];
-	//NSLog(@"\t\turlReplyDict is %@",urlReplyDict);
+	NSLog(@"\t\turlReplyDict is %@",urlReplyDict);
 	
 	[urlReplyRemoteNodes removeAllObjects];
 	RemoteNode		*tmpNode = [[RemoteNode alloc] initWithParent:nil dict:urlReplyDict];
@@ -399,7 +399,7 @@ static ServerUIController		*_global = nil;
 	[rawJSONTextView setString:prettyString];
 }
 - (void) partialReloadData	{
-	//NSLog(@"%s",__func__);
+	NSLog(@"%s",__func__);
 	[self reloadRemoteNodes];
 	
 	//	tell the outline view to reload its data

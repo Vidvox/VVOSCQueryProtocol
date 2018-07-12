@@ -81,7 +81,7 @@
 	//NSLog(@"%s",__func__);
 	//	initialize the constants class, which will finish defining any constants if necessary
 	[VVOSCQueryConstants class];
-	//	initialize the server detector, which will start looking for bonjour services that list OSC query servers
+	//	initialize the server detector, which will start looking for bonjour services that list OSCQuery servers
 	[VVOSCQueryServerDetector class];
 }
 
@@ -263,7 +263,11 @@ bonjourName:(NSString *)inBonjourName	{
 				[self setOSCServerPort:[tmpNum intValue]];
 			else if ([tmpNum isKindOfClass:[NSString class]])
 				[self setOSCServerPort:[(NSString *)tmpNum intValue]];
+			else
+				[self setOSCServerPort:webServerPort];
 		}
+		else
+			[self setOSCServerPort:webServerPort];
 		
 		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCTransport];
 		if (tmpString != nil)	{
@@ -273,7 +277,11 @@ bonjourName:(NSString *)inBonjourName	{
 			else if ([tmpString isEqualToString:kVVOSCQueryOSCTransportTCP])	{
 				[self setOSCServerTransport:VVOSCQueryOSCTransportType_TCP];
 			}
+			else
+				[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
 		}
+		else
+			[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
 		
 		//	websockets info
 		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_WSIP];

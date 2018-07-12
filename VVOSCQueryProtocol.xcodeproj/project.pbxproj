@@ -30,7 +30,7 @@
 		1A04695020EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 1A04694F20EC251C002E591D /* MIDIOSCQueryHelperAppIcon.iconset */; };
 		1A04696020ECF845002E591D /* oscqueryhtml in Resources */ = {isa = PBXBuildFile; fileRef = 1A04695F20ECF845002E591D /* oscqueryhtml */; };
 		1A0B5F55203E0EC800948FDA /* ZWRObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0B5F53203E0EC800948FDA /* ZWRObject.m */; };
-		1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A0B5F54203E0EC800948FDA /* ZWRObject.h */; };
+		1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A0B5F54203E0EC800948FDA /* ZWRObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A0E2F361FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0E2F351FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m */; };
 		1A0E2F381FD6D3CB00F0855D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0E2F371FD6D3CB00F0855D /* Assets.xcassets */; };
 		1A0E2F3B1FD6D3CB00F0855D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0E2F391FD6D3CB00F0855D /* MainMenu.xib */; };
@@ -611,6 +611,8 @@
 				1A480FDC1FC89A9D00F86354 /* VVOSCQueryReply.m */,
 				1A480FDF1FC8A0EC00F86354 /* VVOSCQuery.h */,
 				1A480FE01FC8A0EC00F86354 /* VVOSCQuery.m */,
+				1A0B5F54203E0EC800948FDA /* ZWRObject.h */,
+				1A0B5F53203E0EC800948FDA /* ZWRObject.m */,
 				1A04695F20ECF845002E591D /* oscqueryhtml */,
 				1AF1087C1FCDD7F3004566A8 /* internal */,
 			);
@@ -712,8 +714,6 @@
 		1AF1087C1FCDD7F3004566A8 /* internal */ = {
 			isa = PBXGroup;
 			children = (
-				1A0B5F54203E0EC800948FDA /* ZWRObject.h */,
-				1A0B5F53203E0EC800948FDA /* ZWRObject.m */,
 				1A906E7E1FCC8D1700F0E412 /* NSNetServiceAdditions.h */,
 				1A906E7F1FCC8D1700F0E412 /* NSNetServiceAdditions.m */,
 				1AF108781FCDC509004566A8 /* NSStringAdditions.h */,
@@ -748,12 +748,12 @@
 				1A4D91B61FD41817007138A8 /* WSPPClient.hpp in Headers */,
 				1AF1087A1FCDC509004566A8 /* NSStringAdditions.h in Headers */,
 				1A336E901FC871870007877C /* VVOSCQueryServer.h in Headers */,
+				1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */,
 				1A7C48F71FD586DB00AE4287 /* VVOSCQueryStringUtilities.hpp in Headers */,
 				1AF108581FCD7EF8004566A8 /* VVOSCQueryConstants.h in Headers */,
 				1AF108761FCD9DC0004566A8 /* CURLDL.h in Headers */,
 				1A906E801FCC8D1700F0E412 /* NSNetServiceAdditions.h in Headers */,
 				1A336E941FC871900007877C /* VVOSCQueryRemoteServer.h in Headers */,
-				1A0B5F56203E0EC800948FDA /* ZWRObject.h in Headers */,
 				1AB89C311FD1EE1B0094A66B /* WSPPServer.hpp in Headers */,
 				1AB4FB2C1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.h in Headers */,
 				1A480FE51FCAD55D00F86354 /* VVOSCQueryServerDetector.h in Headers */,

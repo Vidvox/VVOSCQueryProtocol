@@ -7,7 +7,7 @@
 
 
 + (NSDictionary *) jsonObjectWithPath:(NSString *)inFullPath
-contents:(NSArray<NSDictionary*>*)inContents
+contents:(NSDictionary*)inContents
 description:(NSString *)inDescription
 tags:(NSArray<NSString*> *)inTags
 extendedType:(NSArray<NSString*> *)inExtType

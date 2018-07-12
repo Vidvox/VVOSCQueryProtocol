@@ -686,15 +686,29 @@
         <window title="OSCQueryProtocolServer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="537" height="651"/>
+            <rect key="contentRect" x="335" y="390" width="708" height="815"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <value key="minSize" type="size" width="403" height="651"/>
+            <value key="minSize" type="size" width="708" height="815"/>
             <view key="contentView" wantsLayer="YES" misplaced="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="537" height="651"/>
+                <rect key="frame" x="0.0" y="0.0" width="708" height="815"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="JqB-az-mqo">
+                        <rect key="frame" x="18" y="557" width="672" height="238"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="pFu-dj-feN">
+                            <font key="font" metaFont="system"/>
+                            <string key="title">This app is for developers- it is a test server that implements the OSCQuery protocol.
+
+- The OSCQuery protocol advertises the structure of an OSC address space- this test server is document-based, and can load JSON-formatted text files that describe an OSC address space.  A sample document demonstrating the basic OSC data types is automatically installed in "~/Documents/OSCQuery Server" and will be automatically opened on app launch, but the intent is to make testing easier by allowing you to customize the address space you test against.
+- The OSCQuery protocol also supports optional bidirectional streaming, which this test server implements- if an OSCQuery client sends a message to any node in this app's address space, that message will be echoed out to all of the clients connected to the server.
+- The VVOSCQueryProtocol.framework includes some HTML pages that can optionally be served to allow anyone with a web browser to browse the contents of your OSCQuery server and send OSC messages to its nodes.  This test server configures an HTML server directory, and provides a clickable URL to the HTML pages.</string>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="qp6-JV-1gr">
-                        <rect key="frame" x="18" y="470" width="501" height="17"/>
+                        <rect key="frame" x="18" y="532" width="672" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Server status:" id="FRN-gi-wuf">
                             <font key="font" metaFont="system"/>
@@ -702,17 +716,8 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="UWj-at-6HT">
-                        <rect key="frame" x="18" y="248" width="501" height="17"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Received OSC data:" id="89Q-Ud-pTK">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="odV-28-5Q4">
-                        <rect key="frame" x="145" y="318" width="77" height="17"/>
+                        <rect key="frame" x="200" y="380" width="77" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server port:" id="dON-Rd-m9k">
                             <font key="font" metaFont="system"/>
@@ -721,7 +726,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" misplaced="YES" id="nqt-sP-6Td">
-                        <rect key="frame" x="290" y="315" width="96" height="22"/>
+                        <rect key="frame" x="402" y="377" width="96" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Ow0-l0-rpx">
                             <font key="font" metaFont="system"/>
@@ -733,7 +738,7 @@
                         </connections>
                     </textField>
                     <button verticalHuggingPriority="750" misplaced="YES" id="SlC-IF-H20">
-                        <rect key="frame" x="59" y="338" width="133" height="32"/>
+                        <rect key="frame" x="85" y="400" width="133" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Stop the server" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Jdx-Gg-TRY">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -744,7 +749,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" misplaced="YES" id="vO8-VM-NMb">
-                        <rect key="frame" x="343" y="338" width="135" height="32"/>
+                        <rect key="frame" x="487" y="400" width="135" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Start the server" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="bLQ-Kc-Adp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -754,31 +759,80 @@
                             <action selector="startClicked:" target="Voe-Tx-rLC" id="oK7-kG-SYC"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="JqB-az-mqo">
-                        <rect key="frame" x="18" y="495" width="501" height="136"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="drg-Q1-DlL">
+                        <rect key="frame" x="18" y="436" width="672" height="88"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="pFu-dj-feN">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="wOS-Xv-gKB">
                             <font key="font" metaFont="system"/>
-                            <string key="title">This app is for developers.
-
-This is a simple test server to demonstrate the OSC query protocol.  It creates a small OSC address space with a variety of different argument types, and uses the query protocol to advertise the OSC address space's existence and details.  This app supports bidirectional streaming- if a client sends a message to any node in the server's address space, that message is echoed out to all clients connected to the server.</string>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="bOo-DD-bSM">
+                        <rect key="frame" x="14" y="46" width="118" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Make a node" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fa9-OO-CAv">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="makeANodeClicked:" target="Voe-Tx-rLC" id="DlJ-KK-SPh"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="fUA-hc-KhQ">
+                        <rect key="frame" x="223" y="13" width="199" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Delete the node you made" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Yk9-Dm-0YC">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="deleteTheNodeClicked:" target="Voe-Tx-rLC" id="aYP-mB-2wO"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="u6S-He-0Hx">
+                        <rect key="frame" x="14" y="13" width="209" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Rename the node you made" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FCx-3g-EL5">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="renameTheNodeClicked:" target="Voe-Tx-rLC" id="oBX-PN-r0r"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="Ot1-eR-p9y">
+                        <rect key="frame" x="18" y="82" width="672" height="34"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="C18-Zi-ffP">
+                            <font key="font" metaFont="system"/>
+                            <string key="title">These buttons create/rename/delete an OSC method for the purpose of testing PATH_ADDED, PATH_RENAMED, and PATH_REMOVED notifications...</string>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="UWj-at-6HT">
+                        <rect key="frame" x="18" y="352" width="672" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Received OSC data:" id="89Q-Ud-pTK">
+                            <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <scrollView misplaced="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="laW-p7-aza">
-                        <rect key="frame" x="20" y="20" width="497" height="220"/>
+                        <rect key="frame" x="20" y="124" width="668" height="220"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="Tar-hu-Ysw">
-                            <rect key="frame" x="1" y="1" width="495" height="218"/>
+                            <rect key="frame" x="1" y="1" width="666" height="218"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="V3G-j4-ACC">
-                                    <rect key="frame" x="0.0" y="0.0" width="495" height="218"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="666" height="218"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="495" height="218"/>
-                                    <size key="maxSize" width="497" height="10000000"/>
+                                    <size key="minSize" width="666" height="218"/>
+                                    <size key="maxSize" width="666" height="10000000"/>
                                     <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </textView>
                             </subviews>
@@ -789,22 +843,13 @@ This is a simple test server to demonstrate the OSC query protocol.  It creates 
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="XSK-fC-zN9">
-                            <rect key="frame" x="480" y="1" width="16" height="218"/>
+                            <rect key="frame" x="651" y="1" width="16" height="218"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="drg-Q1-DlL">
-                        <rect key="frame" x="18" y="374" width="501" height="88"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="wOS-Xv-gKB">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-313" y="39"/>
+            <point key="canvasLocation" x="-228" y="120.5"/>
         </window>
     </objects>
 </document>

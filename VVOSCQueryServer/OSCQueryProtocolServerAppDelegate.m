@@ -255,6 +255,79 @@
 	NSString		*tmpString = [NSString stringWithFormat:@"/asdf/qwer/%d",42];
 	[server sendPathAddedToClients:tmpString];
 }
+- (IBAction) makeANodeClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	OSCNode				*tmpNodeA = nil;
+	OSCNode				*tmpNodeB = nil;
+	
+	tmpNodeA = [as findNodeForAddress:@"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE" createIfMissing:NO];
+	tmpNodeB = [as findNodeForAddress:@"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2" createIfMissing:NO];
+	if (tmpNodeA != nil || tmpNodeB != nil)	{
+		NSLog(@"\t\terr: can't create node or send PATH_ADDED notification- node already exists.  delete it before calling this again!");
+		return;
+	}
+	
+	tmpNodeA = [as findNodeForAddress:@"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE" createIfMissing:YES];
+	//[tmpNodeA setNodeType:OSCNodeTypeNumber];
+	[tmpNodeA setOSCDescription:@"test float node"];
+	[tmpNodeA setTypeTagString:@"f"];
+	[tmpNodeA setAccess:OSCNodeAccess_RW];
+	[tmpNodeA setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0., kVVOSCQ_OptAttr_Range_Max:@100. } ]];
+	[tmpNodeA setTags:@[ @"float input" ]];
+	[tmpNodeA setClipmode:@[ @"none" ]];
+	[tmpNodeA setUnits:@[ @"percent" ]];
+	
+	[server sendPathAddedToClients:[tmpNodeA fullName]];
+}
+- (IBAction) renameTheNodeClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	NSString			*addressA = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE";
+	NSString			*addressB = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2";
+	OSCNode				*tmpNodeA = nil;
+	OSCNode				*tmpNodeB = nil;
+	
+	tmpNodeA = [as findNodeForAddress:addressA createIfMissing:NO];
+	tmpNodeB = [as findNodeForAddress:addressB createIfMissing:NO];
+	if (tmpNodeA == nil && tmpNodeB == nil)	{
+		NSLog(@"\t\terr: can't rename the node or send PATH_RENAMED notification- node doesn't exist.  create it before calling this!");
+		return;
+	}
+	
+	if (tmpNodeA != nil)	{
+		[as renameAddress:addressA to:addressB];
+		[server sendPathRenamedToClients:addressA to:addressB];
+	}
+	else if (tmpNodeB != nil)	{
+		[as renameAddress:addressB to:addressA];
+		[server sendPathRenamedToClients:addressB to:addressA];
+	}
+}
+- (IBAction) deleteTheNodeClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	NSString			*addressA = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE";
+	NSString			*addressB = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2";
+	OSCNode				*tmpNodeA = nil;
+	OSCNode				*tmpNodeB = nil;
+	
+	tmpNodeA = [as findNodeForAddress:addressA createIfMissing:NO];
+	tmpNodeB = [as findNodeForAddress:addressB createIfMissing:NO];
+	if (tmpNodeA == nil && tmpNodeB == nil)	{
+		NSLog(@"\t\terr: can't delete the node or send PATH_REMOVED notification- node doesn't exist.  create it before calling this!");
+		return;
+	}
+	
+	if (tmpNodeA != nil)	{
+		[as setNode:nil forAddress:addressA];
+		[server sendPathRemovedToClients:addressA];
+	}
+	else if (tmpNodeB != nil)	{
+		[as setNode:nil forAddress:addressB];
+		[server sendPathRemovedToClients:addressB];
+	}
+}
 - (IBAction) showSampleDocInFinderClicked:(id)sender	{
 	NSString		*tmpPath = [@"~/Documents/OSCQuery Server/SampleDocument.json" stringByExpandingTildeInPath];
 	NSURL			*tmpURL = [NSURL fileURLWithPath:tmpPath];

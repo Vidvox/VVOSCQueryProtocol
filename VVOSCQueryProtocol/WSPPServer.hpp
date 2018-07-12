@@ -6,9 +6,9 @@
 #include "WSPPQueryReply.hpp"
 
 
-/*		this class exists because i want to use websocket++ to implement the OSC query protocol's 
+/*		this class exists because i want to use websocket++ to implement the OSCQuery specification's 
 	backend in an objective-c framework.  i chose to do this as a pure c++ class so it can 
-	potentially be reused to quickly and easily implement the query protocol on other platforms.			*/
+	potentially be reused to quickly and easily implement the OSCQuery spec on other platforms.			*/
 
 
 // The ASIO_STANDALONE define is necessary to use the standalone version of Asio.
@@ -77,7 +77,7 @@ public:
 	WSPPServer();
 	~WSPPServer();
 	
-	//	the http callback is called every time the server receives an http request that isn't upgraded to a websocket connection.  this callback is how you implement the HTTP server side of the osc query proposal.
+	//	the http callback is called every time the server receives an http request that isn't upgraded to a websocket connection.  this callback is how you implement the HTTP server side of the OSCQuery spec.
 	void set_http_callback(HTTPCallback inCallback);
 	//	the websocket callback is called every time the server receives frame::opcode::text data over one of its open websocket connections.
 	void set_websocket_callback(WSCallback inCallback);
