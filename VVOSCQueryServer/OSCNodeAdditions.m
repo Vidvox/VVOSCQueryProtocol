@@ -6,6 +6,15 @@
 @implementation OSCNode (VVOSCQueryNodeAdditions)
 
 
+static BOOL			flattenSimpleOSCQArrays = NO;
+
+
++ (void) setFlattenSimpleOSCQArrays:(BOOL)n	{
+	flattenSimpleOSCQArrays = n;
+}
++ (BOOL) flattenSimpleOSCQArrays	{
+	return flattenSimpleOSCQArrays;
+}
 - (VVOSCQueryReply *) getReplyForOSCQuery:(VVOSCQuery *)q	{
 	//NSLog(@"%s ... %@",__func__,self);
 	VVOSCQueryReply			*returnMe = nil;
@@ -82,8 +91,12 @@
 	if (tmpString != nil)
 		[returnMe setObject:tmpString forKey:kVVOSCQ_ReqAttr_Type];
 	tmpArray = [self extendedType];
-	if (tmpArray != nil)
-		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Ext_Type];
+	if (tmpArray != nil)	{
+		if ([tmpArray count] == 1 && flattenSimpleOSCQArrays)
+			[returnMe setObject:tmpArray[0] forKey:kVVOSCQ_OptAttr_Ext_Type];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Ext_Type];
+	}
 	tmpNum = [NSNumber numberWithInteger:[self access]];
 	if (tmpNum != nil)
 		[returnMe setObject:tmpNum forKey:kVVOSCQ_OptAttr_Access];
@@ -97,8 +110,12 @@
 		if (lastMsgValCount == 1)	{
 			OSCValue		*oscVal = [lastMsg value];
 			id				nsVal = (oscVal==nil) ? nil : [oscVal jsonValue];
-			if (nsVal != nil)
-				[returnMe setObject:@[ nsVal ] forKey:kVVOSCQ_OptAttr_Value];
+			if (nsVal != nil)	{
+				if (flattenSimpleOSCQArrays)
+					[returnMe setObject:nsVal forKey:kVVOSCQ_OptAttr_Value];
+				else
+					[returnMe setObject:@[ nsVal ] forKey:kVVOSCQ_OptAttr_Value];
+			}
 		}
 		else	{
 			NSMutableArray		*tmpValArray = [[NSMutableArray alloc] init];
@@ -115,11 +132,19 @@
 	if (tmpArray != nil)
 		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Range];
 	tmpArray = [self clipmode];
-	if (tmpArray != nil)
-		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Clipmode];
+	if (tmpArray != nil)	{
+		if ([tmpArray count] == 1 && flattenSimpleOSCQArrays)
+			[returnMe setObject:tmpArray[0] forKey:kVVOSCQ_OptAttr_Clipmode];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Clipmode];
+	}
 	tmpArray = [self units];
-	if (tmpArray != nil)
-		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Unit];
+	if (tmpArray != nil)	{
+		if ([tmpArray count] == 1 && flattenSimpleOSCQArrays)
+			[returnMe setObject:tmpArray[0] forKey:kVVOSCQ_OptAttr_Unit];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Unit];
+	}
 	
 	if (isRecursive)	{
 		NSMutableDictionary	*contentsDict = [[NSMutableDictionary alloc] init];

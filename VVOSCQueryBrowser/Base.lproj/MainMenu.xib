@@ -15,6 +15,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="VVOSCQueryBrowserAppDelegate">
             <connections>
+                <outlet property="helpWindow" destination="rCv-63-EuZ" id="Wwr-RK-73u"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -678,7 +679,7 @@
                         <items>
                             <menuItem title="OSCQueryBrowser Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                 <connections>
-                                    <action selector="showHelp:" target="-1" id="y7X-2Q-9no"/>
+                                    <action selector="showHelp:" target="Voe-Tx-rLC" id="ACI-gP-lsw"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -696,10 +697,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="769" height="605"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Gfq-d6-TL6">
-                        <rect key="frame" x="18" y="568" width="50" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="Gfq-d6-TL6">
+                        <rect key="frame" x="18" y="568" width="261" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Servers" id="ZiY-a9-New">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Servers:" id="ZiY-a9-New">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -717,10 +718,10 @@
                             <action selector="urlFieldUsed:" target="nFM-4p-b9o" id="SEP-Bt-H5A"/>
                         </connections>
                     </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="CS4-zo-bte">
-                        <rect key="frame" x="283" y="568" width="179" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Server's OSC Address Space" id="wJz-f9-6Gd">
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="CS4-zo-bte">
+                        <rect key="frame" x="283" y="568" width="468" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Server's OSC Address Space:" id="wJz-f9-6Gd">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1335,5 +1336,41 @@
             <point key="canvasLocation" x="634" y="181"/>
         </customView>
         <customObject id="B9p-Kb-KZi" customClass="SUUpdater"/>
+        <window title="Help Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="rCv-63-EuZ">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="699" height="227"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <view key="contentView" misplaced="YES" id="NQV-OE-Yh3">
+                <rect key="frame" x="0.0" y="0.0" width="699" height="227"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" id="xTQ-hK-s9Q">
+                        <rect key="frame" x="312" y="13" width="75" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VXh-aQ-MMW">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="closeHelp:" target="Voe-Tx-rLC" id="4dN-wf-Beo"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="5l5-Lq-Jz8">
+                        <rect key="frame" x="18" y="122" width="663" height="85"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="TnR-Fu-ULU">
+                            <font key="font" metaFont="system"/>
+                            <string key="title">OSCQuery Browser lists the OSCQuery servers it detects, and allows you to browse their address spaces and send data to them.
+
+It does not support bidirectional streaming- the UI items in this app will only update if you manually refresh the view (by selecting a server or entering a path to display).</string>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="41.5" y="604.5"/>
+        </window>
     </objects>
 </document>

@@ -37,6 +37,8 @@
 - (IBAction) renameTheNodeClicked:(id)sender;
 - (IBAction) deleteTheNodeClicked:(id)sender;
 
+- (IBAction) flattenArraysToggleUsed:(id)sender;
+
 - (IBAction) showSampleDocInFinderClicked:(id)sender;
 
 @end

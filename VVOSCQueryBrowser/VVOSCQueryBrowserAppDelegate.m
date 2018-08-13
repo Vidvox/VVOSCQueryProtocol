@@ -25,4 +25,29 @@
 }
 
 
+- (IBAction) showHelp:(id)sender	{
+	NSLog(@"%s",__func__);
+	if (![NSThread isMainThread])	{
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self showHelp:sender];
+		});
+		return;
+	}
+	
+	[[self window] beginSheet:helpWindow completionHandler:^(NSModalResponse returnCode)	{
+	}];
+}
+- (IBAction) closeHelp:(id)sender	{
+	NSLog(@"%s",__func__);
+	if (![NSThread isMainThread])	{
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self closeHelp:sender];
+		});
+		return;
+	}
+	
+	[[self window] endSheet:helpWindow returnCode:NSModalResponseStop];
+}
+
+
 @end

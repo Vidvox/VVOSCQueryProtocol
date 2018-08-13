@@ -91,6 +91,7 @@
 		1AB4FB2D1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AB4FB2B1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.m */; };
 		1AB89C301FD1EE1B0094A66B /* WSPPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AB89C2E1FD1EE1B0094A66B /* WSPPServer.cpp */; };
 		1AB89C311FD1EE1B0094A66B /* WSPPServer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 1AB89C2F1FD1EE1B0094A66B /* WSPPServer.hpp */; };
+		1ABB5C302120BA2000238A2C /* NSStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABB5C2F2120BA2000238A2C /* NSStringAdditions.m */; };
 		1ABC045120233BC700539E55 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
 		1ABC045220233BC700539E55 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
 		1ABC045320233BC700539E55 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABC044F20233BC700539E55 /* VVBasics.framework */; };
@@ -393,6 +394,8 @@
 		1AB4FB2B1FCC6C91005E3028 /* VVOSCQueryServerDetectorDomain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VVOSCQueryServerDetectorDomain.m; sourceTree = "<group>"; };
 		1AB89C2E1FD1EE1B0094A66B /* WSPPServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WSPPServer.cpp; sourceTree = "<group>"; };
 		1AB89C2F1FD1EE1B0094A66B /* WSPPServer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = WSPPServer.hpp; sourceTree = "<group>"; };
+		1ABB5C2E2120BA2000238A2C /* NSStringAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSStringAdditions.h; sourceTree = "<group>"; };
+		1ABB5C2F2120BA2000238A2C /* NSStringAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSStringAdditions.m; sourceTree = "<group>"; };
 		1ABC044F20233BC700539E55 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVBasics.framework; path = external_frameworks/VVBasics.framework; sourceTree = "<group>"; };
 		1ABC045020233BC700539E55 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VVOSC.framework; path = external_frameworks/VVOSC.framework; sourceTree = "<group>"; };
 		1AC94ED120E52CCA0035DC6B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = external_frameworks/Sparkle.framework; sourceTree = "<group>"; };
@@ -544,6 +547,8 @@
 				1AEB5CC61FD7383B00FFCE49 /* OSCValueView.m */,
 				1AAD2F811FD84B0100772369 /* NSArrayAdditions.h */,
 				1AAD2F821FD84B0100772369 /* NSArrayAdditions.m */,
+				1ABB5C2E2120BA2000238A2C /* NSStringAdditions.h */,
+				1ABB5C2F2120BA2000238A2C /* NSStringAdditions.m */,
 			);
 			path = VVOSCQueryBrowser;
 			sourceTree = "<group>";
@@ -1041,6 +1046,7 @@
 				1A0E2F3E1FD6D3CB00F0855D /* main.m in Sources */,
 				1A0E2F361FD6D3CB00F0855D /* VVOSCQueryBrowserAppDelegate.m in Sources */,
 				1AEB5CB81FD6E74D00FFCE49 /* ServerUIController.m in Sources */,
+				1ABB5C302120BA2000238A2C /* NSStringAdditions.m in Sources */,
 				1AEB5CC41FD72F6F00FFCE49 /* RemoteNodeControlTableCellView.m in Sources */,
 				1AEB5CBB1FD7014000FFCE49 /* RemoteNodeTableCellView.m in Sources */,
 			);

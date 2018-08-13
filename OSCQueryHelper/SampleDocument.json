@@ -90,6 +90,25 @@
 						"dollars"
 					]
 				},
+				"my_int_as_toggle" : {
+					"TYPE" : "i",
+					"DESCRIPTION" : "integer that functions as a toggle",
+					"RANGE" : [
+						{
+							"MAX" : 1,
+							"MIN" : 0
+						}
+					],
+					"TAGS" : [
+						"integer input", "toggle"
+					],
+					"CLIPMODE" : [
+						"none"
+					],
+					"UNIT" : [
+						"wonderTwinPowers"
+					]
+				},
 				"my_longlong" : {
 					"TYPE" : "h",
 					"DESCRIPTION" : "64-bit int node",

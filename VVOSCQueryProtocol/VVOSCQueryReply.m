@@ -31,19 +31,39 @@ overloads:(NSArray *)inOverloadsArray	{
 		[returnMe setObject:inDescription forKey:kVVOSCQ_ReqAttr_Desc];
 	if (inTags != nil)
 		[returnMe setObject:inTags forKey:kVVOSCQ_OptAttr_Tags];
-	if (inExtType != nil)
-		[returnMe setObject:inExtType forKey:kVVOSCQ_OptAttr_Ext_Type];
+	if (inExtType != nil)	{
+		//if ([inExtType count] == 1)
+		//	[returnMe setObject:inExtType[0] forKey:kVVOSCQ_OptAttr_Ext_Type];
+		//else
+			[returnMe setObject:inExtType forKey:kVVOSCQ_OptAttr_Ext_Type];
+	}
 	if (inTypeTagString != nil)
 		[returnMe setObject:inTypeTagString forKey:kVVOSCQ_ReqAttr_Type];
 	[returnMe setObject:[NSNumber numberWithInteger:inAccess] forKey:kVVOSCQ_OptAttr_Access];
-	if (inValueArray != nil)
-		[returnMe setObject:inValueArray forKey:kVVOSCQ_OptAttr_Value];
-	if (inRangeArray != nil)
-		[returnMe setObject:inRangeArray forKey:kVVOSCQ_OptAttr_Range];
-	if (inClipmodeArray != nil)
-		[returnMe setObject:inClipmodeArray forKey:kVVOSCQ_OptAttr_Clipmode];
-	if (inUnitsArray != nil)
-		[returnMe setObject:inUnitsArray forKey:kVVOSCQ_OptAttr_Unit];
+	if (inValueArray != nil)	{
+		//if ([inValueArray count] == 1)
+		//	[returnMe setObject:inValueArray[0] forKey:kVVOSCQ_OptAttr_Value];
+		//else
+			[returnMe setObject:inValueArray forKey:kVVOSCQ_OptAttr_Value];
+	}
+	if (inRangeArray != nil)	{
+		//if ([inRangeArray count] == 1)
+		//	[returnMe setObject:inRangeArray[0] forKey:kVVOSCQ_OptAttr_Range];
+		//else
+			[returnMe setObject:inRangeArray forKey:kVVOSCQ_OptAttr_Range];
+	}
+	if (inClipmodeArray != nil)	{
+		//if ([inClipmodeArray count] == 1)
+		//	[returnMe setObject:inClipmodeArray[0] forKey:kVVOSCQ_OptAttr_Clipmode];
+		//else
+			[returnMe setObject:inClipmodeArray forKey:kVVOSCQ_OptAttr_Clipmode];
+	}
+	if (inUnitsArray != nil)	{
+		//if ([inUnitsArray count] == 1)
+		//	[returnMe setObject:inUnitsArray[0] forKey:kVVOSCQ_OptAttr_Unit];
+		//else
+			[returnMe setObject:inUnitsArray forKey:kVVOSCQ_OptAttr_Unit];
+	}
 	if (inCritical)
 		[returnMe setObject:[NSNumber numberWithBool:inCritical] forKey:kVVOSCQ_OptAttr_Critical];
 	if (inOverloadsArray)

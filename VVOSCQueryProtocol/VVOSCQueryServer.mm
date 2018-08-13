@@ -38,8 +38,11 @@
 		__weak id			bss = self;
 		webServer.set_http_callback([=](const std::string & inURI)	{
 			@autoreleasepool	{
+				//NSLog(@"http callback, URL is %s, length is %d",inURI.c_str(),inURI.size());
 				//	we need to parse the URL, breaking it up into a path and an NSDictionary of the query parameters and their values
 				NSURL				*url = [NSURL URLWithString:[NSString stringWithUTF8String:inURI.c_str()]];
+				if (url==nil || [url absoluteString]==nil)
+					return WSPPQueryReply(404);
 				NSURLComponents		*urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
 				NSArray				*queryItems = [urlComponents queryItems];
 				NSMutableDictionary	*urlParams = [[NSMutableDictionary alloc] init];

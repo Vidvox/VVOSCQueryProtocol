@@ -3,6 +3,7 @@
 #import <VVOSCQueryProtocol/VVOSCQueryProtocol.h>
 #import "RemoteNodeControl.h"
 #import "NSArrayAdditions.h"
+#import "NSStringAdditions.h"
 #import "ServerUIController.h"
 
 
@@ -50,20 +51,11 @@
 				NSLog(@"ERR: %@",nsErr);
 				return;
 			}
-
 			
-			if (jsonValArray!=nil && ![jsonValArray isKindOfClass:[NSArray class]])	{
-				nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"json VALUE array was not an array" }];
-				NSLog(@"ERR: %@",nsErr);
-				nsErr = nil;
-				jsonValArray = nil;
-			}
-			if (jsonRangeArray!=nil && ![jsonRangeArray isKindOfClass:[NSArray class]])	{
-				nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"json RANGE array was not an array" }];
-				NSLog(@"ERR: %@",nsErr);
-				nsErr = nil;
-				jsonRangeArray = nil;
-			}
+			
+			BOOL			valArrayIsArray = ([jsonValArray isKindOfClass:[NSArray class]]) ? YES : NO;
+			BOOL			rangeArrayIsArray = ([jsonRangeArray isKindOfClass:[NSArray class]]) ? YES : NO;
+			
 			
 			//NSLog(@"ParseBlock()");
 			//NSLog(@"\t\ttypeString is %@",typeString);
@@ -82,13 +74,13 @@
 			//	we want to run through the type tag string, json val array, and json range array all at the same time, calling the block recursively when we encounter tuples
 			for (typeCharIndex=0; typeCharIndex<[typeString length]; ++typeCharIndex)	{
 				//	make sure that the val and range arrays are long enough to accommodate this entry in the type tag string
-				if (jsonValArray!=nil && arrayIndex>=[jsonValArray count])	{
-					nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"not enough entries in val array for type tage string" }];
+				if (valArrayIsArray && jsonValArray!=nil && arrayIndex>=[jsonValArray count])	{
+					nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"not enough entries in val array for type tag string" }];
 					NSLog(@"ERR: %@",nsErr);
 					nsErr = nil;
 					jsonValArray = nil;
 				}
-				if (jsonRangeArray!=nil && arrayIndex>=[jsonRangeArray count])	{
+				if (rangeArrayIsArray && jsonRangeArray!=nil && arrayIndex>=[jsonRangeArray count])	{
 					nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"not enough entries in range array for type tag string" }];
 					NSLog(@"ERR: %@",nsErr);
 					nsErr = nil;
@@ -96,8 +88,14 @@
 				}
 				
 				//	get the object and range dict corresponding to the character at this index
-				jsonObj = (jsonValArray==nil) ? nil : [jsonValArray objectAtIndex:arrayIndex];
-				jsonRangeDict = (jsonRangeArray==nil) ? nil : [jsonRangeArray objectAtIndex:arrayIndex];
+				if (jsonValArray == nil)
+					jsonObj = nil;
+				else
+					jsonObj = (valArrayIsArray) ? [jsonValArray objectAtIndex:arrayIndex] : (id)jsonValArray;
+				if (jsonRangeArray==nil)
+					jsonRangeDict = nil;
+				else
+					jsonRangeDict = (rangeArrayIsArray) ? [jsonRangeArray objectAtIndex:arrayIndex] : (NSDictionary*)jsonRangeArray;
 				
 				//	we're going to try to populate these in the following switch statement, and they will be put together after it
 				RemoteNodeControl	*newRemoteNodeControl = nil;
@@ -294,44 +292,94 @@
 					break;
 				case 'r':
 					newRemoteNodeControl = [[RemoteNodeControl alloc] initWithParent:self typeString:tmpTypeString];
-					if (jsonObj!=nil && [jsonObj isKindOfClass:[NSArray class]] && [(NSArray*)jsonObj count]>=3)	{
-						NSColor		*tmpColor = [jsonObj rgbaColorFromContents];
-						if (tmpColor == nil)	{
-							nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color value from array of values" }];
-							NSLog(@"ERR: %@",nsErr);
-							nsErr = nil;
+					if (jsonObj!=nil)	{
+						if ([jsonObj isKindOfClass:[NSString class]])	{
+							NSColor		*tmpColor = [jsonObj rgbaColorFrom8BPCHexContents];
+							if (tmpColor == nil)	{
+								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color value from string" }];
+								NSLog(@"ERR: %@",nsErr);
+								nsErr = nil;
+							}
+							else
+								newOSCVal = [OSCValue createWithColor:tmpColor];
 						}
-						else
-							newOSCVal = [OSCValue createWithColor:tmpColor];
+						else if ([jsonObj isKindOfClass:[NSArray class]] && [(NSArray*)jsonObj count]>=3)	{
+							NSColor		*tmpColor = [jsonObj rgbaColorFromContents];
+							if (tmpColor == nil)	{
+								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color value from array of values" }];
+								NSLog(@"ERR: %@",nsErr);
+								nsErr = nil;
+							}
+							else
+								newOSCVal = [OSCValue createWithColor:tmpColor];
+						}
 					}
 					
 					tmpObj = jsonRangeDict[kVVOSCQ_OptAttr_Range_Min];
-					if (tmpObj!=nil && [tmpObj isKindOfClass:[NSArray class]])	{
-						NSColor		*tmpColor = [tmpObj rgbaColorFromContents];
-						if (tmpColor == nil)	{
-							nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color min from array of values" }];
-							NSLog(@"ERR: %@",nsErr);
-							nsErr = nil;
+					if (tmpObj != nil)	{
+						if ([tmpObj isKindOfClass:[NSString class]])	{
+							NSColor		*tmpColor = [tmpObj rgbaColorFrom8BPCHexContents];
+							if (tmpColor == nil)	{
+								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color value from string" }];
+								NSLog(@"ERR: %@",nsErr);
+								nsErr = nil;
+							}
+							else
+								newOSCMin = [OSCValue createWithColor:tmpColor];
 						}
-						else
-							newOSCMin = [OSCValue createWithColor:tmpColor];
+						else if ([tmpObj isKindOfClass:[NSArray class]])	{
+							NSColor		*tmpColor = [tmpObj rgbaColorFromContents];
+							if (tmpColor == nil)	{
+								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color min from array of values" }];
+								NSLog(@"ERR: %@",nsErr);
+								nsErr = nil;
+							}
+							else
+								newOSCMin = [OSCValue createWithColor:tmpColor];
+						}
 					}
+					
 					tmpObj = jsonRangeDict[kVVOSCQ_OptAttr_Range_Max];
-					if (tmpObj!=nil && [tmpObj isKindOfClass:[NSArray class]])	{
-						NSColor		*tmpColor = [tmpObj rgbaColorFromContents];
-						if (tmpColor == nil)	{
-							nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color max from array of values" }];
-							NSLog(@"ERR: %@",nsErr);
-							nsErr = nil;
+					if (tmpObj != nil)	{
+						if ([tmpObj isKindOfClass:[NSString class]])	{
+							NSColor		*tmpColor = [tmpObj rgbaColorFrom8BPCHexContents];
+							if (tmpColor == nil)	{
+								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color value from string" }];
+								NSLog(@"ERR: %@",nsErr);
+								nsErr = nil;
+							}
+							else
+								newOSCMax = [OSCValue createWithColor:tmpColor];
 						}
-						else
-							newOSCMax = [OSCValue createWithColor:tmpColor];
+						else if ([tmpObj isKindOfClass:[NSArray class]])	{
+							NSColor		*tmpColor = [tmpObj rgbaColorFromContents];
+							if (tmpColor == nil)	{
+								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color max from array of values" }];
+								NSLog(@"ERR: %@",nsErr);
+								nsErr = nil;
+							}
+							else
+								newOSCMax = [OSCValue createWithColor:tmpColor];
+						}
 					}
+					
 					tmpObj = jsonRangeDict[kVVOSCQ_OptAttr_Range_Vals];
 					if (tmpObj!=nil && [tmpObj isKindOfClass:[NSArray class]])	{
 						newOSCVals = [[NSMutableArray alloc] init];
 						for (tmpObj in jsonRangeDict[kVVOSCQ_OptAttr_Range_Vals])	{
-							if ([tmpObj isKindOfClass:[NSArray class]])	{
+							if ([tmpObj isKindOfClass:[NSString class]])	{
+								NSColor		*tmpColor = [tmpObj rgbaColorFrom8BPCHexContents];
+								if (tmpColor == nil)	{
+									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color value from string" }];
+									NSLog(@"ERR: %@",nsErr);
+									nsErr = nil;
+								}
+								else	{
+									tmpOSCVal = [OSCValue createWithColor:tmpColor];
+									[newOSCVals addObject:tmpOSCVal];
+								}
+							}
+							else if ([tmpObj isKindOfClass:[NSArray class]])	{
 								NSColor		*tmpColor = [tmpObj rgbaColorFromContents];
 								if (tmpColor == nil)	{
 									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"malformed entry, couldn't make color VALS entry from array of values" }];
@@ -345,7 +393,6 @@
 							}
 						}
 					}
-					
 					break;
 				case 'm':	//	midi
 					//	not supported yet, no idea
@@ -373,33 +420,45 @@
 						NSArray			*tmpValArray = nil;
 						NSArray			*tmpRangeArray = nil;
 						if (jsonValArray != nil)	{
-							tmpValArray = jsonValArray[arrayIndex];
-							if (tmpValArray==nil)	{
-								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Missing val array" }];
-								NSLog(@"ERR: %@",nsErr);
-								nsErr = nil;
-								jsonValArray = nil;
+							if (valArrayIsArray)	{
+								tmpValArray = jsonValArray[arrayIndex];
+								if (tmpValArray==nil)	{
+									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Missing val array" }];
+									NSLog(@"ERR: %@",nsErr);
+									nsErr = nil;
+									jsonValArray = nil;
+								}
+								else if (![tmpValArray isKindOfClass:[NSArray class]])	{
+									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Malformed val array" }];
+									NSLog(@"ERR: %@",nsErr);
+									nsErr = nil;
+									jsonValArray = nil;
+								}
 							}
-							else if (![tmpValArray isKindOfClass:[NSArray class]])	{
-								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Malformed val array" }];
-								NSLog(@"ERR: %@",nsErr);
-								nsErr = nil;
-								jsonValArray = nil;
+							//	else the val array isn't an array- it's an object, which must be applied to all objects
+							else	{
+								tmpValArray = jsonValArray;
 							}
 						}
 						if (jsonRangeArray != nil)	{
-							tmpRangeArray = jsonRangeArray[arrayIndex];
-							if (tmpRangeArray==nil)	{
-								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Missing range array" }];
-								NSLog(@"ERR: %@",nsErr);
-								nsErr = nil;
-								jsonRangeArray = nil;
+							if (rangeArrayIsArray)	{
+								tmpRangeArray = jsonRangeArray[arrayIndex];
+								if (tmpRangeArray==nil)	{
+									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Missing range array" }];
+									NSLog(@"ERR: %@",nsErr);
+									nsErr = nil;
+									jsonRangeArray = nil;
+								}
+								else if (![tmpRangeArray isKindOfClass:[NSArray class]])	{
+									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Malformed range array" }];
+									NSLog(@"ERR: %@",nsErr);
+									nsErr = nil;
+									jsonRangeArray = nil;
+								}
 							}
-							else if (![tmpRangeArray isKindOfClass:[NSArray class]])	{
-								nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Malformed range array" }];
-								NSLog(@"ERR: %@",nsErr);
-								nsErr = nil;
-								jsonRangeArray = nil;
+							//	else the range array isn't an array- it's an object, which must be applied to all objects
+							else	{
+								tmpRangeArray = jsonRangeArray;
 							}
 						}
 						//	call this block recursively with the type substring, and the arrays we just pulled out

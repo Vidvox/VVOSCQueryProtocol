@@ -697,7 +697,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="49" y="-318"/>
+            <point key="canvasLocation" x="30" y="-80"/>
         </menu>
         <window title="OSCQuery Helper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
@@ -889,7 +889,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="m6n-mg-3TP">
                             <font key="font" metaFont="system"/>
-                            <mutableString key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC (can receive OSC), but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
+                            <string key="title">OSC Query Helper ("OQH" from now on) creates an OSC query server for other applications that support OSC (can receive OSC), but don't support the OSC query protocol.  This allows clients that support the query protocol to browse and send data directly to the other app's OSC address space.
 
 HOW TO USE IT:
 1)- Tell OQH what file to use- this file will be used to populate the OSC query server with the description of another application's OSC address space.  OQH will "watch" the file and if it is updated, the query server will automatically update itself, and then notify all connected clients that it has been updated.  For more information about the supported file type(s), see "FILE TYPE".
@@ -899,7 +899,7 @@ If OQH is running, the OSC query server is running- you can check it with any OS
 
 FILE TYPE:
 
-- JSON files can be imported- a sample file demonstrating a wide variety of OSC types is already installed on your machine in "~/Documents/OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object if you want to hard-code the connection details of the target app or device (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</mutableString>
+- JSON files can be imported- a sample file demonstrating a wide variety of OSC types is already installed on your machine in "~/Documents/OSCQuery Helper/SampleDocument.json".  The JSON files that you import should have a structure similar to the desired output of the OSC query server- for more information, consult the OSC query protocol, defined here (https://github.com/mrRay/OSCQueryProposal).  You can include an optional HOST_INFO object in the root level of the JSON file's object if you want to hard-code the connection details of the target app or device (port and, if desired, an IP address other than localhost) as detailed in the query protocol.  If you don't include this information, you can just use the UI in the app to specify the target.</string>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>

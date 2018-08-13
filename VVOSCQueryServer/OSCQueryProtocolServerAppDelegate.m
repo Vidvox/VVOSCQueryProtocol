@@ -56,8 +56,8 @@
 		[server setName:@"server name"];
 		[server setBonjourName:@"server bonjour name"];
 		[server setDelegate:self];
-		[server setHTMLDirectory:[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent]];
-		//[server setHTMLDirectory:[[NSBundle bundleForClass:[VVOSCQueryServer class]] pathForResource:@"oscqueryhtml" ofType:nil]];
+		//[server setHTMLDirectory:[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent]];
+		[server setHTMLDirectory:[[NSBundle bundleForClass:[VVOSCQueryServer class]] pathForResource:@"oscqueryhtml" ofType:nil]];
 		NSLog(@"\t\thtml directory is %@",[server htmlDirectory]);
 		
 		
@@ -261,14 +261,14 @@
 	OSCNode				*tmpNodeA = nil;
 	OSCNode				*tmpNodeB = nil;
 	
-	tmpNodeA = [as findNodeForAddress:@"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE" createIfMissing:NO];
-	tmpNodeB = [as findNodeForAddress:@"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2" createIfMissing:NO];
+	tmpNodeA = [as findNodeForAddress:@"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE" createIfMissing:NO];
+	tmpNodeB = [as findNodeForAddress:@"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2" createIfMissing:NO];
 	if (tmpNodeA != nil || tmpNodeB != nil)	{
 		NSLog(@"\t\terr: can't create node or send PATH_ADDED notification- node already exists.  delete it before calling this again!");
 		return;
 	}
 	
-	tmpNodeA = [as findNodeForAddress:@"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE" createIfMissing:YES];
+	tmpNodeA = [as findNodeForAddress:@"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE" createIfMissing:YES];
 	//[tmpNodeA setNodeType:OSCNodeTypeNumber];
 	[tmpNodeA setOSCDescription:@"test float node"];
 	[tmpNodeA setTypeTagString:@"f"];
@@ -283,8 +283,8 @@
 - (IBAction) renameTheNodeClicked:(id)sender	{
 	NSLog(@"%s",__func__);
 	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
-	NSString			*addressA = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE";
-	NSString			*addressB = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2";
+	NSString			*addressA = @"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE";
+	NSString			*addressB = @"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2";
 	OSCNode				*tmpNodeA = nil;
 	OSCNode				*tmpNodeB = nil;
 	
@@ -307,8 +307,8 @@
 - (IBAction) deleteTheNodeClicked:(id)sender	{
 	NSLog(@"%s",__func__);
 	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
-	NSString			*addressA = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE";
-	NSString			*addressB = @"/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2";
+	NSString			*addressA = @"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE";
+	NSString			*addressB = @"/test/THISISMYNODETHEREAREMANYLIKEITBUTTHISONEISMINE2";
 	OSCNode				*tmpNodeA = nil;
 	OSCNode				*tmpNodeB = nil;
 	
@@ -327,6 +327,9 @@
 		[as setNode:nil forAddress:addressB];
 		[server sendPathRemovedToClients:addressB];
 	}
+}
+- (IBAction) flattenArraysToggleUsed:(id)sender	{
+	[OSCNode setFlattenSimpleOSCQArrays:([sender intValue]==NSOnState)?YES:NO];
 }
 - (IBAction) showSampleDocInFinderClicked:(id)sender	{
 	NSString		*tmpPath = [@"~/Documents/OSCQuery Server/SampleDocument.json" stringByExpandingTildeInPath];
@@ -665,9 +668,9 @@
 		kVVOSCQ_WSAttr_Cmd_Listen : @YES,
 		kVVOSCQ_WSAttr_Cmd_Ignore : @YES,
 		kVVOSCQ_WSAttr_Cmd_PathChanged : @YES,
-		//kVVOSCQ_WSAttr_Cmd_PathRenamed : @NO,
-		//kVVOSCQ_WSAttr_Cmd_PathRemoved : @NO,
-		//kVVOSCQ_WSAttr_Cmd_PathAdded : @NO,
+		kVVOSCQ_WSAttr_Cmd_PathRenamed : @YES,
+		kVVOSCQ_WSAttr_Cmd_PathRemoved : @YES,
+		kVVOSCQ_WSAttr_Cmd_PathAdded : @YES,
 	};
 	if ([hostInfo objectForKey:kVVOSCQ_ReqAttr_HostInfo_Exts] == nil)
 		[hostInfo setObject:extDict forKey:kVVOSCQ_ReqAttr_HostInfo_Exts];
