@@ -15,6 +15,66 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 + (BOOL) flattenSimpleOSCQArrays	{
 	return flattenSimpleOSCQArrays;
 }
++ (id) flattenEquivalentArrayContentsToSingleVal:(NSArray *)n	{
+	//NSLog(@"%s ... %@",__func__,n);
+	//	return nil if passed a nil array
+	if (n==nil)
+		return nil;
+	
+	//	make a mutable array- we're going to run through the passed array recursively, and dump all the non-array vals here
+	__block NSMutableArray		*allVals = [[NSMutableArray alloc] init];
+	__block __weak void		(^dumpContentsBlock)(NSArray *);
+	dumpContentsBlock = ^(NSArray *inArray)	{
+		for (id tmpObj in inArray)	{
+			if ([tmpObj isKindOfClass:[NSArray class]])
+				dumpContentsBlock(tmpObj);
+			else
+				[allVals addObject:tmpObj];
+		}
+	};
+	dumpContentsBlock(n);
+	
+	//	check the simple cases so we can return quickly if possible
+	NSUInteger				allValsCount = [allVals count];
+	if (allValsCount == 0)
+		return nil;
+	if (allValsCount == 1)
+		return [allVals objectAtIndex:0];
+	
+	//	if i'm here, i have to run through everything and actually check stuff!
+	int				tmpIndex = 0;
+	id				firstObj = nil;
+	for (id tmpObj in allVals)	{
+		if (tmpIndex == 0)	{
+			firstObj = tmpObj;
+			++tmpIndex;
+			continue;
+		}
+		
+		//	if one obj is nil but the other isn't, bail ("nil" could be [NSNull null] from a JSON null)
+		if (firstObj==nil && tmpObj!=nil)
+			return nil;
+		else if (firstObj!=nil && tmpObj==nil)
+			return nil;
+		//	else if they're both null
+		else if (firstObj==nil && tmpObj==nil)	{
+			//	intentionally blank- do nothing, they're equivalent
+		}
+		//	else firstObj and tmpObj are both non-nil
+		else	{
+			if (![firstObj isKindOfClass:[tmpObj class]])
+				return nil;
+			if (![firstObj isEqualTo:tmpObj])
+				return nil;
+		}
+		
+		++tmpIndex;
+	}
+	
+	return firstObj;
+}
+
+
 - (VVOSCQueryReply *) getReplyForOSCQuery:(VVOSCQuery *)q	{
 	//NSLog(@"%s ... %@",__func__,self);
 	VVOSCQueryReply			*returnMe = nil;
@@ -92,10 +152,19 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 		[returnMe setObject:tmpString forKey:kVVOSCQ_ReqAttr_Type];
 	tmpArray = [self extendedType];
 	if (tmpArray != nil)	{
+		/*
 		if ([tmpArray count] == 1 && flattenSimpleOSCQArrays)
 			[returnMe setObject:tmpArray[0] forKey:kVVOSCQ_OptAttr_Ext_Type];
 		else
 			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Ext_Type];
+		*/
+		
+		id			flattenedObj = (!flattenSimpleOSCQArrays) ? nil : [OSCNode flattenEquivalentArrayContentsToSingleVal:tmpArray];
+		if (flattenSimpleOSCQArrays && flattenedObj!=nil)
+			[returnMe setObject:flattenedObj forKey:kVVOSCQ_OptAttr_Ext_Type];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Ext_Type];
+		
 	}
 	tmpNum = [NSNumber numberWithInteger:[self access]];
 	if (tmpNum != nil)
@@ -124,26 +193,60 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 				if (nsVal != nil)
 					[tmpValArray addObject:nsVal];
 			}
+			/*
 			[returnMe setObject:tmpValArray forKey:kVVOSCQ_OptAttr_Value];
+			*/
+			
+			id			flattenedObj = (!flattenSimpleOSCQArrays) ? nil : [OSCNode flattenEquivalentArrayContentsToSingleVal:tmpValArray];
+			if (flattenSimpleOSCQArrays && flattenedObj!=nil)
+				[returnMe setObject:flattenedObj forKey:kVVOSCQ_OptAttr_Value];
+			else
+				[returnMe setObject:tmpValArray forKey:kVVOSCQ_OptAttr_Value];
+			
 		}
 	}
 	
 	tmpArray = [self range];
-	if (tmpArray != nil)
-		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Range];
+	if (tmpArray != nil)	{
+		//[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Range];
+		
+		id			flattenedObj = (!flattenSimpleOSCQArrays) ? nil : [OSCNode flattenEquivalentArrayContentsToSingleVal:tmpArray];
+		if (flattenSimpleOSCQArrays && flattenedObj!=nil)
+			[returnMe setObject:flattenedObj forKey:kVVOSCQ_OptAttr_Range];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Range];
+	}
 	tmpArray = [self clipmode];
 	if (tmpArray != nil)	{
+		/*
 		if ([tmpArray count] == 1 && flattenSimpleOSCQArrays)
 			[returnMe setObject:tmpArray[0] forKey:kVVOSCQ_OptAttr_Clipmode];
 		else
 			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Clipmode];
+		*/
+		
+		id			flattenedObj = (!flattenSimpleOSCQArrays) ? nil : [OSCNode flattenEquivalentArrayContentsToSingleVal:tmpArray];
+		if (flattenSimpleOSCQArrays && flattenedObj!=nil)
+			[returnMe setObject:flattenedObj forKey:kVVOSCQ_OptAttr_Clipmode];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Clipmode];
+		
 	}
 	tmpArray = [self units];
 	if (tmpArray != nil)	{
+		/*
 		if ([tmpArray count] == 1 && flattenSimpleOSCQArrays)
 			[returnMe setObject:tmpArray[0] forKey:kVVOSCQ_OptAttr_Unit];
 		else
 			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Unit];
+		*/
+		
+		id			flattenedObj = (!flattenSimpleOSCQArrays) ? nil : [OSCNode flattenEquivalentArrayContentsToSingleVal:tmpArray];
+		if (flattenSimpleOSCQArrays && flattenedObj!=nil)
+			[returnMe setObject:flattenedObj forKey:kVVOSCQ_OptAttr_Unit];
+		else
+			[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Unit];
+		
 	}
 	
 	if (isRecursive)	{

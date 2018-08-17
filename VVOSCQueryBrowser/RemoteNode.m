@@ -92,10 +92,15 @@
 					jsonObj = nil;
 				else
 					jsonObj = (valArrayIsArray) ? [jsonValArray objectAtIndex:arrayIndex] : (id)jsonValArray;
+				if (jsonObj == [NSNull null])
+					jsonObj = nil;
+				
 				if (jsonRangeArray==nil)
 					jsonRangeDict = nil;
 				else
 					jsonRangeDict = (rangeArrayIsArray) ? [jsonRangeArray objectAtIndex:arrayIndex] : (NSDictionary*)jsonRangeArray;
+				if (jsonRangeDict == [NSNull null])
+					jsonRangeDict = nil;
 				
 				//	we're going to try to populate these in the following switch statement, and they will be put together after it
 				RemoteNodeControl	*newRemoteNodeControl = nil;
@@ -422,7 +427,7 @@
 						if (jsonValArray != nil)	{
 							if (valArrayIsArray)	{
 								tmpValArray = jsonValArray[arrayIndex];
-								if (tmpValArray==nil)	{
+								if (tmpValArray==nil || tmpValArray==[NSNull null])	{
 									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Missing val array" }];
 									NSLog(@"ERR: %@",nsErr);
 									nsErr = nil;
@@ -443,7 +448,7 @@
 						if (jsonRangeArray != nil)	{
 							if (rangeArrayIsArray)	{
 								tmpRangeArray = jsonRangeArray[arrayIndex];
-								if (tmpRangeArray==nil)	{
+								if (tmpRangeArray==nil || tmpRangeArray==[NSNull null])	{
 									nsErr = [NSError errorWithDomain:[self className] code:__LINE__ userInfo:@{  NSLocalizedDescriptionKey: @"Missing range array" }];
 									NSLog(@"ERR: %@",nsErr);
 									nsErr = nil;

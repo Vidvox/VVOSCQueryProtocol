@@ -688,7 +688,7 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="0.0" y="413" width="930" height="702"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <value key="minSize" type="size" width="930" height="764"/>
+            <value key="minSize" type="size" width="930" height="702"/>
             <view key="contentView" wantsLayer="YES" misplaced="YES" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="930" height="702"/>
                 <autoresizingMask key="autoresizingMask"/>
