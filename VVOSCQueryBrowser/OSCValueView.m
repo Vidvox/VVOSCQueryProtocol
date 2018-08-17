@@ -247,8 +247,18 @@
 			[colorWell setColor:[value colorValue]];
 		}
 		break;
-	//	these will display momentary buttons
+	//	this will display a bool toggle
 	case OSCValBool:
+		[textField setHidden:YES];
+		[colorWell setHidden:YES];
+		[popUpButton setHidden:YES];
+		[slider setHidden:YES];
+		[button setHidden:YES];
+		[toggle setHidden:NO];
+		[labelField setHidden:YES];
+		[toggle setIntValue:([[self value] calculateIntValue]>=1) ? NSOnState : NSOffState];
+		break;
+	//	these will display momentary buttons
 	case OSCValInfinity:
 	case OSCValNil:
 		[textField setHidden:YES];
@@ -566,6 +576,8 @@
 	
 	//	these will display a button
 	case OSCValBool:
+		value = [OSCValue createWithBool:boolVal];
+		break;
 	case OSCValInfinity:
 	case OSCValNil:
 		//	we're not calculating or setting any values here- these are momentary, they don't pass any values (the control will create one automatically of the appropriate type)

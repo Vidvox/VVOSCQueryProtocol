@@ -404,6 +404,15 @@
 					break;
 				case 'T':	//	true
 				case 'F':	//	false
+					newRemoteNodeControl = [[RemoteNodeControl alloc] initWithParent:self typeString:tmpTypeString];
+					if (jsonObj!=nil && [jsonObj isKindOfClass:[NSNumber class]])	{
+						newOSCVal = [OSCValue createWithInt:[jsonObj intValue]];
+					}
+					//	else if there's no explicit value, assume a default value based on whether this is a T or an F
+					else	{
+						newOSCVal = (tmpTypeChar=='T') ? [OSCValue createWithBool:YES] : [OSCValue createWithBool:NO];
+					}
+					break;
 				case 'N':	//	nil
 				case 'I':	//	infinity
 					newRemoteNodeControl = [[RemoteNodeControl alloc] initWithParent:self typeString:tmpTypeString];
@@ -641,10 +650,11 @@
 			//	T and F get mixed up easily in this app because they're kinda messed up- they're types with no accompanying value, which doesn't fit well with the class/object models
 			else if (([[oscValForThisChar typeTagString] isEqualToString:@"T"] || [[oscValForThisChar typeTagString] isEqualToString:@"F"])	&&
 			([tmpTypeString isEqualToString:@"T"] || [tmpTypeString isEqualToString:@"F"]))	{
-				if ([tmpTypeString isEqualToString:@"T"])
-					[newMsg addValue:[OSCValue createWithBool:YES]];
-				else
-					[newMsg addValue:[OSCValue createWithBool:NO]];
+				//if ([tmpTypeString isEqualToString:@"T"])
+				//	[newMsg addValue:[OSCValue createWithBool:YES]];
+				//else
+				//	[newMsg addValue:[OSCValue createWithBool:NO]];
+				[newMsg addValue:oscValForThisChar];
 			}
 			//	else there was a type tag string mismatch- log the error and bail
 			else	{

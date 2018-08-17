@@ -126,6 +126,7 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 - (NSMutableDictionary *) createJSONObjectForOSCQueryRecursively:(BOOL)isRecursive	{
 	//NSLog(@"%s ... %@",__func__,self);
 	NSMutableDictionary		*returnMe = [[NSMutableDictionary alloc] init];
+	NSString				*tmpTypeTagString = nil;
 	NSString				*tmpString = nil;
 	NSNumber				*tmpNum = nil;
 	NSArray					*tmpArray = nil;
@@ -147,9 +148,9 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 	tmpArray = [self tags];
 	if (tmpArray != nil)
 		[returnMe setObject:tmpArray forKey:kVVOSCQ_OptAttr_Tags];
-	tmpString = [self typeTagString];
-	if (tmpString != nil)
-		[returnMe setObject:tmpString forKey:kVVOSCQ_ReqAttr_Type];
+	tmpTypeTagString = [self typeTagString];
+	if (tmpTypeTagString != nil)
+		[returnMe setObject:tmpTypeTagString forKey:kVVOSCQ_ReqAttr_Type];
 	tmpArray = [self extendedType];
 	if (tmpArray != nil)	{
 		/*
@@ -204,6 +205,12 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 				[returnMe setObject:tmpValArray forKey:kVVOSCQ_OptAttr_Value];
 			
 		}
+	}
+	else if (lastMsg==nil && [tmpTypeTagString isEqualToString:@"F"])	{
+		[returnMe setObject:@[ [NSNumber numberWithBool:NO] ] forKey:kVVOSCQ_OptAttr_Value];
+	}
+	else if (lastMsg==nil && [tmpTypeTagString isEqualToString:@"T"])	{
+		[returnMe setObject:@[ [NSNumber numberWithBool:YES] ] forKey:kVVOSCQ_OptAttr_Value];
 	}
 	
 	tmpArray = [self range];
