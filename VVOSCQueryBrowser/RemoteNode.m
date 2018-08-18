@@ -406,7 +406,7 @@
 				case 'F':	//	false
 					newRemoteNodeControl = [[RemoteNodeControl alloc] initWithParent:self typeString:tmpTypeString];
 					if (jsonObj!=nil && [jsonObj isKindOfClass:[NSNumber class]])	{
-						newOSCVal = [OSCValue createWithInt:[jsonObj intValue]];
+						newOSCVal = [OSCValue createWithBool:[jsonObj boolValue]];
 					}
 					//	else if there's no explicit value, assume a default value based on whether this is a T or an F
 					else	{
@@ -655,6 +655,7 @@
 				//else
 				//	[newMsg addValue:[OSCValue createWithBool:NO]];
 				[newMsg addValue:oscValForThisChar];
+				++arrayIndex;
 			}
 			//	else there was a type tag string mismatch- log the error and bail
 			else	{
