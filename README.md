@@ -6,13 +6,9 @@ This repository contains a framework, some test apps, and several user-facing ut
 
 The OSCQuery protocol defines a way for machines to query the properties of [OSC](http://www.opensoundcontrol.org/) servers and their address spaces over a network connection.  The point of this protocol is to allow clients to browse the various available OSC nodes that an application responds to, and query the properties of these nodes to determine what kind of data they expect and how best to interact with them.
 
-The proposal itself is small, relatively simple, and is posted here: https://github.com/mrRay/OSCQueryProposal
+The proposal itself is small, relatively simple, and is posted here: https://github.com/Vidvox/OSCQueryProposal
 
 This repository contains a number of different targets:
-
-
-This framework aims to provide classes that implement the OSCQuery protocol in software that already has an existing OSC implementation. It does so in a simple, generic, OSC-library-agnostic fashion, so adding support for OSCQuery is a matter of "adding some code" instead of "change all of my existing OSC code to use this weird new protocol".
-
 
 * **VVOSCQueryProtocol.framework** is a Cocoa framework that provides classes which can be used to implement this protocol in software that already has an existing OSC implementation- it does so in a simple, generic and library-agnostic fashion, so adding support for OSCQuery is a matter of "adding some code" instead of "rip out all of my existing OSC code to use this weird new protocol/framework".  By itself, this framework does *NOT* send or receive OSC data, nor does it provide classes to let you create an OSC address space- this is all functionality that has already been implemented in a variety of other OSC libraries.  Instead, this framework gives you the tools you need to add support for the OSCQuery protocol to whatever OSC implementation you're already working with.
 * **Utilities for Users**
