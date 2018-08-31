@@ -420,47 +420,37 @@
 }
 - (NSString *) _assembleHTMLString	{
 	NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
-	//NSLog(@"\t\taddrs are %@",addrs);
 	int				tmpPort = [server webServerPort];
 	NSMutableString		*sectionHTMLString = nil;
-	NSString		*fullHTMLString = nil;
+	NSMutableString		*fullHTMLString = [[NSMutableString alloc] init];;
 	
 	//	run through and make a clickable URL for each NIC for the plain OSC query server (these will return JSON objects)
+	sectionHTMLString = [[NSMutableString alloc] init];
+	if ([addrs count]<2)
+		[sectionHTMLString appendString:@"Server Address:"];
+	else
+		[sectionHTMLString appendString:@"Server Addresses:"];
 	for (NSString *addr in addrs)	{
 		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
-		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
-		if (sectionHTMLString == nil)	{
-			sectionHTMLString = [[NSMutableString alloc] init];
-			[sectionHTMLString appendString:tmpHTMLString];
-		}
-		else
-			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<BR><A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		[sectionHTMLString appendString:tmpHTMLString];
 	}
-	if (sectionHTMLString !=nil)	{
-		fullHTMLString = [NSString stringWithString:sectionHTMLString];
-	}
+	if (sectionHTMLString!=nil && [sectionHTMLString length]>0)
+		[fullHTMLString appendString:sectionHTMLString];
+	
+	[fullHTMLString appendString:@"<BR><BR>"];
 	
 	//	run through and make a clickable URL for each NIC for the fancy HTML controls
 	sectionHTMLString = nil;
+	sectionHTMLString = [[NSMutableString alloc] init];
+	[sectionHTMLString appendString:@"Interactive HTML Interface:"];
 	for (NSString *addr in addrs)	{
 		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
-		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
-		if (sectionHTMLString == nil)	{
-			sectionHTMLString = [[NSMutableString alloc] init];
-			[sectionHTMLString appendString:tmpHTMLString];
-		}
-		else
-			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<BR><A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
+		[sectionHTMLString appendString:tmpHTMLString];
 	}
-	if (fullHTMLString == nil)	{
-		if (sectionHTMLString != nil)
-			fullHTMLString = [NSString stringWithString:sectionHTMLString];
-	}
-	else	{
-		if (sectionHTMLString != nil)	{
-			fullHTMLString = [fullHTMLString stringByAppendingFormat:@"<BR>%@",sectionHTMLString];
-		}
-	}
+	if (sectionHTMLString!=nil && [sectionHTMLString length]>0)
+		[fullHTMLString appendString:sectionHTMLString];
 	
 	return fullHTMLString;
 }

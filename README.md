@@ -10,7 +10,7 @@ The proposal itself is small, relatively simple, and is posted here: https://git
 
 This repository contains a number of different targets:
 
-* **VVOSCQueryProtocol.framework** is a Cocoa framework that provides classes which can be used to implement this protocol in software that already has an existing OSC implementation- it does so in a simple, generic and library-agnostic fashion, so adding support for OSCQuery is a matter of "adding some code" instead of "rip out all of my existing OSC code to use this weird new protocol/framework".  By itself, this framework does *NOT* send or receive OSC data, nor does it provide classes to let you create an OSC address space- this is all functionality that has already been implemented in a variety of other OSC libraries.  Instead, this framework gives you the tools you need to add support for the OSCQuery protocol to whatever OSC implementation you're already working with.
+* **VVOSCQueryProtocol.framework** is a Cocoa framework that provides classes which can be used to implement this protocol in software that already has an existing OSC implementation- it does so in a simple, generic and library-agnostic fashion, so adding support for OSCQuery is a matter of "adding some code" instead of "rip out all of my existing OSC code to use this weird new protocol/framework".  By itself, this framework does *NOT* send or receive OSC data, nor does it provide classes to let you create an OSC address space- this is all functionality that has already been implemented in a variety of other OSC libraries.  Instead, this framework gives you the tools you need to add support for the OSCQuery protocol to whatever OSC implementation you're already working with.  It also contains a built-in web app that provides interactive UI items for everything on your server, courtesy of the [oscqueryhtml project](https://github.com/Vidvox/oscqueryhtml).
 * **Utilities for Users**
     * **OSCQuery Browser** is a GUI that lets you browse the contents of OSCQuery servers on the local network and send data to the various OSC nodes.
     * **OSCQuery Helper** is a Cocoa app that lets you add OSCQuery support to other applications that already support OSC, but do not yet support OSCQuery.
@@ -21,7 +21,7 @@ This repository contains a number of different targets:
 
 **Dependencies:**
 
-VVOSCQueryProtocol uses [websocketpp](https://github.com/zaphoyd/websocketpp) and [rapidjson](https://github.com/Tencent/rapidjson), and websocketpp uses [asio](https://think-async.com/).  All three reposistories are included as submodules, and if you check everything out the xcode project file should "just work".
+VVOSCQueryProtocol uses [websocketpp](https://github.com/zaphoyd/websocketpp) and [rapidjson](https://github.com/Tencent/rapidjson), and websocketpp uses [asio](https://think-async.com/).  All three reposistories are included as submodules, and if you check everything out the xcode project file should "just work".  VVOSCQueryProtocol also embeds the [oscqueryhtml project](https://github.com/Vidvox/oscqueryhtml), which provides the built-in interactive UI items.
 
 **How to use VVOSCQueryProtocol in your project:**
 

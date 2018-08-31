@@ -162,6 +162,14 @@
 						"timetag input"
 					],
 					"TYPE" : "t"
+				},
+				"my_2Dpos": {
+					"DESCRIPTION": "2d position node",
+					"TYPE": "ff",
+					"RANGE": [
+						{ "MIN": 0.0, "MAX": 1.0 },
+						{ "MIN": 0.0, "MAX": 1.0 },
+					]
 				}
 			},
 			"DESCRIPTION" : "directory",

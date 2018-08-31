@@ -184,10 +184,12 @@
 			}
 		}];
 }
+/*
 - (IBAction) sendPathChangedClicked:(id)sender	{
 	//NSLog(@"%s",__func__);
 	[server sendJSONObjectToClients:@{ kVVOSCQ_WSAttr_Cmd_PathChanged : @"/thingamajig" }];
 }
+*/
 - (IBAction) portFieldUsed:(id)sender	{
 	//NSLog(@"%s",__func__);
 	NSString		*tmpString = [portField stringValue];
@@ -327,6 +329,40 @@
 		[as setNode:nil forAddress:addressB];
 		[server sendPathRemovedToClients:addressB];
 	}
+}
+- (IBAction) sendPathChangedNotificationClicked:(id)sender	{
+	NSLog(@"%s",__func__);
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	NSString			*addressA = @"/PathChangeTest/One";
+	NSString			*addressB = @"/PathChangeTest/Two";
+	OSCNode				*tmpNodeA = nil;
+	OSCNode				*tmpNodeB = nil;
+	OSCNode				*nodePtr = nil;
+	
+	tmpNodeA = [as findNodeForAddress:addressA createIfMissing:NO];
+	tmpNodeB = [as findNodeForAddress:addressB createIfMissing:NO];
+	if (tmpNodeA==nil && tmpNodeB==nil)	{
+		nodePtr = [as findNodeForAddress:addressA createIfMissing:YES];
+	}
+	else if (tmpNodeA!=nil || tmpNodeB!=nil)	{
+		[as setNode:nil forAddress:addressA];
+		[as setNode:nil forAddress:addressB];
+	}
+	
+	if (nodePtr != nil)	{
+		//[nodePtr setNodeType:OSCNodeTypeNumber];
+		[nodePtr setOSCDescription:@"change test float node"];
+		[nodePtr setTypeTagString:@"f"];
+		[nodePtr setAccess:OSCNodeAccess_RW];
+		[nodePtr setRange:@[ @{ kVVOSCQ_OptAttr_Range_Min:@0., kVVOSCQ_OptAttr_Range_Max:@100. } ]];
+		[nodePtr setTags:@[ @"float input" ]];
+		[nodePtr setClipmode:@[ @"none" ]];
+		[nodePtr setUnits:@[ @"percent" ]];
+		
+		[server sendPathChangedToClients:[nodePtr fullName]];
+	}
+	else
+		[server sendPathChangedToClients:@"/PathChangeTest"];
 }
 - (IBAction) flattenArraysToggleUsed:(id)sender	{
 	[OSCNode setFlattenSimpleOSCQArrays:([sender intValue]==NSOnState)?YES:NO];
@@ -558,47 +594,46 @@
 }
 - (NSString *) _assembleHTMLString	{
 	NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
-	//NSLog(@"\t\taddrs are %@",addrs);
 	int				tmpPort = [server webServerPort];
 	NSMutableString		*sectionHTMLString = nil;
-	NSString		*fullHTMLString = nil;
+	NSMutableString		*fullHTMLString = [[NSMutableString alloc] init];
+	int				i;
 	
 	//	run through and make a clickable URL for each NIC for the plain OSC query server (these will return JSON objects)
+	sectionHTMLString = [[NSMutableString alloc] init];
+	if ([addrs count]<2)
+		[sectionHTMLString appendString:@"Server Address:  "];
+	else
+		[sectionHTMLString appendString:@"Server Addresses:  "];
+	i = 0;
 	for (NSString *addr in addrs)	{
 		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
 		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
-		if (sectionHTMLString == nil)	{
-			sectionHTMLString = [[NSMutableString alloc] init];
-			[sectionHTMLString appendString:tmpHTMLString];
-		}
-		else
-			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+		if (i != 0)
+			[sectionHTMLString appendString:@", "];
+		[sectionHTMLString appendString:tmpHTMLString];
+		++i;
 	}
-	if (sectionHTMLString !=nil)	{
-		fullHTMLString = [NSString stringWithString:sectionHTMLString];
-	}
+	if (sectionHTMLString!=nil && [sectionHTMLString length]>0)
+		[fullHTMLString appendString:sectionHTMLString];
+	
+	[fullHTMLString appendString:@"<BR>"];
 	
 	//	run through and make a clickable URL for each NIC for the fancy HTML controls
 	sectionHTMLString = nil;
+	sectionHTMLString = [[NSMutableString alloc] init];
+	[sectionHTMLString appendString:@"Interactive HTML Interface:  "];
+	i = 0;
 	for (NSString *addr in addrs)	{
 		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
 		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
-		if (sectionHTMLString == nil)	{
-			sectionHTMLString = [[NSMutableString alloc] init];
-			[sectionHTMLString appendString:tmpHTMLString];
-		}
-		else
-			[sectionHTMLString appendFormat:@"<BR>%@",tmpHTMLString];
+		if (i != 0)
+			[sectionHTMLString appendString:@", "];
+		[sectionHTMLString appendString:tmpHTMLString];
+		++i;
 	}
-	if (fullHTMLString == nil)	{
-		if (sectionHTMLString != nil)
-			fullHTMLString = [NSString stringWithString:sectionHTMLString];
-	}
-	else	{
-		if (sectionHTMLString != nil)	{
-			fullHTMLString = [fullHTMLString stringByAppendingFormat:@"<BR>%@",sectionHTMLString];
-		}
-	}
+	if (sectionHTMLString!=nil && [sectionHTMLString length]>0)
+		[fullHTMLString appendString:sectionHTMLString];
 	
 	return fullHTMLString;
 }

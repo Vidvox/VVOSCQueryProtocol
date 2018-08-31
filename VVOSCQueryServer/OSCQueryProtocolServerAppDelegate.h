@@ -22,7 +22,7 @@
 	IBOutlet NSTextView			*rxOSCMessageView;
 }
 
-- (IBAction) sendPathChangedClicked:(id)sender;
+//- (IBAction) sendPathChangedClicked:(id)sender;
 
 - (IBAction) portFieldUsed:(id)sender;
 
@@ -36,6 +36,7 @@
 - (IBAction) makeANodeClicked:(id)sender;
 - (IBAction) renameTheNodeClicked:(id)sender;
 - (IBAction) deleteTheNodeClicked:(id)sender;
+- (IBAction) sendPathChangedNotificationClicked:(id)sender;
 
 - (IBAction) flattenArraysToggleUsed:(id)sender;
 
