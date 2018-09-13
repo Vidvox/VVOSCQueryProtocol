@@ -88,7 +88,7 @@
 		NSArray				*pl = [transport parameterList];
 		if (pl != nil)	{
 			NSString			*transportPath  = [NSString stringWithFormat:@"%@Transport/",rootPath];
-			NSDictionary		*transportDict = [LiveToOSCQHelper _oscqDictForALSParameterList:pl withBasePath:transportPath ofType:@"T"];
+			NSDictionary		*transportDict = [LiveToOSCQHelper _oscqDictForALSParameterList:pl withBasePath:transportPath ofType:@"I"];
 			if (transportDict != nil)	{
 				[rootContents setObject:transportDict forKey:transportPath];
 			}
@@ -173,7 +173,7 @@
 	[returnMe setValue:[NSNumber numberWithInt:[km channel]] forKey:@"MIDI_CHANNEL"];
 	[returnMe setValue:scenePath forKey:@"FULL_PATH"];
 	[returnMe setObject:sceneDescription forKey:@"DESCRIPTION"];
-	[returnMe setObject:@"T" forKey:@"TYPE"];
+	[returnMe setObject:@"I" forKey:@"TYPE"];
 	[returnMe setObject:[NSNumber numberWithInt:2] forKey:@"ACCESS"];
 	return returnMe;
 }
@@ -263,7 +263,7 @@
 	[returnMe setValue:[NSNumber numberWithInt:[km channel]] forKey:@"MIDI_CHANNEL"];
 	[returnMe setValue:csPath forKey:@"FULL_PATH"];
 	[returnMe setObject:csDescription forKey:@"DESCRIPTION"];
-	[returnMe setObject:@"T" forKey:@"TYPE"];
+	[returnMe setObject:@"I" forKey:@"TYPE"];
 	[returnMe setObject:[NSNumber numberWithInt:2] forKey:@"ACCESS"];
 	return returnMe;
 }
@@ -308,7 +308,7 @@
 	NSString				*paramName = [p title];
 	NSString				*paramPath = [NSString stringWithFormat:@"%@%@",basePath,paramName];
 	NSString				*dataType = (dt == nil) ? @"f" : dt;
-	NSString				*paramAction = ([dataType isEqualToString:@"T"]) ? @"Trigger" : @"Adjust";
+	NSString				*paramAction = ([dataType isEqualToString:@"I"]) ? @"Trigger" : @"Adjust";
 	NSString				*paramDescription = [NSString stringWithFormat:@"%@ %@",paramAction,paramName];
 
 	[returnMe setValue:(([km isNote]) ? @"NOTE" : @"CC") forKey:@"MIDI_TYPE"];
