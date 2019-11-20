@@ -27,6 +27,8 @@
 	double				maxVal;
 }
 
++ (NSString *) stringForMidiChannel:(int)mc type:(VVMIDIMsgType)mt voice:(int)mv;
+
 - (id) initWithMIDIManager:(VVMIDIManager *)n forAddress:(NSString *)a;
 
 //	once we compose a VVMIDIMessage, pass it to this method to dispatch it to the appropriate MIDI devices
@@ -43,5 +45,7 @@
 @property double minVal;
 @property BOOL hasMax;
 @property double maxVal;
+
+- (NSString *) midiTypeAsString;
 
 @end

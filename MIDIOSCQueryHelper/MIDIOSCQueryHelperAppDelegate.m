@@ -55,6 +55,7 @@
 		[[NSNotificationCenter defaultCenter] removeObserver:as name:NSApplicationWillTerminateNotification object:nil];
 		
 		delegates = [[NSMutableArray alloc] init];
+		midiAddressToOSCAddressDict = [[NSMutableDictionary alloc] init];
 		loadedFilePath = nil;
 		fileChangeCoalesceTimer = nil;
 		
@@ -74,6 +75,9 @@
 			object:nil];
 	}
 	return self;
+}
+- (void) awakeFromNib	{
+	[self->midim setDelegate:self];
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	//	check to see if there's a "SampleDocument.json" in ~/Documents/OSCQuery Helper
@@ -117,6 +121,7 @@
 		[as removeDelegate:tmpDelegate forPath:[tmpDelegate address]];
 	}
 	[delegates removeAllObjects];
+	[midiAddressToOSCAddressDict removeAllObjects];
 }
 - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename	{
 	NSLog(@"%s ... %@",__func__,filename);
@@ -324,6 +329,9 @@
 	}
 	[delegates removeAllObjects];
 	
+	//	clear out the midi-address-to-osc-address mapping dict
+	[midiAddressToOSCAddressDict removeAllObjects];
+	
 	//	clear out the OSC address space
 	NSArray		*baseNodes = [[as nodeContents] lockCreateArrayCopy];
 	for (OSCNode *baseNode in baseNodes)	{
@@ -436,6 +444,14 @@
 			}
 			[newNode addDelegate:tmpDelegate];
 			[self->delegates addObject:tmpDelegate];
+			
+			NSMutableArray		*tmpArray = nil;
+			tmpArray = [self->midiAddressToOSCAddressDict objectForKey:[tmpDelegate midiTypeAsString]];
+			if (tmpArray == nil)	{
+				tmpArray = [[NSMutableArray alloc] init];
+				[self->midiAddressToOSCAddressDict setObject:tmpArray forKey:[tmpDelegate midiTypeAsString]];
+			}
+			[tmpArray addObject:objFullPath];
 		}
 		
 		//	run through the contents, calling this block recursively on each object
@@ -494,6 +510,9 @@
 		[as removeDelegate:tmpDelegate forPath:[tmpDelegate address]];
 	}
 	[delegates removeAllObjects];
+	
+	//	clear out the midi-address-to-osc-address mapping dict
+	[midiAddressToOSCAddressDict removeAllObjects];
 	
 	//	clear out the OSC address space
 	NSArray		*baseNodes = [[as nodeContents] lockCreateArrayCopy];
@@ -570,7 +589,7 @@
 				[newNode setExtendedType:objExtType];
 			//if (objAccess != nil && [objAccess isKindOfClass:[NSNumber class]])	{
 				//[newNode setAccess:[objAccess intValue]];	//	don't do this, access is always write-only in this application (we can't read the remote app's OSC address space)
-				[newNode setAccess:2];
+				[newNode setAccess:3];
 			//}
 			if (objRange != nil && [objRange isKindOfClass:[NSArray class]])
 				[newNode setRange:objRange];
@@ -601,6 +620,14 @@
 			}
 			[newNode addDelegate:tmpDelegate];
 			[self->delegates addObject:tmpDelegate];
+			
+			NSMutableArray		*tmpArray = nil;
+			tmpArray = [self->midiAddressToOSCAddressDict objectForKey:[tmpDelegate midiTypeAsString]];
+			if (tmpArray == nil)	{
+				tmpArray = [[NSMutableArray alloc] init];
+				[self->midiAddressToOSCAddressDict setObject:tmpArray forKey:[tmpDelegate midiTypeAsString]];
+			}
+			[tmpArray addObject:baseObjPath];
 		}
 		
 		//	run through the contents, calling this block recursively on each object
@@ -699,6 +726,111 @@
 }
 
 
+#pragma mark -------------------------- VVMIDIDelegate
+
+
+- (void) setupChanged	{
+	//NSLog(@"%s",__func__);
+}
+- (void) receivedMIDI:(NSArray *)a fromNode:(VVMIDINode *)n	{
+	//if ([a count]==1)
+	//	NSLog(@"%s ... %@, %@",__func__,[a objectAtIndex:0],n);
+	//else
+	//	NSLog(@"%s ... %@, %@",__func__,a,n);
+	
+	OSCAddressSpace		*as = [OSCAddressSpace mainAddressSpace];
+	//	run through the midi messages
+	for (VVMIDIMessage *msg in a)	{
+		//	create a midi string that describes the msg- this is the key in 'midiAddressToOSCAddressDict'
+		NSString		*midiMsgKey = [QueryServerNodeDelegate stringForMidiChannel:[msg channel] type:[msg type] voice:[msg data1]];
+		//	get the array of osc destinations that correspond to this address- run through each osc destination
+		NSArray			*oscDests = [midiAddressToOSCAddressDict objectForKey:midiMsgKey];
+		//	get a normalized double value for the MIDI message, we'll use it later to calculate a non-normalized val
+		double			normMIDIVal = [msg doubleValue];
+		
+		//	run through every OSC address that this MIDI address is associated with
+		for (NSString *oscDest in oscDests)	{
+			//	get the OSC node for this address
+			OSCNode			*tmpNode = [as findNodeForAddress:oscDest createIfMissing:NO];
+			if (tmpNode == nil)
+				continue;
+			//	make a new OSC message- this is what we're going to populate, and dispatch to the server
+			OSCMessage		*newMsg = [OSCMessage createWithAddress:oscDest];
+			NSArray			*ranges = [tmpNode range];
+			NSDictionary	*range = (ranges==nil || [ranges count]!=1) ? nil : [ranges objectAtIndex:0];
+			double			nonNormVal = normMIDIVal;
+			if (range == nil)	{
+				nonNormVal = normMIDIVal;
+			}
+			else	{
+				NSNumber		*tmpMin = [range objectForKey:@"MIN"];
+				NSNumber		*tmpMax = [range objectForKey:@"MAX"];
+				if (tmpMin == nil || tmpMax == nil)	{
+					nonNormVal = normMIDIVal;
+				}
+				else	{
+					double			tmpMinVal = [tmpMin doubleValue];
+					double			tmpMaxVal = [tmpMax doubleValue];
+					nonNormVal = (normMIDIVal * (tmpMaxVal-tmpMinVal)) + tmpMinVal;
+				}
+			}
+			NSString		*nodeType = [tmpNode typeTagString];
+			unichar			nodeTypeChar = (nodeType==nil) ? 'f' : [nodeType characterAtIndex:0];
+			switch (nodeTypeChar)	{
+			case 'i':
+				[newMsg addInt:(int)nonNormVal];
+				break;
+			case 'f':
+				[newMsg addFloat:(float)nonNormVal];
+				break;
+			//case 's':
+			//case 'S':
+			//	break;
+			case 'd':
+				[newMsg addDouble:nonNormVal];
+				break;
+			//case 'c':
+			//	break;
+			//case 'r':
+			//	break;
+			case 'T':	//	true
+				[newMsg addValue:[OSCValue createWithBool:YES]];
+				break;
+			case 'F':	//	false
+				[newMsg addValue:[OSCValue createWithBool:NO]];
+				break;
+			case 'N':	//	nil
+				[newMsg addValue:[OSCValue createWithNil]];
+				break;
+			case 'I':	//	infinity
+				[newMsg addValue:[OSCValue createWithInfinity]];
+				break;
+			case 'h':	//	64 bit int
+				[newMsg addValue:[OSCValue createWithLongLong:(long long)nonNormVal]];
+				break;
+			case '[':
+			case ']':
+				break;
+			//case 'b':	//	blob
+			//	break;
+			//case 't':	//	time tag
+			//	break;
+			//case 'm':	//	midi
+			//	break;
+			}
+			
+			//	...at this point i've populated the OSC message- pass it back to the query server so anything listening to it will get it
+			
+			OSCPacket		*newPacket = [OSCPacket createWithContent:newMsg];
+			[server
+				sendOSCPacketData:[newPacket payload]
+				sized:[newPacket bufferLength]
+				toClientsListeningToOSCAddress:oscDest];
+		}
+	}
+}
+
+
 #pragma mark -------------------------- VVKQueueCenterDelegate
 
 
@@ -742,7 +874,6 @@
 	//	supply an extensions array if there isn't already one
 	NSDictionary		*extDict = @{
 		kVVOSCQ_OptAttr_Tags : @YES,
-		//kVVOSCQ_ReqAttr_Type : @YES,
 		kVVOSCQ_OptAttr_Access : @YES,
 		kVVOSCQ_OptAttr_Value : @YES,
 		kVVOSCQ_OptAttr_Range : @YES,
@@ -751,8 +882,8 @@
 		kVVOSCQ_OptAttr_Critical : @NO,
 		kVVOSCQ_OptAttr_Overloads : @NO,
 		kVVOSCQ_OptAttr_HTML : @YES,
-		kVVOSCQ_WSAttr_Cmd_Listen : @NO,
-		kVVOSCQ_WSAttr_Cmd_Ignore : @NO,
+		kVVOSCQ_WSAttr_Cmd_Listen : @YES,
+		kVVOSCQ_WSAttr_Cmd_Ignore : @YES,
 		kVVOSCQ_WSAttr_Cmd_PathChanged : @YES,
 		kVVOSCQ_WSAttr_Cmd_PathRenamed : @NO,
 		kVVOSCQ_WSAttr_Cmd_PathRemoved : @NO,
@@ -800,7 +931,7 @@
 - (BOOL) server:(VVOSCQueryServer *)s wantsToListenTo:(NSString *)address	{
 	//NSLog(@"%s ... %@, %@",__func__,s,address);
 	//	intentionally blank- we can't stream values because we don't have direct access to the remote app's address space (or data model corresponding to an address space)
-	return NO;
+	return YES;
 }
 - (void) server:(VVOSCQueryServer *)s wantsToIgnore:(NSString *)address	{
 	//NSLog(@"%s ... %@, %@",__func__,s,address);
