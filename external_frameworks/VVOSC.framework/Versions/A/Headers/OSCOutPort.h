@@ -8,9 +8,9 @@
 
 #include <arpa/inet.h>
 
-#import "OSCPacket.h"
-#import "OSCBundle.h"
-#import "OSCMessage.h"
+#import <VVOSC/OSCPacket.h>
+#import <VVOSC/OSCBundle.h>
+#import <VVOSC/OSCMessage.h>
 
 
 
@@ -32,11 +32,11 @@ the documentation here only covers the basics, the header file for this class is
 }
 
 ///	Creates and returns an auto-released OSCOutPort for the given address and port
-+ (id) createWithAddress:(NSString *)a andPort:(unsigned short)p;
++ (instancetype) createWithAddress:(NSString *)a andPort:(unsigned short)p;
 ///	Creates and returns an auto-released OSCOutPort for the given address, port, and label
-+ (id) createWithAddress:(NSString *)a andPort:(unsigned short)p labelled:(NSString *)l;
-- (id) initWithAddress:(NSString *)a andPort:(unsigned short)p;
-- (id) initWithAddress:(NSString *)a andPort:(unsigned short)p labelled:(NSString *)l;
++ (instancetype) createWithAddress:(NSString *)a andPort:(unsigned short)p labelled:(NSString *)l;
+- (instancetype) initWithAddress:(NSString *)a andPort:(unsigned short)p;
+- (instancetype) initWithAddress:(NSString *)a andPort:(unsigned short)p labelled:(NSString *)l;
 - (void) prepareToBeDeleted;
 
 ///	returns an auto-released NSDictionary which describes this port (useful for restoring the port later)

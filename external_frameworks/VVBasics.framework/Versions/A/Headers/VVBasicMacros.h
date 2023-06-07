@@ -17,6 +17,7 @@
 #   undef USING_GC
 #   define USING_GC 1
 #endif
+
 #if !defined(USING_ARC)
 #  if __has_feature(objc_arc)
 #     define USING_ARC 1
@@ -27,6 +28,7 @@
 #   undef USING_ARC
 #   define USING_ARC 1
 #endif
+
 #if !defined(USING_MRC)
 #  if USING_ARC || USING_GC
 #     define USING_MRC 0
@@ -37,21 +39,27 @@
 #   undef USING_MRC
 #   define USING_MRC 1
 #endif
+
 // Remove utility
 #undef PREFIX_ONE
 #undef EMPTY_DEFINE
 // Sanity checks
 #if USING_GC
+//#	warning "using GC!"
 #   if USING_ARC || USING_MRC
 #      error "Cannot specify GC and RC memory management"
 #   endif
 #elif USING_ARC
+//#	warning "using ARC!"
 #   if USING_MRC
 #      error "Cannot specify ARC and MRC memory management"
 #   endif
-#elif !USING_MRC
+#elif USING_MRC
+//#	warning "using MRC!"
+#else
 #   error "Must specify GC, ARC or MRC memory management"
 #endif
+
 #if USING_ARC
 #   if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_6
 #      error "ARC requires at least 10.6"
@@ -72,12 +80,13 @@
 	item = nil;											\
 }}
 #elif USING_ARC
-#define VVRELEASE(item) {if (item != nil)	{			\
+#define VVRELEASE(item) {								\
 	item = nil;											\
-}}
-#define VVAUTORELEASE(item) {if (item != nil)	{		\
-	item = nil;											\
-}}
+}
+//#define VVAUTORELEASE(item) {if (item != nil)	{		\
+//	item = nil;											\
+//}}
+#define VVAUTORELEASE(item) {}
 #endif
 
 
@@ -229,6 +238,15 @@
 //	not actually a macro- a function to replace NSRunAlertPanel, which is deprecated in 10.10
 NSInteger VVRunAlertPanel(NSString *title, NSString *msg, NSString *btnA, NSString *btnB, NSString *btnC);
 NSInteger VVRunAlertPanelSuppressString(NSString *title, NSString *msg, NSString *btnA, NSString *btnB, NSString *btnC, NSString *suppressString, BOOL *returnSuppressValue);
+#endif
+
+
+
+
+#if !TARGET_OS_IPHONE
+//	returns the same rect, but expressed with a positive width and height
+NSRect NSPositiveDimensionsRect(NSRect inRect);
+NSRect NSIntegralPositiveDimensionsRect(NSRect inRect);
 #endif
 
 
@@ -444,4 +462,31 @@ NSInteger VVRunAlertPanelSuppressString(NSString *title, NSString *msg, NSString
 	else	\
 		tmpBlock();	\
 }
+
+
+
+
+#define AntiARCRetain(...) if (__VA_ARGS__ != nil) CFRetain((__bridge CFTypeRef)__VA_ARGS__)
+#define AntiARCRelease(...) if (__VA_ARGS__ != nil) CFRelease((__bridge CFTypeRef)__VA_ARGS__)
+
+
+
+
+//	if the min deployment target is >= 10.12, we can use unfair lock
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED >= 101200)
+	#import <os/lock.h>
+	#define VVLock os_unfair_lock
+	#define VV_LOCK_INIT OS_UNFAIR_LOCK_INIT
+	#define VVLockLock(n) os_unfair_lock_lock(n)
+	#define VVLockUnlock(n) os_unfair_lock_unlock(n)
+	#define VVLockTryLock(n) os_unfair_lock_trylock(n)
+//	else the min deployment target is < 10.12, we have to use spinlock
+#else
+	#define VVLock OSSpinLock
+	#define VV_LOCK_INIT OS_SPINLOCK_INIT
+	#define VVLockLock(n) OSSpinLockLock(n)
+	#define VVLockUnlock(n) OSSpinLockUnlock(n)
+	#define VVLockTryLock(n) OSSpinLockTry(n)
+#endif
+
 

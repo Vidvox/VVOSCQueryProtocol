@@ -131,14 +131,14 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 	NSNumber				*tmpNum = nil;
 	NSArray					*tmpArray = nil;
 	
-	OSSpinLockLock(&nameLock);
+	VVLockLock(&nameLock);
 	if (fullName != nil)
 		[returnMe setObject:fullName forKey:kVVOSCQ_ReqAttr_Path];
 	//	if there's no full name- if we can't make a path- then we need to bail and return nil immediately
 	else	{
 		returnMe = nil;
 	}
-	OSSpinLockUnlock(&nameLock);
+	VVLockUnlock(&nameLock);
 	if (returnMe == nil)
 		return nil;
 	
@@ -171,9 +171,9 @@ static BOOL			flattenSimpleOSCQArrays = NO;
 	if (tmpNum != nil)
 		[returnMe setObject:tmpNum forKey:kVVOSCQ_OptAttr_Access];
 	
-	OSSpinLockLock(&lastReceivedMessageLock);
+	VVLockLock(&lastReceivedMessageLock);
 	OSCMessage		*lastMsg = lastReceivedMessage;
-	OSSpinLockUnlock(&lastReceivedMessageLock);
+	VVLockUnlock(&lastReceivedMessageLock);
 	
 	int				lastMsgValCount = [lastMsg valueCount];
 	if (lastMsg != nil && lastMsgValCount > 0)	{

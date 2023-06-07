@@ -6,7 +6,7 @@
 #endif
 
 #import <VVBasics/VVBasics.h>
-#import "OSCZeroConfDomain.h"
+#import <VVOSC/OSCZeroConfDomain.h>
 #import <pthread.h>
 
 
@@ -27,7 +27,7 @@
     NSString                *serviceTypeString;
 }
 
-- (id) initWithOSCManager:(id)m serviceType:(NSString *)t;
+- (instancetype) initWithOSCManager:(id)m serviceType:(NSString *)t;
 
 - (void) serviceRemoved:(NSNetService *)s;
 - (void) serviceResolved:(NSNetService *)s;

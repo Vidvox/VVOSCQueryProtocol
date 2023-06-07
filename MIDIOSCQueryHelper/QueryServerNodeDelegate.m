@@ -186,32 +186,32 @@
 		//	status byte
 		case VVMIDINoteOffVal:
 		case VVMIDINoteOnVal:
-			return [NSString stringWithFormat:@"ch.%hhd,Note%hhd",mc+1,mv];
+			return [NSString stringWithFormat:@"ch.%hhd,Note%hhd",(char)(mc+1),(char)mv];
 			break;
 		case VVMIDIAfterTouchVal:
-			return [NSString stringWithFormat:@"ch.%hhd,Aftertouch",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,Aftertouch",(char)(mc+1)];
 			break;
 		case VVMIDIControlChangeVal:
-			return [NSString stringWithFormat:@"ch.%hhd,CC%hhd",mc+1,mv];
+			return [NSString stringWithFormat:@"ch.%hhd,CC%hhd",(char)(mc+1),(char)mv];
 			break;
 		case VVMIDIProgramChangeVal:
-			return [NSString stringWithFormat:@"ch.%hhd,PgmChg",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,PgmChg",(char)(mc+1)];
 			break;
 		case VVMIDIChannelPressureVal:
-			return [NSString stringWithFormat:@"ch.%hhd,ChPrs",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,ChPrs",(char)(mc+1)];
 			break;
 		case VVMIDIPitchWheelVal:
-			return [NSString stringWithFormat:@"ch.%hhd,PtchWhl",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,PtchWhl",(char)(mc+1)];
 			break;
 		//	common messages
 		case VVMIDIMTCQuarterFrameVal:
-			return [NSString stringWithFormat:@"ch.%hhd,QrtrFrm",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,QrtrFrm",(char)(mc+1)];
 			break;
 		case VVMIDISongPosPointerVal:
-			return [NSString stringWithFormat:@"ch.%hhd,SPP",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,SPP",(char)(mc+1)];
 			break;
 		case VVMIDISongSelectVal:
-			return [NSString stringWithFormat:@"ch.%hhd,SS",mc+1];
+			return [NSString stringWithFormat:@"ch.%hhd,SS",(char)(mc+1)];
 			break;
 		case VVMIDIUndefinedCommon1Val:
 			return @"Undefined common";

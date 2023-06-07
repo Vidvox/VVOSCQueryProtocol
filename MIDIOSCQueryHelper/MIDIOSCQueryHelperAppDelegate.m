@@ -172,7 +172,7 @@
 	[op
 		beginSheetModalForWindow:[self window]
 		completionHandler:^(NSInteger result)	{
-			if (result == NSFileHandlingPanelOKButton)	{
+		if (result == NSModalResponseOK)	{
 				//	get the inspected object
 				NSArray			*fileURLs = [op URLs];
 				NSURL			*urlPtr = (fileURLs==nil) ? nil : [fileURLs objectAtIndex:0];
