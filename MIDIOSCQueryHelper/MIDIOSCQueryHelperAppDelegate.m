@@ -34,6 +34,21 @@
 @end
 
 
+@implementation NSMutableAttributedString (NSMutableAttributedStringAdditions)
+- (void) makeText:(NSString *)matchText clickableLinkTo:(NSString *)url	{
+	if (matchText==nil || [matchText length]<1 || url==nil)
+		return;
+	
+	NSString		*str = [self string];
+	NSRange			rangeOfMatch = [str rangeOfString:matchText];
+	if (rangeOfMatch.location == NSNotFound)
+		return;
+	
+	[self addAttribute:NSLinkAttributeName value:url range:rangeOfMatch];
+}
+@end
+
+
 
 
 @implementation MIDIOSCQueryHelperAppDelegate

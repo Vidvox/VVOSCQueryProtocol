@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "VVOSCQueryConstants.h"
+#import <VVOSCQueryProtocol/VVOSCQueryConstants.h>
 
 
 /**

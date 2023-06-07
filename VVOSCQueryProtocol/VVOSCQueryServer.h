@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "VVOSCQuery.h"
-#import "VVOSCQueryReply.h"
+#import <VVOSCQueryProtocol/VVOSCQuery.h>
+#import <VVOSCQueryProtocol/VVOSCQueryReply.h>
 @class VVOSCQueryServer;
 
 

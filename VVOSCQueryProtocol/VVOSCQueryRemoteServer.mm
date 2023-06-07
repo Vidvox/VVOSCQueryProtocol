@@ -459,7 +459,7 @@ bonjourName:(NSString *)inBonjourName	{
 		queryAddress = [NSString stringWithFormat:@"http://%@:%d%@",webServerAddressString,webServerPort,sanitizedOSCAddress];
 	else
 		queryAddress = [NSString stringWithFormat:@"http://%@:%d%@?%@",webServerAddressString,webServerPort,sanitizedOSCAddress,inQueryString];
-	queryAddress = [queryAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	queryAddress = [queryAddress stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 	//NSLog(@"\t\tqueryAddress is %@",queryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:queryAddress];
 	[downloader setDNSCacheTimeout:2.];

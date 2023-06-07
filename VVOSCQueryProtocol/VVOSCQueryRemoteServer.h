@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "VVOSCQueryConstants.h"
-#import "ZWRObject.h"
+#import <VVOSCQueryProtocol/VVOSCQueryConstants.h>
+#import <VVOSCQueryProtocol/ZWRObject.h>
 
 @class VVOSCQueryRemoteServer;
 

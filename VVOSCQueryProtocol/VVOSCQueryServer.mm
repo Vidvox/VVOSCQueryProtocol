@@ -417,7 +417,7 @@
 		return;
 	if (!webServer.isRunning())
 		return;
-	webServer.sendOSCPacketToListeners(inData, inDataSize, (const char *)[inAddress UTF8String]);
+	webServer.sendOSCPacketToListeners(inData, (int)inDataSize, (const char *)[inAddress UTF8String]);
 }
 - (void) sendPathChangedToClients:(NSString *)n	{
 	if (n==nil)

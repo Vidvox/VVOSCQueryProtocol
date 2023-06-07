@@ -24,6 +24,7 @@
 
 
 
+
 //	this class addition returns an attributed string that renders the receiver- which is presumed to contain valid HTML code- in NSTextFields.  this is what makes the link "clickable".
 @implementation NSString (NSStringAdditions)
 - (NSAttributedString *) renderedHTMLWithFont:(NSFont *)font	{
@@ -32,6 +33,21 @@
 	NSData *data = [html dataUsingEncoding:NSUTF8StringEncoding];
 	NSAttributedString* string = [[NSAttributedString alloc] initWithHTML:data documentAttributes:nil];
 	return string;
+}
+@end
+
+
+@implementation NSMutableAttributedString (NSMutableAttributedStringAdditions)
+- (void) makeText:(NSString *)matchText clickableLinkTo:(NSString *)url	{
+	if (matchText==nil || [matchText length]<1 || url==nil)
+		return;
+	
+	NSString		*str = [self string];
+	NSRange			rangeOfMatch = [str rangeOfString:matchText];
+	if (rangeOfMatch.location == NSNotFound)
+		return;
+	
+	[self addAttribute:NSLinkAttributeName value:url range:rangeOfMatch];
 }
 @end
 
