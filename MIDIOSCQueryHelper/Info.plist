@@ -47,5 +47,7 @@
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
 	<string>https://www.vidvox.net/version/MIDIOSCQueryHelper.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>ShJQgmdoXnD+tmqtlXw24M9QtyhHd4RjhN85VUB9+w4=</string>
 </dict>
 </plist>

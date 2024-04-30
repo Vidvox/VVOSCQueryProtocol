@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
-        <capability name="box content view" minToolsVersion="7.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -641,7 +640,7 @@
                             <menuItem title="Show Sidebar" keyEquivalent="s" id="kIP-vf-haE">
                                 <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                 <connections>
-                                    <action selector="toggleSourceList:" target="-1" id="iwa-gc-5KM"/>
+                                    <action selector="toggleSidebar:" target="-1" id="iwa-gc-5KM"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
@@ -691,18 +690,19 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="133" y="-403"/>
         </menu>
         <window title="MIDI OSCQuery Helper" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="1085" y="639" width="364" height="592"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
             <value key="minSize" type="size" width="364" height="538"/>
-            <view key="contentView" wantsLayer="YES" misplaced="YES" id="EiT-Mj-1SZ">
+            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="364" height="592"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" id="UZ8-Rl-1oy">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UZ8-Rl-1oy">
                         <rect key="frame" x="148" y="22" width="68" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Help" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="W0f-hS-TUD">
@@ -713,15 +713,15 @@
                             <action selector="showHelp:" target="Voe-Tx-rLC" id="mcF-gt-msz"/>
                         </connections>
                     </button>
-                    <box title="FILE STATUS" id="43q-Ze-y4r">
+                    <box fixedFrame="YES" title="FILE STATUS" translatesAutoresizingMaskIntoConstraints="NO" id="43q-Ze-y4r">
                         <rect key="frame" x="17" y="474" width="330" height="98"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="O0B-mh-zVZ">
-                            <rect key="frame" x="2" y="2" width="326" height="81"/>
+                            <rect key="frame" x="4" y="5" width="322" height="78"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="X3a-NX-3QV">
-                                    <rect key="frame" x="18" y="44" width="290" height="17"/>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X3a-NX-3QV">
+                                    <rect key="frame" x="18" y="41" width="286" height="17"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="No File Selected!" allowsEditingTextAttributes="YES" id="hSC-X4-enU">
                                         <font key="font" metaFont="system"/>
@@ -729,8 +729,8 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <button verticalHuggingPriority="750" id="lqV-H2-bY7">
-                                    <rect key="frame" x="217" y="8" width="95" height="32"/>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lqV-H2-bY7">
+                                    <rect key="frame" x="213" y="5" width="95" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="push" title="Load File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uUk-4Z-ohU">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -743,15 +743,15 @@
                             </subviews>
                         </view>
                     </box>
-                    <box misplaced="YES" title="OSC QUERY SERVER STATUS" id="fRc-iZ-1I9">
+                    <box fixedFrame="YES" title="OSC QUERY SERVER STATUS" translatesAutoresizingMaskIntoConstraints="NO" id="fRc-iZ-1I9">
                         <rect key="frame" x="17" y="282" width="330" height="188"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="mM1-Z3-bej">
-                            <rect key="frame" x="2" y="2" width="326" height="171"/>
+                            <rect key="frame" x="4" y="5" width="322" height="168"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="EkP-PP-ZoW">
-                                    <rect key="frame" x="18" y="20" width="290" height="131"/>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EkP-PP-ZoW">
+                                    <rect key="frame" x="18" y="20" width="286" height="128"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="Not running." allowsEditingTextAttributes="YES" id="dGr-mt-1zE">
                                         <font key="font" metaFont="system"/>
@@ -762,15 +762,15 @@
                             </subviews>
                         </view>
                     </box>
-                    <box misplaced="YES" title="OSC SERVER (RECEIVES OSC)" id="DXG-jl-gAt">
+                    <box fixedFrame="YES" title="OSC SERVER (RECEIVES OSC)" translatesAutoresizingMaskIntoConstraints="NO" id="DXG-jl-gAt">
                         <rect key="frame" x="17" y="198" width="330" height="80"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="bjl-Rd-ctY">
-                            <rect key="frame" x="2" y="2" width="326" height="63"/>
+                            <rect key="frame" x="4" y="5" width="322" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="yKd-Fy-yBV">
-                                    <rect key="frame" x="18" y="26" width="34" height="14"/>
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKd-Fy-yBV">
+                                    <rect key="frame" x="18" y="23" width="34" height="14"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Port:" id="551-Hy-1MB">
                                         <font key="font" metaFont="smallSystem"/>
@@ -778,8 +778,8 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="A4r-Da-w7m">
-                                    <rect key="frame" x="55" y="24" width="46" height="19"/>
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A4r-Da-w7m">
+                                    <rect key="frame" x="55" y="21" width="46" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="5678" drawsBackground="YES" id="yua-tq-lx9">
                                         <numberFormatter key="formatter" formatterBehavior="custom10_4" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="4" id="UUX-9z-V1e">
@@ -789,7 +789,7 @@
                                             <real key="maximum" value="9999"/>
                                         </numberFormatter>
                                         <font key="font" metaFont="smallSystem"/>
-                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
@@ -799,15 +799,15 @@
                             </subviews>
                         </view>
                     </box>
-                    <box misplaced="YES" title="SEND MIDI TO:" id="vbV-N3-sy8">
+                    <box fixedFrame="YES" title="SEND MIDI TO:" translatesAutoresizingMaskIntoConstraints="NO" id="vbV-N3-sy8">
                         <rect key="frame" x="17" y="91" width="330" height="103"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="vyI-Q3-lHU">
-                            <rect key="frame" x="2" y="2" width="326" height="86"/>
+                            <rect key="frame" x="4" y="5" width="322" height="83"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <popUpButton verticalHuggingPriority="750" id="K4S-Zc-C7y">
-                                    <rect key="frame" x="19" y="51" width="186" height="15"/>
+                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K4S-Zc-C7y">
+                                    <rect key="frame" x="19" y="48" width="186" height="15"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="mini" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Cef-8B-4lz" id="sAV-Zb-d6K">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -824,8 +824,8 @@
                                         <action selector="selectedMIDIDstPUBUsed:" target="kKB-9M-KfJ" id="aB5-J1-Go2"/>
                                     </connections>
                                 </popUpButton>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="Lb9-9D-e1C">
-                                    <rect key="frame" x="18" y="21" width="234" height="22"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lb9-9D-e1C">
+                                    <rect key="frame" x="18" y="18" width="234" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" title="...MIDI messages will also be sent out this app's dedicated MIDI Source (&quot;MIDI OSC Query Helper&quot;)" id="SfT-0k-x1j">
                                         <font key="font" metaFont="miniSystem"/>
@@ -840,16 +840,16 @@
             </view>
             <point key="canvasLocation" x="405" y="572"/>
         </window>
-        <window title="Help Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="cuM-OG-ALe">
+        <window title="Help Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="cuM-OG-ALe">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="1090" height="633"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <view key="contentView" misplaced="YES" id="7Gf-Zg-9sI">
+            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
+            <view key="contentView" id="7Gf-Zg-9sI">
                 <rect key="frame" x="0.0" y="0.0" width="1090" height="633"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" id="f8N-Jw-JTR">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f8N-Jw-JTR">
                         <rect key="frame" x="510" y="13" width="75" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="POL-NA-l5r">
@@ -860,7 +860,7 @@
                             <action selector="closeHelp:" target="Voe-Tx-rLC" id="JjL-gU-nJJ"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" misplaced="YES" id="rWD-c5-l1r">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rWD-c5-l1r">
                         <rect key="frame" x="832" y="13" width="244" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <buttonCell key="cell" type="push" title="Show Sample Document in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EC6-Su-a1b">
@@ -871,7 +871,7 @@
                             <action selector="showSampleDocInFinderClicked:" target="Voe-Tx-rLC" id="pLE-j6-ONT"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="Ezw-DW-2QS">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ezw-DW-2QS">
                         <rect key="frame" x="18" y="462" width="1054" height="126"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" selectable="YES" sendsActionOnEndEditing="YES" id="jED-3z-Vdo">
@@ -884,7 +884,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="ANa-gK-PnX">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ANa-gK-PnX">
                         <rect key="frame" x="18" y="319" width="1054" height="98"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" selectable="YES" sendsActionOnEndEditing="YES" id="dgb-Ra-bdX">
@@ -897,7 +897,7 @@ If MOQH is running, the OSC query server is running- you can check it with any O
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="5xd-xx-Tdh">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5xd-xx-Tdh">
                         <rect key="frame" x="18" y="596" width="1054" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="MIDI OSCQuery Helper (&quot;MOQH&quot; from now on) adds OSC and OSCQuery capabilities to other applications that only support MIDI." id="T1k-qN-Vvc">
@@ -906,7 +906,7 @@ If MOQH is running, the OSC query server is running- you can check it with any O
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="24z-AZ-k4T">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24z-AZ-k4T">
                         <rect key="frame" x="18" y="425" width="1054" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="HOW TO USE THIS APP:" id="Bxa-IX-qv1">
@@ -915,7 +915,7 @@ If MOQH is running, the OSC query server is running- you can check it with any O
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="Onr-Un-awG">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Onr-Un-awG">
                         <rect key="frame" x="18" y="64" width="1054" height="210"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" selectable="YES" sendsActionOnEndEditing="YES" id="0yY-DP-buT">
@@ -932,7 +932,7 @@ If MOQH is running, the OSC query server is running- you can check it with any O
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="fSO-Jw-wur">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fSO-Jw-wur">
                         <rect key="frame" x="18" y="282" width="1054" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="FILE TYPES:" id="5V5-wv-hya">
@@ -955,6 +955,6 @@ If MOQH is running, the OSC query server is running- you can check it with any O
                 <outlet property="selectedMIDIDstPUB" destination="K4S-Zc-C7y" id="Pcb-By-iBk"/>
             </connections>
         </customObject>
-        <customObject id="8mj-CT-XO7" customClass="SUUpdater"/>
+        <customObject id="8mj-CT-XO7" customClass="SPUStandardUpdaterController"/>
     </objects>
 </document>
