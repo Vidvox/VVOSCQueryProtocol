@@ -16,22 +16,10 @@
 - (BOOL) _loadAbletonProject:(NSString *)fullPath;
 - (BOOL) _loadJSONFile:(NSString *)fullPath;
 - (void) _updateUIItems;
-- (NSString *) _assembleHTMLString;
+- (NSAttributedString *) _assembleServerDescriptionString;
 @end
 
 
-
-
-//	this class addition returns an attributed string that renders the receiver- which is presumed to contain valid HTML code- in NSTextFields.  this is what makes the link "clickable".
-@implementation NSString (NSStringAdditions)
-- (NSAttributedString *) renderedHTMLWithFont:(NSFont *)font	{
-	if (!font) font = [NSFont systemFontOfSize:0.0];  // Default font
-	NSString *html = [NSString stringWithFormat:@"<span style=\"font-family:'%@'; font-size:%dpx;\">%@</span>", [font fontName], (int)[font pointSize], self];
-	NSData *data = [html dataUsingEncoding:NSUTF8StringEncoding];
-	NSAttributedString* string = [[NSAttributedString alloc] initWithHTML:data documentAttributes:nil];
-	return string;
-}
-@end
 
 
 @implementation NSMutableAttributedString (NSMutableAttributedStringAdditions)
@@ -674,50 +662,45 @@
 	
 	//	update the server status field
 	if ([server isRunning])	{
-		NSString		*htmlString = [self _assembleHTMLString];
-		NSAttributedString	*htmlAttrStr = [htmlString renderedHTMLWithFont:nil];
-		//NSLog(@"\t\tsetting val to %@",htmlAttrStr);
-		[serverStatusField setAttributedStringValue:htmlAttrStr];
+		serverStatusField.attributedStringValue = [self _assembleServerDescriptionString];
 	}
 	else	{
 		[serverStatusField setStringValue:@"Not running!"];
 	}
 }
-- (NSString *) _assembleHTMLString	{
+- (NSAttributedString *) _assembleServerDescriptionString	{
+	NSMutableAttributedString		*mutAttrStr = [[NSMutableAttributedString alloc] initWithString:@""];
 	NSArray			*addrs = [VVOSCQueryRemoteServer hostIPv4Addresses];
 	int				tmpPort = [server webServerPort];
-	NSMutableString		*sectionHTMLString = nil;
-	NSMutableString		*fullHTMLString = [[NSMutableString alloc] init];;
+	NSFont		*font = [NSFont messageFontOfSize:0.0];
+	NSDictionary	*fontAttribs = @{ NSFontAttributeName: font };
 	
 	//	run through and make a clickable URL for each NIC for the plain OSC query server (these will return JSON objects)
-	sectionHTMLString = [[NSMutableString alloc] init];
 	if ([addrs count]<2)
-		[sectionHTMLString appendString:@"Server Address:"];
+		[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"Server Address:\r" attributes:fontAttribs]];
 	else
-		[sectionHTMLString appendString:@"Server Addresses:"];
+		[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"Server Addresses:\r" attributes:fontAttribs]];
 	for (NSString *addr in addrs)	{
 		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d",addr,tmpPort];
-		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<BR><A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
-		[sectionHTMLString appendString:tmpHTMLString];
+		[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:tmpURLString attributes:fontAttribs]];
+		[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\r" attributes:fontAttribs]];
+		[mutAttrStr makeText:tmpURLString clickableLinkTo:tmpURLString];
 	}
-	if (sectionHTMLString!=nil && [sectionHTMLString length]>0)
-		[fullHTMLString appendString:sectionHTMLString];
 	
-	[fullHTMLString appendString:@"<BR><BR>"];
+	[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\r" attributes:fontAttribs]];
 	
 	//	run through and make a clickable URL for each NIC for the fancy HTML controls
-	sectionHTMLString = nil;
-	sectionHTMLString = [[NSMutableString alloc] init];
-	[sectionHTMLString appendString:@"Interactive HTML Interface:"];
+	[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"Interactive HTML Interface:\r" attributes:fontAttribs]];
 	for (NSString *addr in addrs)	{
 		NSString		*tmpURLString = [NSString stringWithFormat:@"http://%@:%d/index.html?HTML",addr,tmpPort];
-		NSString		*tmpHTMLString = [NSString stringWithFormat:@"<BR><A HREF=\"%@\">%@</A>",tmpURLString,tmpURLString];
-		[sectionHTMLString appendString:tmpHTMLString];
+		[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:tmpURLString attributes:fontAttribs]];
+		[mutAttrStr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\r" attributes:fontAttribs]];
+		[mutAttrStr makeText:tmpURLString clickableLinkTo:tmpURLString];
 	}
-	if (sectionHTMLString!=nil && [sectionHTMLString length]>0)
-		[fullHTMLString appendString:sectionHTMLString];
 	
-	return fullHTMLString;
+	[mutAttrStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0,mutAttrStr.length)];
+	
+	return mutAttrStr;
 }
 - (void) targetAppHostInfoChangedNotification:(NSNotification *)note	{
 	//	make sure this method is called on the main thread
