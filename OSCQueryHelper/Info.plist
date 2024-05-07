@@ -36,20 +36,20 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.4.3.3</string>
+	<string>0.4.3.4</string>
 	<key>CFBundleVersion</key>
-	<string>0.4.3.3</string>
+	<string>0.4.3.4</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2018 Vidvox, LLC. All rights reserved.</string>
+	<string>Copyright © 2024 Vidvox, LLC. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
 	<string>https://www.vidvox.net/version/OSCQueryHelper.xml</string>
-    <key>SUPublicEDKey</key>
-    <string>ShJQgmdoXnD+tmqtlXw24M9QtyhHd4RjhN85VUB9+w4=</string>
+	<key>SUPublicEDKey</key>
+	<string>ShJQgmdoXnD+tmqtlXw24M9QtyhHd4RjhN85VUB9+w4=</string>
 </dict>
 </plist>

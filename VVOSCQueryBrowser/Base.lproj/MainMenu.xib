@@ -743,7 +743,7 @@
                                     <tableViewGridLines key="gridStyleMask" dashed="YES"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn width="243" minWidth="40" maxWidth="1000" id="aVY-Wf-WEn">
+                                        <tableColumn width="214" minWidth="40" maxWidth="1000" id="aVY-Wf-WEn">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -756,11 +756,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView identifier="MainCell" id="8v7-wm-vqG" customClass="ServerTableCellView">
-                                                    <rect key="frame" x="1" y="1" width="252" height="48"/>
+                                                    <rect key="frame" x="11" y="1" width="223" height="48"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KyT-3b-6N5">
-                                                            <rect key="frame" x="6" y="28" width="239" height="17"/>
+                                                            <rect key="frame" x="6" y="28" width="210" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Bonjour Name/OSC Name" id="y81-gb-het">
                                                                 <font key="font" metaFont="system"/>
@@ -769,7 +769,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gLL-xX-EzC">
-                                                            <rect key="frame" x="27" y="3" width="218" height="17"/>
+                                                            <rect key="frame" x="27" y="3" width="189" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Label" id="pwI-wR-Xj0">
                                                                 <font key="font" metaFont="system"/>
@@ -827,7 +827,7 @@
                                                         <tableViewGridLines key="gridStyleMask" dashed="YES"/>
                                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                         <tableColumns>
-                                                            <tableColumn editable="NO" width="395" minWidth="40" maxWidth="1000" id="ozl-Rr-BxU">
+                                                            <tableColumn editable="NO" width="366" minWidth="40" maxWidth="1000" id="ozl-Rr-BxU">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -840,11 +840,11 @@
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 <prototypeCellViews>
                                                                     <tableCellView identifier="RemoteNode" id="2XI-Y6-rQ7" customClass="RemoteNodeTableCellView">
-                                                                        <rect key="frame" x="1" y="1" width="404" height="41"/>
+                                                                        <rect key="frame" x="11" y="1" width="375" height="41"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ChI-7L-Gwi">
-                                                                                <rect key="frame" x="6" y="21" width="319" height="17"/>
+                                                                                <rect key="frame" x="6" y="21" width="290" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="/Full/Path/To/Node" id="tw4-De-k5v">
                                                                                     <font key="font" metaFont="system"/>
@@ -853,7 +853,7 @@
                                                                                 </textFieldCell>
                                                                             </textField>
                                                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tbH-qV-Rq0">
-                                                                                <rect key="frame" x="324" y="23" width="69" height="14"/>
+                                                                                <rect key="frame" x="295" y="23" width="69" height="14"/>
                                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Label" id="f2a-Z6-2KI">
                                                                                     <font key="font" metaFont="smallSystem"/>
@@ -862,7 +862,7 @@
                                                                                 </textFieldCell>
                                                                             </textField>
                                                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TGv-bf-TUX">
-                                                                                <rect key="frame" x="6" y="3" width="397" height="14"/>
+                                                                                <rect key="frame" x="6" y="3" width="368" height="14"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Description" id="Hyg-FL-Lol">
                                                                                     <font key="font" metaFont="smallSystem"/>
@@ -878,15 +878,15 @@
                                                                         </connections>
                                                                     </tableCellView>
                                                                     <tableCellView identifier="RemoteNodeControl" id="0C8-jc-x2D" customClass="RemoteNodeControlTableCellView">
-                                                                        <rect key="frame" x="1" y="44" width="404" height="32"/>
+                                                                        <rect key="frame" x="11" y="44" width="375" height="32"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <subviews>
                                                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C0J-vj-1Iw" userLabel="OSCValueView" customClass="OSCValueView">
-                                                                                <rect key="frame" x="3" y="3" width="232" height="26"/>
+                                                                                <rect key="frame" x="3" y="3" width="203" height="26"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <colorWell hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AFw-Ey-Kbl">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="26"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="203" height="26"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <connections>
@@ -894,7 +894,7 @@
                                                                                         </connections>
                                                                                     </colorWell>
                                                                                     <textField hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SjG-Wn-9QM">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="26"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="203" height="26"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="wQf-W7-bOY">
                                                                                             <font key="font" metaFont="system"/>
@@ -906,7 +906,7 @@
                                                                                         </connections>
                                                                                     </textField>
                                                                                     <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bZ8-tD-7eH">
-                                                                                        <rect key="frame" x="0.0" y="-1" width="232" height="28"/>
+                                                                                        <rect key="frame" x="0.0" y="-1" width="203" height="28"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <buttonCell key="cell" type="smallSquare" title="Fire" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wsH-jS-dDN">
                                                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -917,7 +917,7 @@
                                                                                         </connections>
                                                                                     </button>
                                                                                     <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Owi-hl-e2l">
-                                                                                        <rect key="frame" x="-2" y="0.0" width="236" height="26"/>
+                                                                                        <rect key="frame" x="-2" y="0.0" width="207" height="26"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="center" title="Can't display UI item!" id="fya-i5-BT5">
                                                                                             <font key="font" metaFont="miniSystem"/>
@@ -926,7 +926,7 @@
                                                                                         </textFieldCell>
                                                                                     </textField>
                                                                                     <popUpButton hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ztl-O1-32i">
-                                                                                        <rect key="frame" x="1" y="-1" width="232" height="26"/>
+                                                                                        <rect key="frame" x="1" y="-1" width="203" height="26"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                                                         <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="66v-gK-wkZ" id="oJW-vK-HDy">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -944,7 +944,7 @@
                                                                                         </connections>
                                                                                     </popUpButton>
                                                                                     <slider hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XIW-8I-lsT">
-                                                                                        <rect key="frame" x="0.0" y="3" width="232" height="19"/>
+                                                                                        <rect key="frame" x="0.0" y="3" width="203" height="19"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="0Mr-9O-AQj"/>
                                                                                         <connections>
@@ -952,7 +952,7 @@
                                                                                         </connections>
                                                                                     </slider>
                                                                                     <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XfL-vj-OpW">
-                                                                                        <rect key="frame" x="0.0" y="-1" width="232" height="28"/>
+                                                                                        <rect key="frame" x="0.0" y="-1" width="203" height="28"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <buttonCell key="cell" type="check" title="Toggle" bezelStyle="regularSquare" imagePosition="left" lineBreakMode="truncatingTail" state="on" inset="2" id="P2i-qB-4tc">
                                                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -974,7 +974,7 @@
                                                                                 </connections>
                                                                             </customView>
                                                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bQX-2z-jd6" userLabel="OSCValueView" customClass="OSCValueView">
-                                                                                <rect key="frame" x="237" y="3" width="76" height="26"/>
+                                                                                <rect key="frame" x="208" y="3" width="76" height="26"/>
                                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <colorWell hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tDz-tm-pqE">
@@ -1066,7 +1066,7 @@
                                                                                 </connections>
                                                                             </customView>
                                                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9GF-bA-3PJ" userLabel="OSCValueView" customClass="OSCValueView">
-                                                                                <rect key="frame" x="315" y="3" width="76" height="26"/>
+                                                                                <rect key="frame" x="286" y="3" width="76" height="26"/>
                                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <colorWell hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oJU-7o-eIr">
