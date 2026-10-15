@@ -419,6 +419,11 @@
 		return;
 	webServer.sendOSCPacketToListeners(inData, (int)inDataSize, (const char *)[inAddress UTF8String]);
 }
+- (BOOL) isAnyClientListeningToOSCAddress:(NSString *)n	{
+	if (n == nil)
+		return NO;
+	return (webServer.isAnyClientListeningToOSCAddress(std::string([n UTF8String]))) ? YES : NO;
+}
 - (void) sendPathChangedToClients:(NSString *)n	{
 	if (n==nil)
 		return;

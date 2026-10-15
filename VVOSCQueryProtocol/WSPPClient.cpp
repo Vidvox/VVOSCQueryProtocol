@@ -326,6 +326,8 @@ void WSPPClient::stop()	{
 	
 	disconnect();
 	client->stop_perpetual();
+	//	stop_perpetual() alone won't end run() while a connection's still alive, so stop the io loop- otherwise the join below is unbounded
+	client->stop();
 	running = false;
 	if (thread != nullptr)	{
 		thread->join();

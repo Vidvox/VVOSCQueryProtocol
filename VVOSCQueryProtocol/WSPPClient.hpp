@@ -85,7 +85,7 @@ public:
 private:
 	//	launches the client- spawns a thread, which is where the processing is done.
 	void start();
-	//	stops the client (calls 'disconnect()' first, then actually stops the client from running).  this returns execution from the thread that called 'start'.
+	//	stops the client (calls 'disconnect()' first, then actually stops the client from running).  this returns execution from the thread that called 'start'.  this is terminal- it stops the endpoint's io_service, which stays stopped until 'reset()', so a caller that needs to restart has to add 'client->reset()' to 'start()'.
 	void stop();
 	//	returns a true if running, a false if not
 	bool isRunning();

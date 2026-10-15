@@ -103,6 +103,8 @@ public:
 	//void sendDataToClients(const void * bufferToSend, const int & sizeOfBuffer);
 	//	call this method to send the passed OSC packet data to the clients that signed up to LISTEN to the passed path.
 	void sendOSCPacketToListeners(const void * oscPacketToSend, const int & oscPacketSize, const char * listenPath);
+	//	returns true if any client signed up to LISTEN to the passed path.  consults only the table of listeners: safe to call whether or not the server is running, but it doesn't check the running state, and while the server is stopping the table can still name listeners that nothing will be sent to.
+	bool isAnyClientListeningToOSCAddress(const std::string & listenPath);
 };
 
 

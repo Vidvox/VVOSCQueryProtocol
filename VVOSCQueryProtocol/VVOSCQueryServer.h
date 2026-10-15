@@ -117,7 +117,7 @@ Instances of this class own and run the HTTP and websocket server.  Queries rece
 
 /*!
 \name Client/websocket methods
-\brief These methods send data to all connected clients over the websocket connection.
+\brief These methods send data to all connected clients over the websocket connection, and report what those clients have asked to receive.
 */
 ///@{
 
@@ -128,6 +128,9 @@ Instances of this class own and run the HTTP and websocket server.  Queries rece
 @param inDataSize The size of inData, in bytes
 @param inAddress The OSC address that the OSC message in packet is being sent to */
 - (void) sendOSCPacketData:(void*)inData sized:(size_t)inDataSize toClientsListeningToOSCAddress:(NSString *)inAddress;
+/**	Returns a BOOL indicating whether any of the receiver's clients is currently LISTENing to the passed OSC address.  The answer is read from the same table of listeners that -sendOSCPacketData:sized:toClientsListeningToOSCAddress: consults, which is kept up to date by every LISTEN and IGNORE, by clients disconnecting, and by renames.  Unlike that method, this one doesn't check whether the server is running- while the server is being stopped it can still report listeners for an address that nothing would be delivered to, so a caller that cares about that window should check -isRunning as well.  Ask this before assembling an OSC packet, so you don't do the work when nobody is listening.
+@param n The OSC address being checked for listeners */
+- (BOOL) isAnyClientListeningToOSCAddress:(NSString *)n;
 /**	This method is used to inform clients that a property of some path in your app's OSC address space has changed in some way- it sends a PATH_CHANGED notification.  When clients receive this message they generally query the passed path to reload its contents.		*/
 - (void) sendPathChangedToClients:(NSString *)n;
 /**	This method is used to inform clients that a node in your app's OSC address space has been renamed, or moved to another spot in the address space- it sends a PATH_RENAMED notification.  You should call it every time any node in your OSC address space is renamed or moved.	*/

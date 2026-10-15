@@ -561,10 +561,8 @@ void WSPPServer::stop()	{
 		}
 	}
 	
-	/*
-	//	tell the server to stop
+	//	stop the io_service- without this, the join below waits forever on a client that finished connecting after the close loop
 	try	{
-		//	tell the server to stop listening
 		server->stop();
 	}
 	catch (const websocketpp::exception& e)	{
@@ -576,7 +574,6 @@ void WSPPServer::stop()	{
 	catch (...)	{
 		cout << "\tERR: caught exception in " << __PRETTY_FUNCTION__ << endl;
 	}
-	*/
 	
 	
 	//	join the thread
@@ -587,6 +584,10 @@ void WSPPServer::stop()	{
 		//cout << "\tdone joining the thread" << endl;
 	}
 	
+	//	the forced stop skips the close handlers that would have emptied this- clear it under connsLock (VDMX's threads use this map) and before 'server' is nulled, so a late sendOSCPacketToListeners() bails before dereferencing the null server
+	connsLock.lock();
+	servers_by_listenAddr.clear();
+	connsLock.unlock();
 	
 	
 	try	{
@@ -721,6 +722,12 @@ void WSPPServer::sendOSCPacketToListeners(const void * oscPacketToSend, const in
 		//	send the passed data to each connection
 		server->send(tmpConn, oscPacketToSend, oscPacketSize, websocketpp::frame::opcode::binary, ec);
 	}
+}
+bool WSPPServer::isAnyClientListeningToOSCAddress(const std::string & listenPath)	{
+	lock_guard<mutex>		lock(connsLock);
+	const auto		tmpIter = servers_by_listenAddr.find(listenPath);
+	//	a LISTEN the delegate refused leaves an empty vector behind, so the entry existing isn't enough- the vector has to have a connection in it
+	return (tmpIter != servers_by_listenAddr.end() && tmpIter->second.size() > 0);
 }
 
 
