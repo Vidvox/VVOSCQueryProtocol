@@ -49,6 +49,7 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 		[domainBrowser setDelegate:self];
 		[domainBrowser searchForRegistrationDomains];
 		domainDict = [[NSMutableDictionary alloc] init];
+		removalCounts = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -59,12 +60,19 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 		domainBrowser = nil;
 	}
 	domainDict = nil;
+	removalCounts = nil;
 }
 
 
 - (void) serviceRemoved:(NSNetService *)s	{
 	//NSLog(@"%s ... %@",__func__,s);
 	NSString			*serviceName = [s name];
+	//	count this removal against the bonjour name- a discovery that is in flight for this name compares the count before it adds anything, so a service that vanishes mid-discovery can't be added late.  per name rather than one global count, which would discard in-flight discoveries of unrelated hosts that nothing would re-resolve.  never pruned: its size is bounded by the number of distinct bonjour names we see.
+	if (serviceName != nil)	{
+		int				removalCount = [[removalCounts objectForKey:serviceName] intValue];
+		[removalCounts setObject:[NSNumber numberWithInt:removalCount+1] forKey:serviceName];
+	}
+	
 	//	get the IP address and port for the passed service
 	NSString			*ipString = nil;
 	unsigned short		port = 1234;
@@ -128,37 +136,57 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 	//NSLog(@"\t\ttype is %@",[s type]);
 	//NSLog(@"\t\tTXTRecordData is %@",[NSNetService dictionaryFromTXTRecordData:[s TXTRecordData]]);
 	
-	//	get the IP address and port for the passed service
+	//	get the IP address and port for the passed service.  these have to be read here, on the thread the service belongs to: -getIPAddressString:port: hands back inet_ntoa's static buffer
 	NSString			*ipString = nil;
 	unsigned short		port = 1234;
 	[s getIPAddressString:&ipString port:&port];
 	if (ipString == nil)
 		return;
-	
-	//	make a remote server for the service
-	VVOSCQueryRemoteServer		*newRemoteServer = [[VVOSCQueryRemoteServer alloc]
-		initWithWebServerAddressString:ipString
-		port:port
-		bonjourName:[s name]];
-	if (newRemoteServer == nil)
+	NSString			*serviceName = [s name];
+	if (serviceName == nil)
 		return;
+	//	note how many removals this name has seen, so the block below can tell whether what it resolved is still what bonjour is advertising
+	int					removalCount = [[removalCounts objectForKey:serviceName] intValue];
 	
-	//	add the remote server to the list of remote servers
-	@synchronized ([VVOSCQueryRemoteServer class])	{
-		[_allRemoteServers addObject:newRemoteServer];
-	}
-	
-	//	post a notification that we made a new server
-	NSNotificationCenter		*nc = [NSNotificationCenter defaultCenter];
-	[nc
-		postNotificationName:kVVOSCQueryRemoteServersNewServerNotification
-		object:newRemoteServer
-		userInfo:nil];
-	//	post a notification that the list of servers was updated
-	[nc
-		postNotificationName:kVVOSCQueryRemoteServersUpdatedNotification
-		object:nil
-		userInfo:nil];
+	//	making the remote server performs a blocking HOST_INFO request, so it happens on a background queue.  the queue is per discovery rather than per bonjour name because a request parked on a name-keyed queue would hold up every later re-resolve of that host, which could then never be rediscovered.
+	dispatch_queue_t	discoveryQueue = dispatch_queue_create("com.vidvox.oscquery.discovery", DISPATCH_QUEUE_SERIAL);
+	dispatch_async(discoveryQueue, ^{
+		//	make a remote server for the service
+		__block VVOSCQueryRemoteServer		*newRemoteServer = [[VVOSCQueryRemoteServer alloc]
+			initWithWebServerAddressString:ipString
+			port:port
+			bonjourName:serviceName];
+		if (newRemoteServer == nil)
+			return;
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			//	if a service with this name was removed while we were working, -serviceRemoved: has already run and found nothing to remove- adding this server now would leave it in the list for good
+			if ([[self->removalCounts objectForKey:serviceName] intValue] != removalCount)	{
+				//	this server's dealloc waits for its websocket to close and then joins its io thread, so we don't release it here
+				dispatch_async(_serverTeardownQueue, ^{
+					newRemoteServer = nil;
+				});
+				return;
+			}
+			
+			//	add the remote server to the list of remote servers
+			@synchronized ([VVOSCQueryRemoteServer class])	{
+				[_allRemoteServers addObject:newRemoteServer];
+			}
+			
+			//	post a notification that we made a new server
+			NSNotificationCenter		*nc = [NSNotificationCenter defaultCenter];
+			[nc
+				postNotificationName:kVVOSCQueryRemoteServersNewServerNotification
+				object:newRemoteServer
+				userInfo:nil];
+			//	post a notification that the list of servers was updated
+			[nc
+				postNotificationName:kVVOSCQueryRemoteServersUpdatedNotification
+				object:nil
+				userInfo:nil];
+		});
+	});
 }
 
 
