@@ -382,6 +382,13 @@ void WSPPServer::_initServer()	{
 	//	the open handler should store the connection handle in the vector of connections
 	server->set_open_handler([&](websocketpp::connection_hdl hdl)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
+		//	the websocket streams OSC values to listening clients, so it gets the low-latency "interactive voice" service type (plain HTTP connections, which can carry big JSON replies, never get here)- done before taking connsLock, as get_con_from_hdl() calls back into the endpoint
+		lib::error_code			ec;
+		server_t::connection_ptr		conn = server->get_con_from_hdl(hdl, ec);
+		if (!ec)	{
+			int				serviceType = NET_SERVICE_TYPE_VO;
+			setsockopt(conn->get_raw_socket().native_handle(), SOL_SOCKET, SO_NET_SERVICE_TYPE, &serviceType, sizeof(serviceType));
+		}
 		lock_guard<mutex>		lock(connsLock);
 		server_conns.push_back(hdl);
 		

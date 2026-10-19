@@ -20,6 +20,13 @@ WSPPClient::WSPPClient()	{
 	});
 	//	either open or fail will be called for every connection- close will be called for every connection that was opened
 	client->set_open_handler([&](connection_hdl hdl)	{
+		//	the websocket carries OSC values both ways, so it gets the low-latency "interactive voice" service type- done before taking connLock, as get_con_from_hdl() calls back into the endpoint
+		lib::error_code			ec;
+		client_t::connection_ptr	conn = client->get_con_from_hdl(hdl, ec);
+		if (!ec)	{
+			int				serviceType = NET_SERVICE_TYPE_VO;
+			setsockopt(conn->get_raw_socket().native_handle(), SOL_SOCKET, SO_NET_SERVICE_TYPE, &serviceType, sizeof(serviceType));
+		}
 		std::lock_guard<std::mutex>		lock(connLock);
 		connected = true;
 	});
