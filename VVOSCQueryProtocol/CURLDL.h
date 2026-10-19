@@ -27,6 +27,7 @@
 	
 	long			dnsCacheTimeout;
 	long			connectTimeout;
+	long			lowSpeedTime;	//	seconds the transfer may receive nothing before it's abandoned- passed to libcurl as CURLOPT_LOW_SPEED_TIME, with a 1 byte/sec CURLOPT_LOW_SPEED_LIMIT.  0 (the default) is no limit
 	NSString		*log;
 	NSString		*pass;
 	NSString		*userAgent;	//	passed to libcurl as CURLOPT_USERAGENT
@@ -54,6 +55,7 @@
 @property (readonly) NSString *urlString;
 @property (assign,readwrite,setter=setDNSCacheTimeout:) long dnsCacheTimeout;
 @property (assign,readwrite) long connectTimeout;
+@property (assign,readwrite) long lowSpeedTime;
 - (void) setLogin:(NSString *)user password:(NSString *)pass;
 @property (retain,readwrite) NSString *userAgent;
 @property (retain,readwrite) NSString *referer;

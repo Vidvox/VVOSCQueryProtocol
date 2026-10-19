@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <string>
+#include <mutex>
+#include <atomic>
 #include "WSPPQueryReply.hpp"
 
 // The ASIO_STANDALONE define is necessary to use the standalone version of Asio.
@@ -43,6 +45,8 @@ private:
 	lib::shared_ptr<client_t>			client = nullptr;	//	the actual websocket++ client
 	websocketpp::connection_hdl		clientConn;	//	the client connection (this class only maintains a single connection for the client)
 	bool				connected = false;	//	whether or not this client is connected to a remote server
+	std::mutex			connLock;	//	guards 'clientConn' and 'connected'- both are read and written from more than one thread: the io thread writes them in its open, fail and close handlers and reads the handle there, the thread that connects writes the handle, and the threads that send and tear down read both
+	std::atomic<bool>		wentOffline {false};	//	set once my own connection has closed or failed, and never cleared, so that a client of mine that only asks afterwards can still find out
 	bool				running = false;	//	whether or not this client has been started
 	WSCallback			wsCallback = nullptr;
 	OSCCallback			oscCallback = nullptr;
@@ -53,6 +57,8 @@ private:
 	SinglePathCallback		addCallback = nullptr;
 	
 	void _performWSCallbackSetup();
+	//	returns whether the passed handle refers to the connection recorded in 'clientConn'.  only ever called with 'connLock' held
+	bool _isCurrentConnection(const connection_hdl & inHdl);
 
 public:
 	WSPPClient();
@@ -76,6 +82,10 @@ public:
 	void disconnect();
 	//	returns a true if connected to a server, a false if not
 	bool isConnected();
+	//	returns a true if the calling thread is the thread this client processes its data on, a false if not.  destroying this object from that thread would make its join throw
+	bool isIOThread();
+	//	returns a true once my connection has closed or failed, a false before that.  never goes back to a false, so it answers for a caller that wasn't around when it happened
+	bool hasGoneOffline();
 	
 	//	sends the passed string to the server i have a websocket connection with using the text opcode
 	void send(const std::string & inStringToSend);
@@ -85,7 +95,7 @@ public:
 private:
 	//	launches the client- spawns a thread, which is where the processing is done.
 	void start();
-	//	stops the client (calls 'disconnect()' first, then actually stops the client from running).  this returns execution from the thread that called 'start'.  this is terminal- it stops the endpoint's io_service, which stays stopped until 'reset()', so a caller that needs to restart has to add 'client->reset()' to 'start()'.
+	//	stops the client (calls 'disconnect()' first, then actually stops the client from running).  this returns execution from the thread that called 'start'.  this is terminal- it stops the endpoint's io_service, so a caller that needs to restart has to discard the endpoint here and build a new one in 'start()', the way WSPPServer does.  resetting the stopped io_service instead would let work queued for an abandoned connection resume.
 	void stop();
 	//	returns a true if running, a false if not
 	bool isRunning();

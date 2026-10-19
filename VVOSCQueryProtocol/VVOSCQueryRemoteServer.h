@@ -120,6 +120,10 @@ Returns an instance of this class configured with the passed data.  This method 
 - (void) removeDelegate:(id<VVOSCQueryRemoteServerDelegate>)n;
 /// Returns an array containing all of the receiver's delegate refs.  This is not an array of your delegates- this is an array of ZWRObject instances, each of which refers to a single delegate.
 - (NSArray *) delegateRefs;
+/**
+Returns YES once the receiver's websocket connection has closed or failed- the event behind -remoteServerWentOffline:.  It never returns to NO.  This exists for a delegate added after that event, which never received the callback: a delegate added beforehand should use the callback instead.  A receiver that never had a websocket connection to begin with returns NO.
+*/
+- (BOOL) websocketWentOffline;
 
 ///@}
 
@@ -134,6 +138,12 @@ Returns an instance of this class configured with the passed data.  This method 
 
 /// Synchronous- queries the remote server for its HOST_INFO
 - (NSDictionary *) hostInfo;
+/**
+Synchronous- queries the remote server for its HOST_INFO again, and applies the reply to the receiver's server properties.  This exists for a receiver whose HOST_INFO request failed when it was created, which leaves it with no name and no OSC address, port or transport.  The websocket connection isn't re-established: it was made to the receiver's web server address, which is right for any server that hosts its websocket on its HTTP port.
+@param inStallTimeout The number of seconds the transfer may receive nothing at all before it's abandoned.  Pass 0 for no limit, which is what -hostInfo does.
+@return YES if the remote server answered with a HOST_INFO object, which has been applied to the receiver's properties.
+*/
+- (BOOL) refreshHostInfoWithStallTimeout:(long)inStallTimeout;
 /// Synchronous- queries the remote server for its root node, which will fully describe every node in its address space.
 - (NSDictionary *) rootNode;
 /// Synchronous- queries the remote server for a JSON object describing the node at the passed path
@@ -145,6 +155,14 @@ Synchronous- queries the remote server for a JSON object describing the node at 
 @return The JSON object returned by the remote server in response to a query formed by the passed values.
 */
 - (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
+/**
+Synchronous- queries the remote server for a JSON object describing the node at the passed path, abandoning the transfer if it stalls
+@param inPath The path of the node to query
+@param inQueryString The query to append to the path, as a string.  When the query is performed on the remote server, it is appended to the path in the traditional manner when performing HTTP GET queries (http://inPath?inQueryString).
+@param inStallTimeout The number of seconds the transfer may receive nothing at all before it's abandoned, which returns nil.  A reply that is still arriving is never cut off.  Pass 0 for no limit, which is what the other query methods do.
+@return The JSON object returned by the remote server in response to a query formed by the passed values.
+*/
+- (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString stallTimeout:(long)inStallTimeout;
 
 - (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath;
 - (NSString *) stringForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString;

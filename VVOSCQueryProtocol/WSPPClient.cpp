@@ -20,6 +20,7 @@ WSPPClient::WSPPClient()	{
 	});
 	//	either open or fail will be called for every connection- close will be called for every connection that was opened
 	client->set_open_handler([&](connection_hdl hdl)	{
+		std::lock_guard<std::mutex>		lock(connLock);
 		connected = true;
 	});
 	
@@ -28,9 +29,7 @@ WSPPClient::WSPPClient()	{
 	set_close_callback(nullptr);
 }
 WSPPClient::~WSPPClient()	{
-	if (isConnected())	{
-		disconnect();
-	}
+	//	no disconnect here- stop() closes first, and a second close would find the connection already closing and just log an error
 	if (isRunning())	{
 		stop();
 	}
@@ -160,29 +159,35 @@ void WSPPClient::set_close_callback(CloseCallback inCallback)	{
 	
 	client->set_fail_handler([=](connection_hdl hdl)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
-		lib::error_code			ec;
-		std::shared_ptr<void>		actualClientConn = client->get_con_from_hdl(clientConn, ec);
-		std::shared_ptr<void>		actualClosedConn = client->get_con_from_hdl(hdl, ec);
-		if (actualClientConn == actualClosedConn && actualClientConn != nullptr)	{
-			if (closeCallback != nullptr)
-				closeCallback();
-			connected = false;
-			//clientConn = nullptr;
-			clientConn = websocketpp::lib::shared_ptr<void>(nullptr);
+		bool		wasMyConnection = false;
+		{
+			std::lock_guard<std::mutex>		lock(connLock);
+			wasMyConnection = _isCurrentConnection(hdl);
+			if (wasMyConnection)	{
+				connected = false;
+				clientConn = connection_hdl();
+				wentOffline = true;
+			}
 		}
+		//	the callback is made with the lock released, and after the record is cleared, so it can't be held across code that calls back into me
+		if (wasMyConnection && closeCallback != nullptr)
+			closeCallback();
 	});
 	client->set_close_handler([=](connection_hdl hdl)	{
 		//cout << __PRETTY_FUNCTION__ << endl;
-		lib::error_code			ec;
-		std::shared_ptr<void>		actualClientConn = client->get_con_from_hdl(clientConn, ec);
-		std::shared_ptr<void>		actualClosedConn = client->get_con_from_hdl(hdl, ec);
-		if (actualClientConn == actualClosedConn && actualClientConn != nullptr)	{
-			if (closeCallback != nullptr)
-				closeCallback();
-			connected = false;
-			//clientConn = nullptr;
-			clientConn = websocketpp::lib::shared_ptr<void>(nullptr);
+		bool		wasMyConnection = false;
+		{
+			std::lock_guard<std::mutex>		lock(connLock);
+			wasMyConnection = _isCurrentConnection(hdl);
+			if (wasMyConnection)	{
+				connected = false;
+				clientConn = connection_hdl();
+				wentOffline = true;
+			}
 		}
+		//	the callback is made with the lock released, and after the record is cleared, so it can't be held across code that calls back into me
+		if (wasMyConnection && closeCallback != nullptr)
+			closeCallback();
 	});
 }
 void WSPPClient::set_path_changed_callback(SinglePathCallback inCallback)	{
@@ -218,9 +223,13 @@ bool WSPPClient::connect(const string & inStringURI)	{
 		return false;
 	}
 	
-	client->connect(conn);
+	//	the handle is recorded before the connection is handed over: the io thread can fail a connection the moment it has it, and a failure handled before the record landed would match nothing and send no offline notice
+	{
+		std::lock_guard<std::mutex>		lock(connLock);
+		clientConn = conn->get_handle();
+	}
 	
-	clientConn = conn->get_handle();
+	client->connect(conn);
 	
 	//client->start_perpetual();
 	
@@ -234,7 +243,15 @@ void WSPPClient::disconnect()	{
 		//cout << "\tERR: not running, bailing, " << __PRETTY_FUNCTION__ << endl;
 		return;
 	}
-	if (!isConnected())	{
+	//	the handle and the flag are copied together under the lock, rather than asking isConnected() and then reading the handle, so they describe the same connection- and the close below has to run with the lock released
+	bool				amConnected = false;
+	connection_hdl		myConn;
+	{
+		std::lock_guard<std::mutex>		lock(connLock);
+		amConnected = connected;
+		myConn = clientConn;
+	}
+	if (!amConnected)	{
 		//cout << "\tERR: not connected, bailing, " << __PRETTY_FUNCTION__ << endl;
 		return;
 	}
@@ -248,7 +265,7 @@ void WSPPClient::disconnect()	{
 		//static value const normal = 1000;
 		//client->close(clientConn, 1000, "told to close", ec);
 		//client->close(clientConn, websocketpp::close::status::normal, "", ec);
-		client->close(clientConn, websocketpp::close::status::going_away, "", ec);
+		client->close(myConn, websocketpp::close::status::going_away, "", ec);
 		if (ec)	{
 			cout << "> Error initiating close: " << ec.message() << endl;
 		}
@@ -264,8 +281,23 @@ void WSPPClient::disconnect()	{
 	}
 }
 bool WSPPClient::isConnected()	{
+	std::lock_guard<std::mutex>		lock(connLock);
 	bool		returnMe = connected;
 	return returnMe;
+}
+bool WSPPClient::_isCurrentConnection(const connection_hdl & inHdl)	{
+	//	an empty 'clientConn' is nobody's connection, and has to be excluded before the test below, which finds two empty handles equivalent- the handlers leave it empty once a close has been handled
+	connection_hdl		emptyHdl;
+	if (!clientConn.owner_before(emptyHdl) && !emptyHdl.owner_before(clientConn))
+		return false;
+	//	owner-equivalence: neither weak_ptr orders before the other exactly when the two refer to the same connection, expired or not.  it's a pure standard-library test, so it's safe under connLock, where a get_con_from_hdl() comparison would call back into the endpoint
+	return (!clientConn.owner_before(inHdl) && !inHdl.owner_before(clientConn));
+}
+bool WSPPClient::isIOThread()	{
+	return (thread != nullptr && thread->get_id() == std::this_thread::get_id());
+}
+bool WSPPClient::hasGoneOffline()	{
+	return wentOffline;
 }
 
 
@@ -275,12 +307,20 @@ void WSPPClient::send(const std::string & inStringToSend)	{
 		cout << "\tERR: not running, bailing, " << __PRETTY_FUNCTION__ << endl;
 		return;
 	}
-	if (!isConnected())	{
+	//	the handle and the flag are copied together under the lock- the send below has to run with the lock released, and a handle copied while the close handler was resetting it could pair a stale pointer with a freed control block
+	bool				amConnected = false;
+	connection_hdl		myConn;
+	{
+		std::lock_guard<std::mutex>		lock(connLock);
+		amConnected = connected;
+		myConn = clientConn;
+	}
+	if (!amConnected)	{
 		cout << "\tERR: bailing, not connected, " << __PRETTY_FUNCTION__ << endl;
 		return;
 	}
 	websocketpp::lib::error_code		ec;
-	client->send(clientConn, inStringToSend, websocketpp::frame::opcode::text, ec);
+	client->send(myConn, inStringToSend, websocketpp::frame::opcode::text, ec);
 	if (ec)	{
 		cout << "\tERR: " << ec.message() << " in " << __PRETTY_FUNCTION__ << endl;
 	}
@@ -290,7 +330,15 @@ void WSPPClient::send(const void * inBuffer, const size_t & inBufferSize)	{
 		cout << "\tERR: not running, bailing, " << __PRETTY_FUNCTION__ << endl;
 		return;
 	}
-	if (!isConnected())	{
+	//	the handle and the flag are copied together under the lock- the send below has to run with the lock released, and a handle copied while the close handler was resetting it could pair a stale pointer with a freed control block
+	bool				amConnected = false;
+	connection_hdl		myConn;
+	{
+		std::lock_guard<std::mutex>		lock(connLock);
+		amConnected = connected;
+		myConn = clientConn;
+	}
+	if (!amConnected)	{
 		cout << "\tERR: bailing, not connected, " << __PRETTY_FUNCTION__ << endl;
 		return;
 	}
@@ -299,7 +347,7 @@ void WSPPClient::send(const void * inBuffer, const size_t & inBufferSize)	{
 		return;
 	}
 	websocketpp::lib::error_code		ec;
-	client->send(clientConn, inBuffer, inBufferSize, websocketpp::frame::opcode::binary, ec);
+	client->send(myConn, inBuffer, inBufferSize, websocketpp::frame::opcode::binary, ec);
 	if (ec)	{
 		cout << "\tERR: " << ec.message() << " in " << __PRETTY_FUNCTION__ << endl;
 	}

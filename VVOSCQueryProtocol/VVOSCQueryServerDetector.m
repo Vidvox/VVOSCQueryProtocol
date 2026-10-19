@@ -50,6 +50,7 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 		[domainBrowser searchForRegistrationDomains];
 		domainDict = [[NSMutableDictionary alloc] init];
 		removalCounts = [[NSMutableDictionary alloc] init];
+		discoveryQueues = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -61,6 +62,7 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 	}
 	domainDict = nil;
 	removalCounts = nil;
+	discoveryQueues = nil;
 }
 
 
@@ -122,7 +124,7 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 		}
 	}
 	
-	//	we hold the last reference to the servers now- this block does nothing but release them off the main thread, because their dealloc waits for the websocket to close and then joins the client's io thread
+	//	we hold the last reference to the servers now- this block does nothing but release them off the main thread, because their dealloc stops each websocket client's io loop and joins its thread
 	if (serversToRemove != nil)	{
 		dispatch_async(_serverTeardownQueue, ^{
 			serversToRemove = nil;
@@ -148,8 +150,13 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 	//	note how many removals this name has seen, so the block below can tell whether what it resolved is still what bonjour is advertising
 	int					removalCount = [[removalCounts objectForKey:serviceName] intValue];
 	
-	//	making the remote server performs a blocking HOST_INFO request, so it happens on a background queue.  the queue is per discovery rather than per bonjour name because a request parked on a name-keyed queue would hold up every later re-resolve of that host, which could then never be rediscovered.
-	dispatch_queue_t	discoveryQueue = dispatch_queue_create("com.vidvox.oscquery.discovery", DISPATCH_QUEUE_SERIAL);
+	//	making the remote server performs a blocking HOST_INFO request, so it happens on a background queue.  the queue is per bonjour name, so discoveries of one app run one after another and at most one thread is ever parked for it, while a stalled app never holds up the discovery of another.  the accepted cost is that a request that never returns blocks every later discovery of that name for the life of the process, so that app can't be rediscovered until we're relaunched.  the label carries the name so a parked discovery identifies its app in a spindump
+	//	like removalCounts, this dictionary is never pruned: its size is bounded by the number of distinct bonjour names we see
+	dispatch_queue_t	discoveryQueue = [discoveryQueues objectForKey:serviceName];
+	if (discoveryQueue == nil)	{
+		discoveryQueue = dispatch_queue_create([[NSString stringWithFormat:@"com.vidvox.oscquery.discovery.%@",serviceName] UTF8String], DISPATCH_QUEUE_SERIAL);
+		[discoveryQueues setObject:discoveryQueue forKey:serviceName];
+	}
 	dispatch_async(discoveryQueue, ^{
 		//	make a remote server for the service
 		__block VVOSCQueryRemoteServer		*newRemoteServer = [[VVOSCQueryRemoteServer alloc]
@@ -162,7 +169,7 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//	if a service with this name was removed while we were working, -serviceRemoved: has already run and found nothing to remove- adding this server now would leave it in the list for good
 			if ([[self->removalCounts objectForKey:serviceName] intValue] != removalCount)	{
-				//	this server's dealloc waits for its websocket to close and then joins its io thread, so we don't release it here
+				//	this server's dealloc stops its websocket client's io loop and joins its thread, so we don't release it here
 				dispatch_async(_serverTeardownQueue, ^{
 					newRemoteServer = nil;
 				});
@@ -192,6 +199,11 @@ static dispatch_queue_t					_serverTeardownQueue = nil;
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)n didFindDomain:(NSString *)d moreComing:(BOOL)m	{
 	//NSLog(@"%s ... %@, %d",__func__,d,m);
+	//	a repeated report of a domain we already browse must not replace its object: the old object's dealloc stops its browser, so every removal that browser would have reported is lost, while the new browser reports every service in the domain all over again
+	@synchronized (self)	{
+		if ([domainDict objectForKey:d] != nil)
+			return;
+	}
 	VVOSCQueryServerDetectorDomain	*newDomain = [[VVOSCQueryServerDetectorDomain alloc]
 		initWithDomain:d
 		detector:self];

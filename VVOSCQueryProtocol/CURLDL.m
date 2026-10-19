@@ -42,6 +42,7 @@
 		curlHandle = nil;
 		dnsCacheTimeout = 0;
 		connectTimeout = 0;
+		lowSpeedTime = 0;
 		log = nil;
 		pass = nil;
 		userAgent = nil;
@@ -223,6 +224,11 @@
 			curl_easy_setopt(curlHandle, CURLOPT_DNS_CACHE_TIMEOUT, dnsCacheTimeout);
 		if (connectTimeout>0)
 			curl_easy_setopt(curlHandle, CURLOPT_CONNECTTIMEOUT, connectTimeout);
+		//	the limit is 1 byte/sec, so a reply that's still arriving is never cut off- only a transfer that receives nothing at all for this long is abandoned
+		if (lowSpeedTime>0)	{
+			curl_easy_setopt(curlHandle, CURLOPT_LOW_SPEED_LIMIT, 1L);
+			curl_easy_setopt(curlHandle, CURLOPT_LOW_SPEED_TIME, lowSpeedTime);
+		}
 		
 		//	perform the transfer
 		err = curl_easy_perform(curlHandle);
@@ -280,6 +286,7 @@
 @synthesize urlString;
 @synthesize dnsCacheTimeout;
 @synthesize connectTimeout;
+@synthesize lowSpeedTime;
 - (void) setLogin:(NSString *)u password:(NSString *)p	{
 	if (u==nil || p==nil)
 		return;

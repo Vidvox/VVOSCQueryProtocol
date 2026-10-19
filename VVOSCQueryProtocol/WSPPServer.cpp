@@ -6,6 +6,12 @@
 #include <iostream>
 #include <streambuf>
 #include <sstream>
+#include <chrono>
+#include <thread>
+
+
+//	how long stop() gives connected clients to answer its close frames before it forces the io loop to stop
+static const std::chrono::milliseconds		_stopGracePeriod = std::chrono::milliseconds(500);
 
 
 WSPPServer::WSPPServer()	{
@@ -218,38 +224,32 @@ void WSPPServer::_performWSCallbackSetup()	{
 								
 								//	find the entry that corresponds to the address the client wants to LISTEN to!
 								auto		addressIter = servers_by_listenAddr.find(tmpAddress);
-								//	if there aren't any servers listening to the address, make an array to store servers listening to the address
-								if (addressIter == servers_by_listenAddr.end())	{
-									servers_by_listenAddr.emplace(std::make_pair(tmpAddress, std::vector<connection_hdl>()));
-									//servers_by_listenAddr[tmpAddress] = std::vector<connection_hdl>();
-									addressIter = servers_by_listenAddr.find(tmpAddress);
-								}
-								
-								//	...at this point i have an iterator pointing at an entry in the map that is currently registered to LISTEN to this address.  the entry's value is a vector of connection_hdls.
-								
-								//	get the vector from the iterator- run through its contents, looking for a match to the current connection
-								vector<connection_hdl>		&listeningConns = addressIter->second;
-								void						*currentConn = hdl.lock().get();
-								bool						alreadyListening = false;
-								for (const auto & tmpConn : listeningConns)	{
-									if (tmpConn.lock().get() == currentConn)	{
-										alreadyListening = true;
-										break;
+								//	if there's an entry then something is already listening to this address, which means the delegate has already approved it- the approval covers this client too, so just add its connection
+								if (addressIter != servers_by_listenAddr.end())	{
+									//	...the entry's value is a vector of connection_hdls- run through its contents, looking for a match to the current connection
+									vector<connection_hdl>		&listeningConns = addressIter->second;
+									void						*currentConn = hdl.lock().get();
+									bool						alreadyListening = false;
+									for (const auto & tmpConn : listeningConns)	{
+										if (tmpConn.lock().get() == currentConn)	{
+											alreadyListening = true;
+											break;
+										}
 									}
+									//	if the client on the other end of this connetion isn't already listening to this address, add it
+									if (!alreadyListening)
+										listeningConns.push_back(hdl);
 								}
-								//	if the client on the other end of this connetion isn't already listening to this address
-								if (!alreadyListening)	{
-									
+								//	else nothing is listening to this address yet, so this is the one client we ask about
+								else	{
 									//	call the listen callback- this lets the delegate set up to listen, and determines if we should actually listen to the address (if it doesn't exist the delegate can prevent us from listening)
 									bool				delegateSaysOKToListen = false;
 									if (listenCallback != nullptr)
 										delegateSaysOKToListen = listenCallback(tmpAddress);
 									
-									//	if the listen callback indicates that it's still okay to listen...
-									if (delegateSaysOKToListen)	{
-										//	add the connection to the vector!
-										listeningConns.push_back(hdl);
-									}
+									//	if the listen callback indicates that it's still okay to listen, make the entry with this connection in it- a refused LISTEN leaves nothing behind, so an entry in the map always means a listener
+									if (delegateSaysOKToListen)
+										servers_by_listenAddr.emplace(std::make_pair(tmpAddress, std::vector<connection_hdl>{hdl}));
 								}
 								
 								//tmpReply = WSPPQueryReply(false);
@@ -259,6 +259,7 @@ void WSPPServer::_performWSCallbackSetup()	{
 								
 								//	find the entry that corresponds to the address the client wants to IGNORE!
 								string		tmpAddress = string(tmpJSON["DATA"].GetString());
+								bool		lastListenerLeft = false;
 								{
 									lock_guard<mutex>		lock(connsLock);
 									auto		addressIter = servers_by_listenAddr.find(tmpAddress);
@@ -278,14 +279,16 @@ void WSPPServer::_performWSCallbackSetup()	{
 											}
 											++tmpIndex;
 										}
-										//	if the vector is now empty- if nothing is listening to this address- then we should remove it entirely
-										if (listeningConns.size() == 0)
+										//	if the vector is now empty- if nothing is listening to this address- then we should remove it entirely, and this client was the one that left, because an entry is only ever stored with a listener in it
+										if (listeningConns.size() == 0)	{
 											servers_by_listenAddr.erase(addressIter);
+											lastListenerLeft = true;
+										}
 									}
 								}
 								
-								//	call the ignore callback
-								if (ignoreCallback != nullptr)
+								//	call the ignore callback only if this client was the last one listening to the address- a client that wasn't listening, or that leaves others behind, isn't the delegate's business
+								if (lastListenerLeft && ignoreCallback != nullptr)
 									ignoreCallback(tmpAddress);
 								//tmpReply = WSPPQueryReply(false);
 							}
@@ -561,6 +564,12 @@ void WSPPServer::stop()	{
 		}
 	}
 	
+	//	give the close frames queued above a moment to reach the clients that answer them.  bounded, so a client that's gone silent or was missed mid-handshake can't hold the thread that called stop(), and unlocked, because the close handlers need connsLock
+	std::chrono::steady_clock::time_point		graceDeadline = std::chrono::steady_clock::now() + _stopGracePeriod;
+	while (!server->stopped() && std::chrono::steady_clock::now() < graceDeadline)	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+	
 	//	stop the io_service- without this, the join below waits forever on a client that finished connecting after the close loop
 	try	{
 		server->stop();
@@ -586,8 +595,19 @@ void WSPPServer::stop()	{
 	
 	//	the forced stop skips the close handlers that would have emptied this- clear it under connsLock (VDMX's threads use this map) and before 'server' is nulled, so a late sendOSCPacketToListeners() bails before dereferencing the null server
 	connsLock.lock();
+	std::vector<std::string>		addrsToIgnore = std::vector<std::string>();
+	for (const auto & addressMapIt : servers_by_listenAddr)	{
+		if (addressMapIt.second.size() > 0)
+			addrsToIgnore.push_back(addressMapIt.first);
+	}
 	servers_by_listenAddr.clear();
 	connsLock.unlock();
+	
+	//	these stand in for the close handlers the forced stop skipped, so every address the delegate approved is still paired with exactly one ignore.  they run on the thread that called stop(), and outside the lock, because the delegate may use the server's locked API
+	if (ignoreCallback != nullptr)	{
+		for (const auto & addrToIgnore : addrsToIgnore)
+			ignoreCallback(addrToIgnore);
+	}
 	
 	
 	try	{
@@ -641,34 +661,65 @@ void WSPPServer::sendPathRenamedToClients(const std::string & inOldPath, const s
 	//cout << __PRETTY_FUNCTION__ << endl;
 	{
 		lock_guard<mutex>		lock(connsLock);
-		vector<std::string>		keysToUpdate = vector<std::string>();
+		//	one of these per listened-to address the rename moves
+		struct MovedListeners	{
+			std::string					oldKey;
+			std::string					newKey;
+			vector<connection_hdl>		conns;
+		};
+		vector<MovedListeners>		keysToUpdate = vector<MovedListeners>();
 		//	run through the map for servers by OSC listen address
 		for (const auto & addressMapIt : servers_by_listenAddr)	{
 			const std::string		&tmpKey = addressMapIt.first;
-			//	if this address contains the old path then it's going to be affected- stick the string in an array
-			size_t				foundIndex = tmpKey.find(inOldPath);
-			if (foundIndex == 0)	{
-				//cout << "\t\tkey " << tmpKey << " is a match for the old path " << inOldPath << endl;
-				keysToUpdate.push_back(tmpKey);
-			}
+			//	the address is affected only if it IS the old path or continues it with a '/'- a plain prefix match would move "…/Slider 2" too when "…/Slider" is renamed, and leave it listening to an address that doesn't exist
+			if (tmpKey.compare(0, inOldPath.size(), inOldPath) != 0)
+				continue;
+			if (tmpKey.size()!=inOldPath.size() && tmpKey[inOldPath.size()]!='/')
+				continue;
+			//	an entry with no listeners has nothing to move
+			if (addressMapIt.second.size() < 1)
+				continue;
+			//cout << "\t\tkey " << tmpKey << " is a match for the old path " << inOldPath << endl;
+			std::string			newKey = std::string(tmpKey);
+			newKey.replace(0, inOldPath.length(), inNewPath);
+			//cout << "\t\told key is " << tmpKey << ", new key is " << newKey << endl;
+			keysToUpdate.push_back(MovedListeners{ tmpKey, newKey, addressMapIt.second });
+		}
+		//	take every affected entry out of the map before putting any back, so a rename onto a key that is itself being renamed- or onto itself- can't erase what the insert just stored
+		for (const auto & keyToUpdate : keysToUpdate)	{
+			servers_by_listenAddr.erase(keyToUpdate.oldKey);
 		}
 		//	run through the array of OSC addresses that are affected by the rename op
 		for (const auto & keyToUpdate : keysToUpdate)	{
-			//	get the vector of connections stored in the map at the old string
-			vector<connection_hdl>		tmpConns = servers_by_listenAddr[keyToUpdate];
-			//	figure out the new string
-			std::string			newKey = std::string(keyToUpdate);
-			newKey.replace(0, inOldPath.length(), inNewPath);
-			//cout << "\t\told key is " << keyToUpdate << ", new key is " << newKey << endl;
-			//	store the vector at the new key, then clear out the val at the old key!
-			servers_by_listenAddr[newKey] = tmpConns;
-			servers_by_listenAddr.erase(keyToUpdate);
+			auto		targetIter = servers_by_listenAddr.find(keyToUpdate.newKey);
+			bool		targetHadNoListener = (targetIter == servers_by_listenAddr.end());
+			//	if nothing is listening to the new address, the moved listeners become its entry
+			if (targetHadNoListener)	{
+				servers_by_listenAddr.emplace(std::make_pair(keyToUpdate.newKey, keyToUpdate.conns));
+			}
+			//	else merge into the listeners it already has, skipping any connection that was listening to both addresses: sendOSCPacketToListeners() walks the whole vector, so a duplicate would get every packet twice
+			else	{
+				vector<connection_hdl>		&targetConns = targetIter->second;
+				for (const auto & movedConn : keyToUpdate.conns)	{
+					void		*movedConnPtr = movedConn.lock().get();
+					bool		alreadyListening = false;
+					for (const auto & targetConn : targetConns)	{
+						if (targetConn.lock().get() == movedConnPtr)	{
+							alreadyListening = true;
+							break;
+						}
+					}
+					if (!alreadyListening)
+						targetConns.push_back(movedConn);
+				}
+			}
 			
-			//	if i have any listen/ignore blocks, execute them with the appropriate keys!
+			//	execute my listen/ignore blocks by the same rule a client's LISTEN and IGNORE use: the old address has lost its last listener, and the new one only needs approval if it had none
 			if (ignoreCallback != nullptr)
-				ignoreCallback(keyToUpdate);
-			if (listenCallback != nullptr)
-				listenCallback(newKey);
+				ignoreCallback(keyToUpdate.oldKey);
+			//	the answer is discarded on purpose- these listeners were approved when they asked, the rename comes from the delegate itself, and honouring a NO here would drop them depending on whether the delegate renamed its own node before telling us
+			if (targetHadNoListener && listenCallback != nullptr)
+				listenCallback(keyToUpdate.newKey);
 		}
 	}
 	/*
@@ -726,7 +777,7 @@ void WSPPServer::sendOSCPacketToListeners(const void * oscPacketToSend, const in
 bool WSPPServer::isAnyClientListeningToOSCAddress(const std::string & listenPath)	{
 	lock_guard<mutex>		lock(connsLock);
 	const auto		tmpIter = servers_by_listenAddr.find(listenPath);
-	//	a LISTEN the delegate refused leaves an empty vector behind, so the entry existing isn't enough- the vector has to have a connection in it
+	//	the vector has to have a connection in it: nothing makes an entry without one, and this answer is what decides whether the caller builds an OSC packet at all
 	return (tmpIter != servers_by_listenAddr.end() && tmpIter->second.size() > 0);
 }
 

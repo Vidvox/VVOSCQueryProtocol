@@ -43,18 +43,28 @@ public:
 	data into an OSC packet, and then dispatch that packet to its local address space.				*/
 	using OSCCallback = std::function<void (const void * inBuffer, const size_t & inBufferSize)>;
 	
-	/*	this is the LISTEN callback- it is called every time the server receives a JSON object with 
-	"LISTEN" as the COMMAND over the websocket connection.  it returns a TRUE if the passed path is 
-	valid and the server can start sending data from it to the client that requested to listen.  the 
-	callback is passed the path the client wants to LISTEN to- during this callback, you should 
-	configure your OSC address space to forward any OSC messages sent to the passed address to this 
-	instance of the server using WSPPServer::sendOSCPacketToListeners().			*/
+	/*	this is the LISTEN callback- it is called once per path, for the first client to ask to LISTEN
+	to that path over the websocket connection, and not again while anything is still listening to
+	it.  it returns a TRUE if the passed path is valid and the server can start sending data from it
+	to the clients that ask to listen- that answer approves the path itself, so clients that ask
+	later are added without this being called again.  the callback is passed the path the client
+	wants to LISTEN to- during this callback, you should configure your OSC address space to forward
+	any OSC messages sent to the passed address to this instance of the server using
+	WSPPServer::sendOSCPacketToListeners().  it is called with connsLock held, so it must not call
+	back into this class- on the server's own thread for a client's LISTEN, and on the calling
+	thread when sendPathRenamedToClients() produces one.			*/
 	using LISTENCallback = std::function<bool (const std::string & startListeningToMe)>;
 	
-	/*	this is the IGNORE callback- it is called every time the server receives a JSON object with 
-	"IGNORE" as the COMMAND over the websocket connection.  the callback is passed the path the 
-	client wants to stop LISTENng to- during this callback, you should configure your OSC address 
-	space to stop forwarding any OSC messages sent to the passed address to this instance of the server.			*/
+	/*	this is the IGNORE callback- it is called once per path, when the last client listening to
+	that path stops: by sending a JSON object with "IGNORE" as the COMMAND over the websocket
+	connection, by disconnecting, or because stop() is clearing the listeners.  a rename also pairs
+	one of these for the old path with a LISTEN for the new one.  the callback is passed the path
+	that nothing is listening to any more- during this callback, you should configure your OSC
+	address space to stop forwarding any OSC messages sent to the passed address to this instance of
+	the server.  the ones from a disconnect or a rename are called with connsLock held and must not
+	call back into this class.  they don't all arrive on the same thread either: a client's IGNORE
+	and a disconnect come in on the server's own thread, while a rename and stop() call straight
+	through on whichever thread called them.			*/
 	using IGNORECallback = std::function<void (const std::string & stopListeningToMe)>;
 	
 private:

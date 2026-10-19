@@ -14,5 +14,6 @@ extern NSMutableArray<VVOSCQueryRemoteServer*>		*_allRemoteServers;
 	NSNetServiceBrowser		*domainBrowser;
 	NSMutableDictionary		*domainDict;
 	NSMutableDictionary		*removalCounts;	//	main thread only.  key is a bonjour name, value is the number of times a service with that name has been removed
+	NSMutableDictionary		*discoveryQueues;	//	main thread only.  key is a bonjour name, value is the serial queue that name's discoveries run on
 }
 @end

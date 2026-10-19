@@ -14,6 +14,8 @@
 	std::shared_ptr<WSPPClient>		wsClient;
 }
 - (void) _finishInit;
+- (BOOL) _applyHostInfo:(NSDictionary *)inHostInfoObject;
+- (NSDictionary *) _hostInfoWithStallTimeout:(long)inStallTimeout;
 @property (retain,setter=setOSCServerAddressString:) NSString * oscServerAddressString;
 @property (assign,setter=setOSCServerPort:) int oscServerPort;
 @property (assign,setter=setOSCServerTransport:) VVOSCQueryOSCTransportType oscServerTransport;
@@ -21,7 +23,13 @@
 @property (retain,setter=setWSServerAddressString:) NSString * wsServerAddressString;
 @property (assign,setter=setWSServerPort:) int wsServerPort;
 - (NSData *) _dataForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString;
+- (NSData *) _dataForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString stallTimeout:(long)inStallTimeout;
 @end
+
+
+
+
+static dispatch_queue_t					_clientTeardownQueue = nil;
 
 
 
@@ -83,6 +91,9 @@
 	[VVOSCQueryConstants class];
 	//	initialize the server detector, which will start looking for bonjour services that list OSCQuery servers
 	[VVOSCQueryServerDetector class];
+	if (_clientTeardownQueue == nil)	{
+		_clientTeardownQueue = dispatch_queue_create("com.vidvox.oscquery.clientteardown", DISPATCH_QUEUE_SERIAL);
+	}
 }
 
 
@@ -240,61 +251,7 @@ bonjourName:(NSString *)inBonjourName	{
 - (void) _finishInit	{
 	
 	//	do a hostInfo query on the remote server- we're going to want to finish populating my instance variables with values from the remote server
-	NSDictionary	*hostInfoObject = [self hostInfo];
-	if (hostInfoObject!=nil && [hostInfoObject isKindOfClass:[NSDictionary class]])	{
-		//	now pick some values out and use them to finish populating the VVOSCQueryRemoteServer instance
-		NSString		*tmpString = nil;
-		NSNumber		*tmpNum = nil;
-		//	host name
-		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_Name];
-		if (tmpString != nil)
-			[self setOSCName:tmpString];
-		
-		//	osc info
-		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCIP];
-		if (tmpString != nil)
-			[self setOSCServerAddressString:tmpString];
-		else
-			[self setOSCServerAddressString:webServerAddressString];
-		
-		tmpNum = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCPort];
-		if (tmpNum != nil)	{
-			if ([tmpNum isKindOfClass:[NSNumber class]])
-				[self setOSCServerPort:[tmpNum intValue]];
-			else if ([tmpNum isKindOfClass:[NSString class]])
-				[self setOSCServerPort:[(NSString *)tmpNum intValue]];
-			else
-				[self setOSCServerPort:webServerPort];
-		}
-		else
-			[self setOSCServerPort:webServerPort];
-		
-		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCTransport];
-		if (tmpString != nil)	{
-			if ([tmpString isEqualToString:kVVOSCQueryOSCTransportUDP])	{
-				[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
-			}
-			else if ([tmpString isEqualToString:kVVOSCQueryOSCTransportTCP])	{
-				[self setOSCServerTransport:VVOSCQueryOSCTransportType_TCP];
-			}
-			else
-				[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
-		}
-		else
-			[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
-		
-		//	websockets info
-		tmpString = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_WSIP];
-		if (tmpString != nil)
-			[self setWSServerAddressString:tmpString];
-		tmpNum = [hostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_WSPort];
-		if (tmpNum != nil)	{
-			if ([tmpNum isKindOfClass:[NSNumber class]])
-				[self setWSServerPort:[tmpNum intValue]];
-			else if ([tmpNum isKindOfClass:[NSString class]])
-				[self setWSServerPort:[(NSString *)tmpNum intValue]];
-		}
-	}
+	[self _applyHostInfo:[self hostInfo]];
 	
 	//	try to establish a websocket connection with the wsClient
 	NSString		*wsIP = nil;
@@ -308,27 +265,83 @@ bonjourName:(NSString *)inBonjourName	{
 	}
 	
 }
+- (BOOL) _applyHostInfo:(NSDictionary *)inHostInfoObject	{
+	if (inHostInfoObject==nil || ![inHostInfoObject isKindOfClass:[NSDictionary class]])
+		return NO;
+	//	now pick some values out and use them to finish populating the VVOSCQueryRemoteServer instance
+	NSString		*tmpString = nil;
+	NSNumber		*tmpNum = nil;
+	//	host name
+	tmpString = [inHostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_Name];
+	if (tmpString != nil)
+		[self setOSCName:tmpString];
+	
+	//	osc info
+	tmpNum = [inHostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCPort];
+	if (tmpNum != nil)	{
+		if ([tmpNum isKindOfClass:[NSNumber class]])
+			[self setOSCServerPort:[tmpNum intValue]];
+		else if ([tmpNum isKindOfClass:[NSString class]])
+			[self setOSCServerPort:[(NSString *)tmpNum intValue]];
+		else
+			[self setOSCServerPort:webServerPort];
+	}
+	else
+		[self setOSCServerPort:webServerPort];
+	
+	tmpString = [inHostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCTransport];
+	if (tmpString != nil)	{
+		if ([tmpString isEqualToString:kVVOSCQueryOSCTransportUDP])	{
+			[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
+		}
+		else if ([tmpString isEqualToString:kVVOSCQueryOSCTransportTCP])	{
+			[self setOSCServerTransport:VVOSCQueryOSCTransportType_TCP];
+		}
+		else
+			[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
+	}
+	else
+		[self setOSCServerTransport:VVOSCQueryOSCTransportType_UDP];
+	
+	//	websockets info
+	tmpString = [inHostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_WSIP];
+	if (tmpString != nil)
+		[self setWSServerAddressString:tmpString];
+	tmpNum = [inHostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_WSPort];
+	if (tmpNum != nil)	{
+		if ([tmpNum isKindOfClass:[NSNumber class]])
+			[self setWSServerPort:[tmpNum intValue]];
+		else if ([tmpNum isKindOfClass:[NSString class]])
+			[self setWSServerPort:[(NSString *)tmpNum intValue]];
+	}
+	
+	//	the OSC address is stored last, so it's what publishes the rest of the reply: a reader that waits for it to be non-nil finds the port and transport from the same reply beside it, which the properties being atomic one at a time doesn't give it
+	tmpString = [inHostInfoObject objectForKey:kVVOSCQ_ReqAttr_HostInfo_OSCIP];
+	if (tmpString != nil)
+		[self setOSCServerAddressString:tmpString];
+	else
+		[self setOSCServerAddressString:webServerAddressString];
+	return YES;
+}
+- (BOOL) refreshHostInfoWithStallTimeout:(long)inStallTimeout	{
+	//	the websocket is deliberately left alone: it connected to the fallback address, which is right for any server that hosts it on its HTTP port
+	return [self _applyHostInfo:[self _hostInfoWithStallTimeout:inStallTimeout]];
+}
 - (void) dealloc	{
 	//NSLog(@"%s ... %p",__func__,self);
 	webServerAddressString = nil;
 	oscServerAddressString = nil;
 	bonjourName = nil;
 	delegateRefs = nil;
-	if (wsClient != nullptr)	{
-		wsClient->disconnect();
-		int			tmpCount = 0;
-		while (wsClient->isConnected() && tmpCount<5)	{
-			[NSThread sleepForTimeInterval:1./10.];
-			++tmpCount;
-		}
-		/*
-		wsClient->stop();
-		while (wsClient->isRunning())	{
-			[NSThread sleepForTimeInterval:1./10.];
-		}
-		*/
-		wsClient = nullptr;
+	//	the io thread can't destroy its own client: the join would throw, and the endpoint has to outlive the handler that's running.  this is our own queue rather than the detector's com.vidvox.oscquery.serverteardown, which is private to the detector and keeps a different join off a different thread- the main thread's there, the io thread's own here
+	if (wsClient != nullptr && wsClient->isIOThread())	{
+		__block std::shared_ptr<WSPPClient>		tmpClient = wsClient;
+		dispatch_async(_clientTeardownQueue, ^{
+			tmpClient = nullptr;
+		});
 	}
+	//	releasing the client sends a best-effort close and stops its io loop- nothing here waits for the peer to answer
+	wsClient = nullptr;
 }
 - (NSString *) description	{
 	NSString		*returnMe = nil;
@@ -382,18 +395,25 @@ bonjourName:(NSString *)inBonjourName	{
 	}
 	return returnMe;
 }
+- (BOOL) websocketWentOffline	{
+	return (wsClient==nullptr) ? NO : wsClient->hasGoneOffline();
+}
 
 
 - (NSDictionary *) hostInfo;	{
+	return [self _hostInfoWithStallTimeout:0];
+}
+- (NSDictionary *) _hostInfoWithStallTimeout:(long)inStallTimeout	{
 	//NSLog(@"%s",__func__);
 	NSDictionary	*returnMe = nil;
-	
+
 	NSString		*hostInfoQueryAddress = [NSString stringWithFormat:@"http://%@:%d?HOST_INFO",webServerAddressString,webServerPort];
 	//NSLog(@"\t\thostInfoQueryAddress is %@",hostInfoQueryAddress);
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:hostInfoQueryAddress];
 	[downloader appendStringToHeader:@"Connection: close"];
 	[downloader setConnectTimeout:2.];
 	[downloader setDNSCacheTimeout:2.];
+	[downloader setLowSpeedTime:inStallTimeout];
 	[downloader perform];
 	if ([downloader err] != 0)
 		NSLog(@"\t\terr: %ld, %s",[downloader err],__func__);
@@ -431,7 +451,10 @@ bonjourName:(NSString *)inBonjourName	{
 	return [self jsonObjectForOSCMethodAtAddress:inPath query:nil];
 }
 - (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
-	NSData			*responseData = [self _dataForOSCMethodAtAddress:inPath query:inQueryString];
+	return [self jsonObjectForOSCMethodAtAddress:inPath query:inQueryString stallTimeout:0];
+}
+- (NSDictionary *) jsonObjectForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString stallTimeout:(long)inStallTimeout	{
+	NSData			*responseData = [self _dataForOSCMethodAtAddress:inPath query:inQueryString stallTimeout:inStallTimeout];
 	if (responseData == nil)
 		return nil;
 	NSError			*nsErr = nil;
@@ -449,6 +472,9 @@ bonjourName:(NSString *)inBonjourName	{
 	return returnMe;
 }
 - (NSData *) _dataForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString	{
+	return [self _dataForOSCMethodAtAddress:inPath query:inQueryString stallTimeout:0];
+}
+- (NSData *) _dataForOSCMethodAtAddress:(NSString *)inPath query:(NSString *)inQueryString stallTimeout:(long)inStallTimeout	{
 	if (inPath == nil)
 		return nil;
 	NSString		*sanitizedOSCAddress = [inPath stringBySanitizingForOSCPath];
@@ -464,6 +490,7 @@ bonjourName:(NSString *)inBonjourName	{
 	CURLDL			*downloader = [[CURLDL alloc] initWithAddress:queryAddress];
 	[downloader setDNSCacheTimeout:2.];
 	[downloader setConnectTimeout:2.];
+	[downloader setLowSpeedTime:inStallTimeout];
 	[downloader perform];
 	if ([downloader err] != 0)	{
 		NSLog(@"\t\terr, couldnt download: %ld, %s",[downloader err],__func__);
